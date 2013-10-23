@@ -1,0 +1,3 @@
+[submodule "ADNKit"]
+	path = ADNKit
+	url = git@github.com:joeldev/ADNKit.git

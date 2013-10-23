@@ -1,0 +1,411 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
+		E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
+		E2E5A73018180218009DECDB /* ADNKitUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E5A72F18180218009DECDB /* ADNKitUtils.m */; };
+		E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A72A18180190009DECDB /* SystemConfiguration.framework */; };
+		E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A7231818004A009DECDB /* MobileCoreServices.framework */; };
+		E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E5A738181805E6009DECDB /* ANKClient+PrivateChannel.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E2E5A7181817FDC3009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5DC370D916E0805E00190862;
+			remoteInfo = "ADNKit-iOS";
+		};
+		E2E5A71A1817FDC3009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2592B80916FF8410004573FF;
+			remoteInfo = "ADNKit-AFNetworking-iOS";
+		};
+		E2E5A71C1817FDC3009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5DC3710816E0808C00190862;
+			remoteInfo = "ADNKit-OSX";
+		};
+		E2E5A71E1817FDC3009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2592B7A016FCED64004573FF;
+			remoteInfo = ADNKitTests;
+		};
+		E2E5A7201817FDE4009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2592B7C416FF8410004573FF;
+			remoteInfo = "ADNKit-AFNetworking-iOS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E2E5A6D41817FBF9009DECDB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		E2E5A6D61817FBF9009DECDB /* libADNKitUtils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libADNKitUtils.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2E5A6D91817FBF9009DECDB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		E2E5A6DD1817FBF9009DECDB /* ADNKitUtils-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ADNKitUtils-Prefix.pch"; sourceTree = "<group>"; };
+		E2E5A6E71817FBF9009DECDB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		E2E5A6EA1817FBF9009DECDB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADNKit.xcodeproj; path = ADNKit/ADNKit.xcodeproj; sourceTree = "<group>"; };
+		E2E5A7231818004A009DECDB /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		E2E5A72518180053009DECDB /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		E2E5A72718180058009DECDB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		E2E5A72A18180190009DECDB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		E2E5A72E18180218009DECDB /* ADNKitUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADNKitUtils.h; sourceTree = "<group>"; };
+		E2E5A72F18180218009DECDB /* ADNKitUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADNKitUtils.m; sourceTree = "<group>"; };
+		E2E5A737181805E6009DECDB /* ANKClient+PrivateChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKClient+PrivateChannel.h"; sourceTree = "<group>"; };
+		E2E5A738181805E6009DECDB /* ANKClient+PrivateChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKClient+PrivateChannel.m"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E2E5A6D31817FBF9009DECDB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */,
+				E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */,
+				E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */,
+				E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E2E5A6CD1817FBF9009DECDB = {
+			isa = PBXGroup;
+			children = (
+				E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */,
+				E2E5A6DB1817FBF9009DECDB /* ADNKitUtils */,
+				E2E5A6D81817FBF9009DECDB /* Frameworks */,
+				E2E5A6D71817FBF9009DECDB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E2E5A6D71817FBF9009DECDB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E2E5A6D61817FBF9009DECDB /* libADNKitUtils.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E2E5A6D81817FBF9009DECDB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E2E5A72A18180190009DECDB /* SystemConfiguration.framework */,
+				E2E5A72718180058009DECDB /* CoreLocation.framework */,
+				E2E5A72518180053009DECDB /* CFNetwork.framework */,
+				E2E5A7231818004A009DECDB /* MobileCoreServices.framework */,
+				E2E5A6D91817FBF9009DECDB /* Foundation.framework */,
+				E2E5A6E71817FBF9009DECDB /* XCTest.framework */,
+				E2E5A6EA1817FBF9009DECDB /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E2E5A6DB1817FBF9009DECDB /* ADNKitUtils */ = {
+			isa = PBXGroup;
+			children = (
+				E2E5A7311818024E009DECDB /* Categories */,
+				E2E5A72E18180218009DECDB /* ADNKitUtils.h */,
+				E2E5A72F18180218009DECDB /* ADNKitUtils.m */,
+				E2E5A6DC1817FBF9009DECDB /* Supporting Files */,
+			);
+			path = ADNKitUtils;
+			sourceTree = "<group>";
+		};
+		E2E5A6DC1817FBF9009DECDB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E2E5A6DD1817FBF9009DECDB /* ADNKitUtils-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E2E5A7121817FDC3009DECDB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E2E5A7191817FDC3009DECDB /* libADNKit-iOS.a */,
+				E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */,
+				E2E5A71D1817FDC3009DECDB /* ADNKit.framework */,
+				E2E5A71F1817FDC3009DECDB /* ADNKitTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E2E5A7311818024E009DECDB /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				E2E5A737181805E6009DECDB /* ANKClient+PrivateChannel.h */,
+				E2E5A738181805E6009DECDB /* ANKClient+PrivateChannel.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E2E5A6D51817FBF9009DECDB /* ADNKitUtils */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E2E5A6F91817FBF9009DECDB /* Build configuration list for PBXNativeTarget "ADNKitUtils" */;
+			buildPhases = (
+				E2E5A6D21817FBF9009DECDB /* Sources */,
+				E2E5A6D31817FBF9009DECDB /* Frameworks */,
+				E2E5A6D41817FBF9009DECDB /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E2E5A7211817FDE4009DECDB /* PBXTargetDependency */,
+			);
+			name = ADNKitUtils;
+			productName = ADNKitUtils;
+			productReference = E2E5A6D61817FBF9009DECDB /* libADNKitUtils.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E2E5A6CE1817FBF9009DECDB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Always All The Time";
+			};
+			buildConfigurationList = E2E5A6D11817FBF9009DECDB /* Build configuration list for PBXProject "ADNKitUtils" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E2E5A6CD1817FBF9009DECDB;
+			productRefGroup = E2E5A6D71817FBF9009DECDB /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E2E5A7121817FDC3009DECDB /* Products */;
+					ProjectRef = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				E2E5A6D51817FBF9009DECDB /* ADNKitUtils */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E2E5A7191817FDC3009DECDB /* libADNKit-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libADNKit-iOS.a";
+			remoteRef = E2E5A7181817FDC3009DECDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libADNKit-AFNetworking-iOS.a";
+			remoteRef = E2E5A71A1817FDC3009DECDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E2E5A71D1817FDC3009DECDB /* ADNKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ADNKit.framework;
+			remoteRef = E2E5A71C1817FDC3009DECDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E2E5A71F1817FDC3009DECDB /* ADNKitTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ADNKitTests.octest;
+			remoteRef = E2E5A71E1817FDC3009DECDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E2E5A6D21817FBF9009DECDB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2E5A73018180218009DECDB /* ADNKitUtils.m in Sources */,
+				E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E2E5A7211817FDE4009DECDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ADNKit-AFNetworking-iOS";
+			targetProxy = E2E5A7201817FDE4009DECDB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E2E5A6F71817FBF9009DECDB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		E2E5A6F81817FBF9009DECDB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E2E5A6FA1817FBF9009DECDB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				DSTROOT = /tmp/ADNKitUtils.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ADNKitUtils/ADNKitUtils-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"${SRCROOT}/\"/**",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E2E5A6FB1817FBF9009DECDB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				DSTROOT = /tmp/ADNKitUtils.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ADNKitUtils/ADNKitUtils-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"${SRCROOT}/\"/**",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E2E5A6D11817FBF9009DECDB /* Build configuration list for PBXProject "ADNKitUtils" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2E5A6F71817FBF9009DECDB /* Debug */,
+				E2E5A6F81817FBF9009DECDB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E2E5A6F91817FBF9009DECDB /* Build configuration list for PBXNativeTarget "ADNKitUtils" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2E5A6FA1817FBF9009DECDB /* Debug */,
+				E2E5A6FB1817FBF9009DECDB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E2E5A6CE1817FBF9009DECDB /* Project object */;
+}
