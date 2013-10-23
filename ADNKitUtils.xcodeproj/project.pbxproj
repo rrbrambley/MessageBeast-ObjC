@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
 		E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
-		E2E5A73018180218009DECDB /* ADNKitUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E5A72F18180218009DECDB /* ADNKitUtils.m */; };
 		E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A72A18180190009DECDB /* SystemConfiguration.framework */; };
 		E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A7231818004A009DECDB /* MobileCoreServices.framework */; };
 		E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E5A738181805E6009DECDB /* ANKClient+PrivateChannel.m */; };
+		E2E5A746181822FE009DECDB /* ADNKitUtils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E2E5A72E18180218009DECDB /* ADNKitUtils.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +60,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				E2E5A746181822FE009DECDB /* ADNKitUtils.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,7 +78,6 @@
 		E2E5A72718180058009DECDB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		E2E5A72A18180190009DECDB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E2E5A72E18180218009DECDB /* ADNKitUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADNKitUtils.h; sourceTree = "<group>"; };
-		E2E5A72F18180218009DECDB /* ADNKitUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADNKitUtils.m; sourceTree = "<group>"; };
 		E2E5A737181805E6009DECDB /* ANKClient+PrivateChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKClient+PrivateChannel.h"; sourceTree = "<group>"; };
 		E2E5A738181805E6009DECDB /* ANKClient+PrivateChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKClient+PrivateChannel.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -134,7 +134,6 @@
 			children = (
 				E2E5A7311818024E009DECDB /* Categories */,
 				E2E5A72E18180218009DECDB /* ADNKitUtils.h */,
-				E2E5A72F18180218009DECDB /* ADNKitUtils.m */,
 				E2E5A6DC1817FBF9009DECDB /* Supporting Files */,
 			);
 			path = ADNKitUtils;
@@ -257,7 +256,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E2E5A73018180218009DECDB /* ADNKitUtils.m in Sources */,
 				E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -404,6 +402,7 @@
 				E2E5A6FB1817FBF9009DECDB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

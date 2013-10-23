@@ -7,7 +7,4 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@interface ADNKitUtils : NSObject
-
-@end
+#import "ANKClient+PrivateChannel.h"
