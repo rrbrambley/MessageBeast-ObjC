@@ -18,6 +18,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		E29A82D31821AFE00057245C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E29A82CE1821AFE00057245C /* fmdb.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DD76FA10486AA7600D96B5E;
+			remoteInfo = fmdb;
+		};
+		E29A82D51821AFE00057245C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E29A82CE1821AFE00057245C /* fmdb.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EE4290EF12B42F870088BD94;
+			remoteInfo = FMDB;
+		};
+		E29A82D71821AFED0057245C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E29A82CE1821AFE00057245C /* fmdb.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = EE4290EE12B42F870088BD94;
+			remoteInfo = FMDB;
+		};
 		E2E5A7181817FDC3009DECDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
@@ -73,6 +94,7 @@
 		E29A82C91821AE770057245C /* AATTMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManager.m; sourceTree = "<group>"; };
 		E29A82CB1821AEBC0057245C /* AATTMessageManagerConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManagerConfiguration.h; sourceTree = "<group>"; };
 		E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManagerConfiguration.m; sourceTree = "<group>"; };
+		E29A82CE1821AFE00057245C /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
 		E2E5A6D61817FBF9009DECDB /* libADNKitUtils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libADNKitUtils.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E5A6D91817FBF9009DECDB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E2E5A6DD1817FBF9009DECDB /* ADNKitUtils-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ADNKitUtils-Prefix.pch"; sourceTree = "<group>"; };
@@ -114,9 +136,19 @@
 			name = Manager;
 			sourceTree = "<group>";
 		};
+		E29A82CF1821AFE00057245C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E29A82D41821AFE00057245C /* fmdb */,
+				E29A82D61821AFE00057245C /* libFMDB.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		E2E5A6CD1817FBF9009DECDB = {
 			isa = PBXGroup;
 			children = (
+				E29A82CE1821AFE00057245C /* fmdb.xcodeproj */,
 				E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */,
 				E2E5A6DB1817FBF9009DECDB /* ADNKitUtils */,
 				E2E5A6D81817FBF9009DECDB /* Frameworks */,
@@ -199,6 +231,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E29A82D81821AFED0057245C /* PBXTargetDependency */,
 				E2E5A7211817FDE4009DECDB /* PBXTargetDependency */,
 			);
 			name = ADNKitUtils;
@@ -230,6 +263,10 @@
 					ProductGroup = E2E5A7121817FDC3009DECDB /* Products */;
 					ProjectRef = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
 				},
+				{
+					ProductGroup = E29A82CF1821AFE00057245C /* Products */;
+					ProjectRef = E29A82CE1821AFE00057245C /* fmdb.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -239,6 +276,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		E29A82D41821AFE00057245C /* fmdb */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = fmdb;
+			remoteRef = E29A82D31821AFE00057245C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E29A82D61821AFE00057245C /* libFMDB.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libFMDB.a;
+			remoteRef = E29A82D51821AFE00057245C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		E2E5A7191817FDC3009DECDB /* libADNKit-iOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -283,6 +334,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		E29A82D81821AFED0057245C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = FMDB;
+			targetProxy = E29A82D71821AFED0057245C /* PBXContainerItemProxy */;
+		};
 		E2E5A7211817FDE4009DECDB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "ADNKit-AFNetworking-iOS";

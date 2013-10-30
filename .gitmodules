@@ -1,3 +1,6 @@
 [submodule "ADNKit"]
 	path = ADNKit
 	url = git@github.com:joeldev/ADNKit.git
+[submodule "fmdb"]
+	path = fmdb
+	url = git@github.com:ccgus/fmdb.git
