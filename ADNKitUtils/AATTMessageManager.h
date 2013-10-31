@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
-#import "AATTMessageManagerConfiguration.h"
+@class AATTMessageManagerConfiguration, NSOrderedDictionary;
 
 @interface AATTMessageManager : NSObject
 
@@ -15,6 +15,8 @@ typedef void (^AATTMessageManagerResponseBlock)(NSArray *messagePlusses, BOOL ap
 - (id)initWithANKClient:(ANKClient *)client configuration:(AATTMessageManagerConfiguration *)configuration;
 
 - (void)setQueryParametersForChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters;
+
+- (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit;
 
 - (void)fetchMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block;
 - (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block;

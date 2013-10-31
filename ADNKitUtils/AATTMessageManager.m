@@ -6,17 +6,14 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#import "AATTADNDatabase.h"
 #import "AATTMessageManager.h"
+#import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
+#import "AATTMinMaxPair.h"
+#import "AATTOrderedMessageBatch.h"
 #import "ANKClient+AATTMessageManager.h"
 #import "NSOrderedDictionary.h"
-
-@interface MinMaxPair : NSObject
-@property NSString *minID;
-@property NSString *maxID;
-@end
-@implementation MinMaxPair
-@end
 
 @interface AATTMessageManager ()
 @property NSMutableDictionary *queryParametersByChannel;
@@ -24,6 +21,7 @@
 @property NSMutableDictionary *messagesByChannelID;
 @property ANKClient *client;
 @property AATTMessageManagerConfiguration *configuration;
+@property AATTADNDatabase *database;
 @end
 
 @implementation AATTMessageManager
@@ -36,6 +34,7 @@
         self.queryParametersByChannel = [NSMutableDictionary dictionaryWithCapacity:1];
         self.minMaxPairs = [NSMutableDictionary dictionaryWithCapacity:1];
         self.messagesByChannelID = [NSMutableDictionary dictionaryWithCapacity:1];
+        self.database = [AATTADNDatabase sharedInstance];
     }
     return self;
 }
@@ -44,18 +43,51 @@
     [self.queryParametersByChannel setObject:parameters forKey:channelID];
 }
 
+- (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit {
+    NSDate *beforeDate = nil;
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    if(minMaxPair.minID) {
+        NSMutableOrderedDictionary *messages = [self.messagesByChannelID objectForKey:channelID];
+        AATTMessagePlus *messagePlus = [messages objectForKey:minMaxPair.minID];
+        beforeDate = messagePlus.displayDate;
+    }
+    
+    AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesInChannelWithId:channelID beforeDate:beforeDate limit:limit];
+    NSOrderedDictionary *messagePlusses = orderedMessageBatch.messagePlusses;
+    AATTMinMaxPair *dbMinMaxPair = orderedMessageBatch.minMaxPair;
+    minMaxPair = [minMaxPair combineWith:dbMinMaxPair];
+    
+    NSMutableOrderedDictionary *channelMessages = [messagePlusses objectForKey:channelID];
+    if(channelMessages) {
+        [channelMessages addEntriesFromOrderedDictionary:messagePlusses];
+    } else {
+        [self.messagesByChannelID setObject:messagePlusses forKey:channelID];
+    }
+    
+    [self.minMaxPairs setObject:minMaxPair forKey:channelID];
+    
+    if(self.configuration.isLocationLookupEnabled) {
+        //TODO
+    }
+    if(self.configuration.isOEmbedLookupEnabled) {
+        //TODO
+    }
+    
+    return messagePlusses;
+}
+
 - (void)fetchMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
-    MinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID withResponseBlock:block];
 }
 
 - (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
-    MinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil withResponseBlock:block];
 }
 
 - (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
-    MinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID withResponseBlock:block];
 }
 
@@ -84,7 +116,7 @@
         NSString *beforeID = [parameters objectForKey:@"before_id"];
         NSString *sinceID = [parameters objectForKey:@"since_id"];
         
-        MinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+        AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
         if(beforeID && !sinceID) {
             NSString *newMinID = meta.minID;
             if(newMinID) {
@@ -140,10 +172,10 @@
     }];
 }
 
-- (MinMaxPair *)minMaxPairForChannelID:(NSString *)channelID {
-    MinMaxPair *pair = [self.minMaxPairs objectForKey:channelID];
+- (AATTMinMaxPair *)minMaxPairForChannelID:(NSString *)channelID {
+    AATTMinMaxPair *pair = [self.minMaxPairs objectForKey:channelID];
     if(!pair) {
-        pair = [[MinMaxPair alloc] init];
+        pair = [[AATTMinMaxPair alloc] init];
         [self.minMaxPairs setObject:pair forKey:channelID];
     }
     return pair;
@@ -154,7 +186,7 @@
     messagePlus.displayDate = adjustedDate;
     
     if(self.configuration.isDatabaseInsertionEnabled) {
-        //TODO
+        [self.database insertOrReplaceMessage:messagePlus];
     }
 }
 
