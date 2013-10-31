@@ -50,9 +50,9 @@ static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messa
 }
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)message {
-    static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json) VALUES(?, ?, ?, ?";
+    static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json) VALUES(?, ?, ?, ?)";
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        [db executeUpdate:insertOrReplaceMessage, message.message.messageID, message.message.channelID, [message.displayDate timeIntervalSince1970], message.message.JSONDictionary.description];
+        [db executeUpdate:insertOrReplaceMessage, message.message.messageID, message.message.channelID, [NSNumber numberWithDouble:[message.displayDate timeIntervalSince1970]], message.message.JSONDictionary.description];
     }];
 }
 
