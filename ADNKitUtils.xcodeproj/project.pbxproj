@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82C91821AE770057245C /* AATTMessageManager.m */; };
 		E29A82CD1821AEBC0057245C /* AATTMessageManagerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */; };
+		E29A83001821C17E0057245C /* AATTMessagePlus.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82FF1821C17E0057245C /* AATTMessagePlus.m */; };
+		E29A83031822B42D0057245C /* AATTDisplayLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83021822B42D0057245C /* AATTDisplayLocation.m */; };
 		E29A83151822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83141822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m */; };
 		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
 		E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
@@ -96,6 +98,10 @@
 		E29A82CB1821AEBC0057245C /* AATTMessageManagerConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManagerConfiguration.h; sourceTree = "<group>"; };
 		E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManagerConfiguration.m; sourceTree = "<group>"; };
 		E29A82CE1821AFE00057245C /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
+		E29A82FE1821C17E0057245C /* AATTMessagePlus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessagePlus.h; sourceTree = "<group>"; };
+		E29A82FF1821C17E0057245C /* AATTMessagePlus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessagePlus.m; sourceTree = "<group>"; };
+		E29A83011822B42D0057245C /* AATTDisplayLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTDisplayLocation.h; sourceTree = "<group>"; };
+		E29A83021822B42D0057245C /* AATTDisplayLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTDisplayLocation.m; sourceTree = "<group>"; };
 		E29A83131822D15D0057245C /* ANKMessage+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKMessage+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
 		E29A83141822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKMessage+AATTAnnotationHelper.m"; sourceTree = "<group>"; };
 		E2E5A6D61817FBF9009DECDB /* libADNKitUtils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libADNKitUtils.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +152,15 @@
 				E29A82D61821AFE00057245C /* libFMDB.a */,
 			);
 			name = Products;
+		E29A82FD1821C15D0057245C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E29A82FE1821C17E0057245C /* AATTMessagePlus.h */,
+				E29A82FF1821C17E0057245C /* AATTMessagePlus.m */,
+				E29A83011822B42D0057245C /* AATTDisplayLocation.h */,
+				E29A83021822B42D0057245C /* AATTDisplayLocation.m */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		E2E5A6CD1817FBF9009DECDB = {
@@ -184,6 +199,7 @@
 		E2E5A6DB1817FBF9009DECDB /* ADNKitUtils */ = {
 			isa = PBXGroup;
 			children = (
+				E29A82FD1821C15D0057245C /* Model */,
 				E29A82C41821AE490057245C /* Manager */,
 				E2E5A7311818024E009DECDB /* Categories */,
 				E2E5A72E18180218009DECDB /* ADNKitUtils.h */,
@@ -331,8 +347,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E29A82CD1821AEBC0057245C /* AATTMessageManagerConfiguration.m in Sources */,
+				E29A83031822B42D0057245C /* AATTDisplayLocation.m in Sources */,
 				E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */,
 				E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */,
+				E29A83001821C17E0057245C /* AATTMessagePlus.m in Sources */,
 				E29A83151822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
