@@ -10,4 +10,12 @@
 
 @implementation AATTOrderedMessageBatch
 
+- (id)initWithOrderedMessagePlusses:(NSOrderedDictionary *)messagePlusses minMaxPair:(AATTMinMaxPair *)minMaxPair {
+    self = [super init];
+    if(self) {
+        self.messagePlusses = messagePlusses;
+        self.minMaxPair = minMaxPair;
+    }
+    return self;
+}
 @end

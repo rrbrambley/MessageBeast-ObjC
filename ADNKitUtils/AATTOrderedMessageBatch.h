@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+#import "AATTMinMaxPair.h"
+#import "NSOrderedDictionary.h"
+
 @interface AATTOrderedMessageBatch : NSObject
+
+@property NSOrderedDictionary *messagePlusses;
+@property AATTMinMaxPair *minMaxPair;
+
+- (id)initWithOrderedMessagePlusses:(NSOrderedDictionary *)messagePlusses minMaxPair:(AATTMinMaxPair *)minMaxPair;
 
 @end

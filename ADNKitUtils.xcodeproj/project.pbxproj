@@ -22,6 +22,7 @@
 		E29A830F1822C49D0057245C /* ANKClient+AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A830E1822C49D0057245C /* ANKClient+AATTMessageManager.m */; };
 		E29A83151822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83141822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m */; };
 		E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83201822FF090057245C /* NSOrderedDictionary.m */; };
+		E29A8324182301F00057245C /* AATTMinMaxPair.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A8323182301F00057245C /* AATTMinMaxPair.m */; };
 		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
 		E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
 		E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A72A18180190009DECDB /* SystemConfiguration.framework */; };
@@ -112,6 +113,8 @@
 		E29A83141822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKMessage+AATTAnnotationHelper.m"; sourceTree = "<group>"; };
 		E29A831F1822FF090057245C /* NSOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSOrderedDictionary.h; path = NSOrderedDictionary/NSOrderedDictionary.h; sourceTree = "<group>"; };
 		E29A83201822FF090057245C /* NSOrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSOrderedDictionary.m; path = NSOrderedDictionary/NSOrderedDictionary.m; sourceTree = "<group>"; };
+		E29A8322182301F00057245C /* AATTMinMaxPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMinMaxPair.h; sourceTree = "<group>"; };
+		E29A8323182301F00057245C /* AATTMinMaxPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMinMaxPair.m; sourceTree = "<group>"; };
 		E2E5A6D61817FBF9009DECDB /* libADNKitUtils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libADNKitUtils.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E5A6D91817FBF9009DECDB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E2E5A6DD1817FBF9009DECDB /* ADNKitUtils-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ADNKitUtils-Prefix.pch"; sourceTree = "<group>"; };
@@ -150,6 +153,8 @@
 				E29A82C91821AE770057245C /* AATTMessageManager.m */,
 				E29A82CB1821AEBC0057245C /* AATTMessageManagerConfiguration.h */,
 				E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */,
+				E29A8322182301F00057245C /* AATTMinMaxPair.h */,
+				E29A8323182301F00057245C /* AATTMinMaxPair.m */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -383,6 +388,7 @@
 				E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */,
 				E29A82EC1821B8AA0057245C /* FMDatabasePool.m in Sources */,
 				E29A830F1822C49D0057245C /* ANKClient+AATTMessageManager.m in Sources */,
+				E29A8324182301F00057245C /* AATTMinMaxPair.m in Sources */,
 				E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */,
 				E29A82EB1821B8AA0057245C /* FMDatabaseAdditions.m in Sources */,
 				E29A83001821C17E0057245C /* AATTMessagePlus.m in Sources */,

@@ -16,7 +16,7 @@
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)message;
 
-- (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId limit:(NSInteger)limit;
-- (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId beforeDate:(NSDate *)beforeDate limit:(NSInteger)limit;
+- (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId limit:(NSUInteger)limit;
+- (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
 
 @end
