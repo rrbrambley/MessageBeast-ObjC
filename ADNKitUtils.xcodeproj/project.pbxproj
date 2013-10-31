@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82C91821AE770057245C /* AATTMessageManager.m */; };
 		E29A82CD1821AEBC0057245C /* AATTMessageManagerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */; };
+		E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E01821B8AA0057245C /* FMDatabase.m */; };
+		E29A82EB1821B8AA0057245C /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */; };
+		E29A82EC1821B8AA0057245C /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E41821B8AA0057245C /* FMDatabasePool.m */; };
+		E29A82ED1821B8AA0057245C /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */; };
+		E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E91821B8AA0057245C /* FMResultSet.m */; };
+		E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E29A82F01821B8E10057245C /* libsqlite3.dylib */; };
 		E29A83001821C17E0057245C /* AATTMessagePlus.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82FF1821C17E0057245C /* AATTMessagePlus.m */; };
 		E29A83031822B42D0057245C /* AATTDisplayLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83021822B42D0057245C /* AATTDisplayLocation.m */; };
 		E29A830F1822C49D0057245C /* ANKClient+AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A830E1822C49D0057245C /* ANKClient+AATTMessageManager.m */; };
@@ -22,27 +28,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		E29A82D31821AFE00057245C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E29A82CE1821AFE00057245C /* fmdb.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DD76FA10486AA7600D96B5E;
-			remoteInfo = fmdb;
-		};
-		E29A82D51821AFE00057245C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E29A82CE1821AFE00057245C /* fmdb.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EE4290EF12B42F870088BD94;
-			remoteInfo = FMDB;
-		};
-		E29A82D71821AFED0057245C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E29A82CE1821AFE00057245C /* fmdb.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = EE4290EE12B42F870088BD94;
-			remoteInfo = FMDB;
-		};
 		E2E5A7181817FDC3009DECDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
@@ -98,7 +83,18 @@
 		E29A82C91821AE770057245C /* AATTMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManager.m; sourceTree = "<group>"; };
 		E29A82CB1821AEBC0057245C /* AATTMessageManagerConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManagerConfiguration.h; sourceTree = "<group>"; };
 		E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManagerConfiguration.m; sourceTree = "<group>"; };
-		E29A82CE1821AFE00057245C /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
+		E29A82DF1821B8AA0057245C /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = fmdb/src/FMDatabase.h; sourceTree = "<group>"; };
+		E29A82E01821B8AA0057245C /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = fmdb/src/FMDatabase.m; sourceTree = "<group>"; };
+		E29A82E11821B8AA0057245C /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseAdditions.h; path = fmdb/src/FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseAdditions.m; path = fmdb/src/FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		E29A82E31821B8AA0057245C /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabasePool.h; path = fmdb/src/FMDatabasePool.h; sourceTree = "<group>"; };
+		E29A82E41821B8AA0057245C /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabasePool.m; path = fmdb/src/FMDatabasePool.m; sourceTree = "<group>"; };
+		E29A82E51821B8AA0057245C /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseQueue.h; path = fmdb/src/FMDatabaseQueue.h; sourceTree = "<group>"; };
+		E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseQueue.m; path = fmdb/src/FMDatabaseQueue.m; sourceTree = "<group>"; };
+		E29A82E71821B8AA0057245C /* fmdb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fmdb.m; path = fmdb/src/fmdb.m; sourceTree = "<group>"; };
+		E29A82E81821B8AA0057245C /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/src/FMResultSet.h; sourceTree = "<group>"; };
+		E29A82E91821B8AA0057245C /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/src/FMResultSet.m; sourceTree = "<group>"; };
+		E29A82F01821B8E10057245C /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		E29A82FE1821C17E0057245C /* AATTMessagePlus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessagePlus.h; sourceTree = "<group>"; };
 		E29A82FF1821C17E0057245C /* AATTMessagePlus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessagePlus.m; sourceTree = "<group>"; };
 		E29A83011822B42D0057245C /* AATTDisplayLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTDisplayLocation.h; sourceTree = "<group>"; };
@@ -127,6 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */,
 				E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */,
 				E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */,
 				E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */,
@@ -148,13 +145,27 @@
 			name = Manager;
 			sourceTree = "<group>";
 		};
-		E29A82CF1821AFE00057245C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E29A82D41821AFE00057245C /* fmdb */,
-				E29A82D61821AFE00057245C /* libFMDB.a */,
 			);
-			name = Products;
+		E29A82DE1821B8960057245C /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				E29A82DF1821B8AA0057245C /* FMDatabase.h */,
+				E29A82E01821B8AA0057245C /* FMDatabase.m */,
+				E29A82E11821B8AA0057245C /* FMDatabaseAdditions.h */,
+				E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */,
+				E29A82E31821B8AA0057245C /* FMDatabasePool.h */,
+				E29A82E41821B8AA0057245C /* FMDatabasePool.m */,
+				E29A82E51821B8AA0057245C /* FMDatabaseQueue.h */,
+				E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */,
+				E29A82E71821B8AA0057245C /* fmdb.m */,
+				E29A82E81821B8AA0057245C /* FMResultSet.h */,
+				E29A82E91821B8AA0057245C /* FMResultSet.m */,
+			);
+			name = FMDB;
+			sourceTree = "<group>";
+		};
 		E29A82FD1821C15D0057245C /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -169,8 +180,8 @@
 		E2E5A6CD1817FBF9009DECDB = {
 			isa = PBXGroup;
 			children = (
-				E29A82CE1821AFE00057245C /* fmdb.xcodeproj */,
 				E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */,
+				E29A82DE1821B8960057245C /* FMDB */,
 				E2E5A6DB1817FBF9009DECDB /* ADNKitUtils */,
 				E2E5A6D81817FBF9009DECDB /* Frameworks */,
 				E2E5A6D71817FBF9009DECDB /* Products */,
@@ -188,6 +199,7 @@
 		E2E5A6D81817FBF9009DECDB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E29A82F01821B8E10057245C /* libsqlite3.dylib */,
 				E2E5A72A18180190009DECDB /* SystemConfiguration.framework */,
 				E2E5A72718180058009DECDB /* CoreLocation.framework */,
 				E2E5A72518180053009DECDB /* CFNetwork.framework */,
@@ -257,7 +269,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E29A82D81821AFED0057245C /* PBXTargetDependency */,
 				E2E5A7211817FDE4009DECDB /* PBXTargetDependency */,
 			);
 			name = ADNKitUtils;
@@ -289,10 +300,6 @@
 					ProductGroup = E2E5A7121817FDC3009DECDB /* Products */;
 					ProjectRef = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
 				},
-				{
-					ProductGroup = E29A82CF1821AFE00057245C /* Products */;
-					ProjectRef = E29A82CE1821AFE00057245C /* fmdb.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -302,20 +309,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E29A82D41821AFE00057245C /* fmdb */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = fmdb;
-			remoteRef = E29A82D31821AFE00057245C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		E29A82D61821AFE00057245C /* libFMDB.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libFMDB.a;
-			remoteRef = E29A82D51821AFE00057245C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		E2E5A7191817FDC3009DECDB /* libADNKit-iOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -352,10 +345,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				E29A82CD1821AEBC0057245C /* AATTMessageManagerConfiguration.m in Sources */,
+				E29A82ED1821B8AA0057245C /* FMDatabaseQueue.m in Sources */,
 				E29A83031822B42D0057245C /* AATTDisplayLocation.m in Sources */,
 				E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */,
+				E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */,
+				E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */,
+				E29A82EC1821B8AA0057245C /* FMDatabasePool.m in Sources */,
 				E29A830F1822C49D0057245C /* ANKClient+AATTMessageManager.m in Sources */,
 				E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */,
+				E29A82EB1821B8AA0057245C /* FMDatabaseAdditions.m in Sources */,
 				E29A83001821C17E0057245C /* AATTMessagePlus.m in Sources */,
 				E29A83151822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m in Sources */,
 			);
@@ -364,11 +362,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		E29A82D81821AFED0057245C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = FMDB;
-			targetProxy = E29A82D71821AFED0057245C /* PBXContainerItemProxy */;
-		};
 		E2E5A7211817FDE4009DECDB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "ADNKit-AFNetworking-iOS";
