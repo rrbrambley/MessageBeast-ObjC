@@ -7,4 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#import "AATTADNDatabase.h"
+#import "AATTDisplayLocation.h"
+#import "AATTMessageManager.h"
+#import "AATTMessageManagerConfiguration.h"
+#import "AATTMessagePlus.h"
+
 #import "ANKClient+PrivateChannel.h"
