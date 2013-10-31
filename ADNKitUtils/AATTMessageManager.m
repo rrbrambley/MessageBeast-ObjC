@@ -9,6 +9,7 @@
 #import "AATTMessageManager.h"
 #import "AATTMessagePlus.h"
 #import "ANKClient+AATTMessageManager.h"
+#import "NSOrderedDictionary.h"
 
 @interface MinMaxPair : NSObject
 @property NSString *minID;
@@ -20,7 +21,7 @@
 @interface AATTMessageManager ()
 @property NSMutableDictionary *queryParametersByChannel;
 @property NSMutableDictionary *minMaxPairs;
-@property NSMutableDictionary *messages;
+@property NSMutableDictionary *messagesByChannelID;
 @property ANKClient *client;
 @property AATTMessageManagerConfiguration *configuration;
 @end
@@ -34,7 +35,7 @@
         self.configuration = configuration;
         self.queryParametersByChannel = [NSMutableDictionary dictionaryWithCapacity:1];
         self.minMaxPairs = [NSMutableDictionary dictionaryWithCapacity:1];
-        self.messages = [NSMutableDictionary dictionaryWithCapacity:1];
+        self.messagesByChannelID = [NSMutableDictionary dictionaryWithCapacity:1];
     }
     return self;
 }
@@ -101,28 +102,30 @@
         }
         
         NSArray *responseMessages = responseObject;
-        NSMutableArray *channelMessagePlusses = [self.messages objectForKey:channelID];
+        NSMutableOrderedDictionary *channelMessagePlusses = [self.messagesByChannelID objectForKey:channelID];
         if(!channelMessagePlusses) {
-            channelMessagePlusses = [NSMutableArray arrayWithCapacity:[responseMessages count]];
-            [self.messages setObject:channelMessagePlusses forKey:channelID];
+            channelMessagePlusses = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:[responseMessages count]];
+            [self.messagesByChannelID setObject:channelMessagePlusses forKey:channelID];
         }
         
         NSMutableArray *newestMessages = [NSMutableArray arrayWithCapacity:[responseMessages count]];
-        NSMutableArray *newChannelMessages = [NSMutableArray arrayWithCapacity:([channelMessagePlusses count] + [responseMessages count])];
+        NSMutableOrderedDictionary *newChannelMessages = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:([channelMessagePlusses count] + [responseMessages count])];
         
         if(appended) {
-            [newChannelMessages addObjectsFromArray:channelMessagePlusses];
+            [newChannelMessages addEntriesFromOrderedDictionary:channelMessagePlusses];
         }
         for(ANKMessage *m in responseMessages) {
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
             [newestMessages addObject:messagePlus];
             [self adjustDateAndInsertMessagePlus:messagePlus];
+            
+            [newChannelMessages setObject:messagePlus forKey:m.messageID];
         }
         if(!appended) {
-            [newChannelMessages addObjectsFromArray:channelMessagePlusses];
+            [newChannelMessages addEntriesFromOrderedDictionary:channelMessagePlusses];
         }
         
-        [self.messages setObject:newChannelMessages forKey:channelID];
+        [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
         
         if(self.configuration.isLocationLookupEnabled) {
             //TODO
