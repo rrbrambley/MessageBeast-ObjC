@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import <ADNKit.h>
+
 #import "AATTADNDatabase.h"
 #import "AATTDisplayLocation.h"
 #import "AATTMessageManager.h"
