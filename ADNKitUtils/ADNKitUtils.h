@@ -16,6 +16,8 @@
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
 
+#import "ANKClient+AATTMessageManager.h"
+#import "ANKMessage+AATTAnnotationHelper.h"
 #import "ANKClient+PrivateChannel.h"
 
 #import "NSOrderedDictionary.h"
