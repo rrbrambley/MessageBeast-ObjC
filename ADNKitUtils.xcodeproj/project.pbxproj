@@ -246,11 +246,11 @@
 		E2E5A6DB1817FBF9009DECDB /* ADNKitUtils */ = {
 			isa = PBXGroup;
 			children = (
+				E2E5A72E18180218009DECDB /* ADNKitUtils.h */,
 				E29A82FD1821C15D0057245C /* Model */,
 				E29A82D91821B0DE0057245C /* DB */,
 				E29A82C41821AE490057245C /* Manager */,
 				E2E5A7311818024E009DECDB /* Categories */,
-				E2E5A72E18180218009DECDB /* ADNKitUtils.h */,
 				E2E5A6DC1817FBF9009DECDB /* Supporting Files */,
 			);
 			path = ADNKitUtils;

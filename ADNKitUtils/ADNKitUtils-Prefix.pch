@@ -6,7 +6,6 @@
 
 #ifdef __OBJC__
     #import <ADNKit.h>
-    #import <ADNKit-iOS.h>
     #import <Foundation/Foundation.h>
     #import <MobileCoreServices/MobileCoreServices.h>
     #import <SystemConfiguration/SystemConfiguration.h>
