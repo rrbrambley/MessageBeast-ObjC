@@ -32,6 +32,7 @@
 
 static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id TEXT PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL)";
 
+static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
 
 - (id)init {
     self = [super init];
@@ -45,6 +46,7 @@ static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messa
             [db setLogsErrors:YES];
             
             [db executeUpdate:kCreateMessagesTable];
+            [db executeUpdate:kCreateDisplayLocationInstancesTable];
         }];
     }
     return self;
