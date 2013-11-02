@@ -21,4 +21,12 @@
     return nil;
 }
 
+- (ANKAnnotation *)firstAnnotationOfType:(NSString *)type {
+    NSArray *annotations = [self annotationsWithType:type];
+    if(annotations.count > 0) {
+        return [annotations objectAtIndex:0];
+    }
+    return nil;
+}
+
 @end

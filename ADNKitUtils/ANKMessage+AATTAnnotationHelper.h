@@ -9,5 +9,6 @@
 @interface ANKMessage (AATTAnnotationHelper)
 
 - (NSDate *)ohaiDisplayDate;
+- (ANKAnnotation *)firstAnnotationOfType:(NSString *)type;
 
 @end
