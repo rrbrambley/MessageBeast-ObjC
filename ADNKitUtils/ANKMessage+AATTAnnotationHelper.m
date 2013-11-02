@@ -13,9 +13,8 @@
 @implementation ANKMessage (AATTAnnotationHelper)
 
 - (NSDate *)ohaiDisplayDate {
-    NSArray *annotations = [self annotationsWithType:@"net.app.ohai.displaydate"];
-    if([annotations count] > 0) {
-        ANKAnnotation *annotation = [annotations objectAtIndex:0];
+    ANKAnnotation *annotation = [self firstAnnotationOfType:@"net.app.ohai.displaydate"];
+    if(annotation) {
         return [[ANKValueTransformations transformations] NSDateFromNSString:[[annotation value] objectForKey:@"date"]];
     }
     return nil;
