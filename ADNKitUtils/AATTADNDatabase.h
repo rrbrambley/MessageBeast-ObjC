@@ -14,7 +14,7 @@
 
 + (AATTADNDatabase *)sharedInstance;
 
-- (void)insertOrReplaceMessage:(AATTMessagePlus *)message;
+- (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus;
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId limit:(NSUInteger)limit;
 - (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;

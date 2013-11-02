@@ -52,11 +52,13 @@ static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF 
     return self;
 }
 
-- (void)insertOrReplaceMessage:(AATTMessagePlus *)message {
+- (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus {
     static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json) VALUES(?, ?, ?, ?)";
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        NSString *jsonString = [self JSONStringWithMessage:message.message];
-        [db executeUpdate:insertOrReplaceMessage, message.message.messageID, message.message.channelID, [NSNumber numberWithDouble:[message.displayDate timeIntervalSince1970]], jsonString];
+        NSString *jsonString = [self JSONStringWithMessage:messagePlus.message];
+        [db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString];
+    }];
+}
     }];
 }
 
