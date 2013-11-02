@@ -34,6 +34,8 @@ static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messa
 
 static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
 
+static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS geolocations (geolocation_name TEXT NOT NULL, geolocation_latitude REAL NOT NULL, geolocation_longitude REAL NOT NULL)";
+
 - (id)init {
     self = [super init];
     if(self) {
@@ -47,6 +49,7 @@ static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF 
             
             [db executeUpdate:kCreateMessagesTable];
             [db executeUpdate:kCreateDisplayLocationInstancesTable];
+            [db executeUpdate:kCreateGeolocationsTable];
         }];
     }
     return self;
