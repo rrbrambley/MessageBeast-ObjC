@@ -21,4 +21,6 @@
 + (AATTDisplayLocation *)displayLocationFromOhaiLocationAnnotation:(ANKAnnotation *)ohaiLocationAnnotation;
 + (AATTDisplayLocation *)displayLocationFromGeolocation:(AATTGeolocation *)geolocation;
 
+- (id)initWithName:(NSString *)name latitude:(double)latitude longitude:(double)longitude;
+
 @end
