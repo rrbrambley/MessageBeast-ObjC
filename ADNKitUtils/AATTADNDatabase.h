@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class AATTGeolocation, AATTMessagePlus, AATTOrderedMessageBatch;
+@class AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTMessagePlus, AATTOrderedMessageBatch;
 
 @interface AATTADNDatabase : NSObject
 
@@ -21,6 +21,7 @@
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
 
+- (NSArray *)displayLocationInstancesInChannelWithID:(NSString *)channelID;
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude;
 
 @end

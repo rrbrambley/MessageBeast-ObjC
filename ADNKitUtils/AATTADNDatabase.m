@@ -8,6 +8,7 @@
 
 #import "AATTADNDatabase.h"
 #import "AATTDisplayLocation.h"
+#import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
 #import "AATTMessagePlus.h"
 #import "AATTOrderedMessageBatch.h"
@@ -142,6 +143,35 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
 }
 
+- (NSArray *)displayLocationInstancesInChannelWithID:(NSString *)channelID {
+    static NSString *select = @"SELECT location_name, location_message_id, location_latitude, location_longitude FROM location_instances WHERE location_channel_id = ? ORDER BY location_date DESC";
+    
+    NSMutableOrderedDictionary *allInstances = [[NSMutableOrderedDictionary alloc] init];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, channelID];
+        while([resultSet next]) {
+            NSString *name = [resultSet stringForColumnIndex:0];
+            NSString *messageID = [resultSet stringForColumnIndex:1];
+            double latitude = [resultSet doubleForColumnIndex:2];
+            double longitude = [resultSet doubleForColumnIndex:3];
+            
+            NSString *roundedLatitude = [self roundedValueAsString:latitude decimalPlaces:1];
+            NSString *roundedLongitude = [self roundedValueAsString:longitude decimalPlaces:1];
+            NSString *key = [NSString stringWithFormat:@"%@ %@ %@", name, roundedLatitude, roundedLongitude];
+            AATTDisplayLocationInstances *instances = [allInstances objectForKey:key];
+            if(!instances) {
+                AATTDisplayLocation *loc = [[AATTDisplayLocation alloc] initWithName:name latitude:latitude longitude:longitude];
+                instances = [[AATTDisplayLocationInstances alloc] initWithDisplayLocation:loc];
+                [allInstances addObject:instances pairedWithKey:key];
+            }
+            [instances addMessageID:messageID];
+        }
+    }];
+    
+    return [allInstances allObjects];
+}
+
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude {
     __block AATTGeolocation *geolocation = nil;
     static NSString *select = @"SELECT * FROM geolocations WHERE geolocation_latitude = ? AND geolocation_longitude = ?";
@@ -184,14 +214,18 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 }
 
 - (double)roundValue:(double)value decimalPlaces:(NSUInteger)decimalPlaces {
+    return [[self roundedValueAsString:value decimalPlaces:decimalPlaces] doubleValue];
+}
+
+- (NSString *)roundedValueAsString:(double)value decimalPlaces:(NSUInteger)decimalPlaces {
     static NSNumberFormatter *formatter;
     if(!formatter) {
         formatter = [[NSNumberFormatter alloc] init];
         formatter.numberStyle = NSNumberFormatterDecimalStyle;
-        formatter.maximumFractionDigits = 3;
         formatter.roundingMode = NSNumberFormatterRoundDown;
     }
-    return [[formatter stringFromNumber:[NSNumber numberWithDouble:value]] doubleValue];
+    formatter.maximumFractionDigits = decimalPlaces;
+    return [formatter stringFromNumber:[NSNumber numberWithDouble:value]];
 }
 
 @end
