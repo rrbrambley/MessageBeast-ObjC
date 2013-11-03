@@ -12,6 +12,7 @@
 
 #import "AATTADNDatabase.h"
 #import "AATTDisplayLocation.h"
+#import "AATTGeolocation.h"
 #import "AATTMessageManager.h"
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
