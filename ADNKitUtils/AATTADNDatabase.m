@@ -172,6 +172,35 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return [allInstances allObjects];
 }
 
+- (AATTDisplayLocationInstances *)displayLocationInstancesInChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation {
+    return [self displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:AATTLocationPrecisionOneHundredMeters];
+}
+
+- (AATTDisplayLocationInstances *)displayLocationInstancesInChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
+    static NSString *select = @"SELECT location_message_id FROM location_instances WHERE location_channel_id = ? AND location_name = ? AND location_latitude LIKE ? AND location_longitude LIKE ? ORDER BY location_date DESC";
+    
+    AATTDisplayLocationInstances *instances = [[AATTDisplayLocationInstances alloc] initWithDisplayLocation:displayLocation];
+    NSUInteger precisionDigits = 3;
+    if(locationPrecision == AATTLocationPrecisionOneThousandMeters) {
+        precisionDigits = 2;
+    } else if(locationPrecision == AATTLocationPrecisionTenThousandMeters) {
+        precisionDigits = 1;
+    }
+    
+    NSString *latArg = [NSString stringWithFormat:@"%@%%", [self roundedValueAsString:displayLocation.latitude decimalPlaces:precisionDigits]];
+    NSString *longArg = [NSString stringWithFormat:@"%@%%", [self roundedValueAsString:displayLocation.longitude decimalPlaces:precisionDigits]];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, channelID, displayLocation.name, latArg, longArg];
+        while([resultSet next]) {
+            NSString *messageID = [resultSet stringForColumnIndex:0];
+            [instances addMessageID:messageID];
+        }
+    }];
+    
+    return instances;
+}
+
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude {
     __block AATTGeolocation *geolocation = nil;
     static NSString *select = @"SELECT * FROM geolocations WHERE geolocation_latitude = ? AND geolocation_longitude = ?";
