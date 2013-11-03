@@ -7,12 +7,15 @@
 //
 
 #import "AATTADNDatabase.h"
+#import "AATTDisplayLocation.h"
+#import "AATTGeolocation.h"
 #import "AATTMessageManager.h"
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
 #import "AATTMinMaxPair.h"
 #import "AATTOrderedMessageBatch.h"
 #import "ANKClient+AATTMessageManager.h"
+#import "ANKMessage+AATTAnnotationHelper.h"
 #import "NSOrderedDictionary.h"
 
 @interface AATTMessageManager ()
@@ -23,6 +26,8 @@
 @property AATTMessageManagerConfiguration *configuration;
 @property AATTADNDatabase *database;
 @end
+
+static CLGeocoder *geocoder;
 
 @implementation AATTMessageManager
 
@@ -52,7 +57,7 @@
         beforeDate = messagePlus.displayDate;
     }
     
-    AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesInChannelWithId:channelID beforeDate:beforeDate limit:limit];
+    AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesInChannelWithID:channelID beforeDate:beforeDate limit:limit];
     NSOrderedDictionary *messagePlusses = orderedMessageBatch.messagePlusses;
     AATTMinMaxPair *dbMinMaxPair = orderedMessageBatch.minMaxPair;
     minMaxPair = [minMaxPair combineWith:dbMinMaxPair];
@@ -67,7 +72,7 @@
     [self.minMaxPairs setObject:minMaxPair forKey:channelID];
     
     if(self.configuration.isLocationLookupEnabled) {
-        //TODO
+        [self lookupLocationForMessagePlusses:[messagePlusses allObjects] persistIfEnabled:NO];
     }
     if(self.configuration.isOEmbedLookupEnabled) {
         //TODO
@@ -160,7 +165,7 @@
         [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
         
         if(self.configuration.isLocationLookupEnabled) {
-            //TODO
+            [self lookupLocationForMessagePlusses:newestMessages persistIfEnabled:YES];
         }
         if(self.configuration.isOEmbedLookupEnabled) {
             //TODO
@@ -192,6 +197,94 @@
 
 - (NSDate *)adjustedDateForMessage:(ANKMessage *)message {
     return self.configuration.dateAdapter ? self.configuration.dateAdapter(message) : message.createdAt;
+}
+
+- (void)lookupLocationForMessagePlusses:(NSArray *)messagePlusses persistIfEnabled:(BOOL)persistIfEnabled {
+    for(AATTMessagePlus *messagePlus in messagePlusses) {
+        ANKMessage *message = messagePlus.message;
+        
+        ANKAnnotation *checkin = [message firstAnnotationOfType:kANKCoreAnnotationCheckin];
+        if(checkin) {
+            messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromCheckinAnnotation:checkin];
+            if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
+                [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
+            }
+            continue;
+        }
+        
+        ANKAnnotation *ohai = [message firstAnnotationOfType:@"net.app.ohai.location"];
+        if(ohai) {
+            messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromOhaiLocationAnnotation:ohai];
+            if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
+                [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
+            }
+            continue;
+        }
+        
+        ANKAnnotation *geolocation = [message firstAnnotationOfType:kANKCoreAnnotationGeolocation];
+        if(geolocation) {
+            NSNumber *latitude = [[geolocation value] objectForKey:@"latitude"];
+            NSNumber *longitude = [[geolocation value] objectForKey:@"longitude"];
+            AATTGeolocation *geolocation = [self.database geolocationForLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+            if(geolocation) {
+                messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromGeolocation:geolocation];
+                
+                //this might seem odd based on the fact that we just pulled the geolocation
+                //from the database, but the point is to save the instance of this geolocation's
+                //use - we might obtain a geolocation with this message's lat/long, but that
+                //doesn't mean that this message + geolocation combo has been saved.
+                //(this database lookup is merely an optimization to avoid having to fire off
+                // the async task in reverseGeocode:latitude:longitude:persistIfEnabled)
+                if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
+                    [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
+                }
+                continue;
+            } else {
+                [self reverseGeocode:messagePlus latitude:[latitude doubleValue] longitude:[longitude doubleValue] persistIfEnabled:persistIfEnabled];
+            }
+        }
+    }
+}
+
+- (void)reverseGeocode:(AATTMessagePlus *)messagePlus latitude:(double)latitude longitude:(double)longitude persistIfEnabled:(BOOL)persistIfEnabled {
+    if(!geocoder) {
+        geocoder = [[CLGeocoder alloc] init];
+    }
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+    [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+        if(!error) {
+            NSString *loc = [self addressStringForPlacemarks:placemarks];
+            if(loc) {
+                AATTGeolocation *geolocation = [[AATTGeolocation alloc] initWithName:loc latitude:latitude longitude:longitude];
+                messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromGeolocation:geolocation];
+                
+                if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
+                    [self.database insertOrReplaceGeolocation:geolocation];
+                    [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
+                }
+            }
+            //
+            //TODO
+            // call back for UI?
+        } else {
+            NSLog(@"%@", error.description);
+        }
+    }];
+}
+
+- (NSString *)addressStringForPlacemarks:(NSArray *)placemarks {
+    NSString *locality = nil;
+    for(CLPlacemark *placemark in placemarks) {
+        NSString *subLocality = placemark.subLocality;
+        if(subLocality || !locality) {
+            locality = placemark.locality;
+        }
+        
+        if(subLocality && locality) {
+            return [NSString stringWithFormat:@"%@, %@", subLocality, locality];
+        }
+    }
+    return locality;
 }
 
 @end
