@@ -13,7 +13,11 @@
 @property ANKMessage *message;
 @property NSDate *displayDate;
 @property AATTDisplayLocation *displayLocation;
+@property (nonatomic) NSArray *photoOEmbeds;
+@property (nonatomic) NSArray *html5VideoOEmbeds;
 
 - (id)initWithMessage:(ANKMessage *)message;
+- (ANKAnnotation *)firstPhotoOEmbedAnnotation;
+- (ANKAnnotation *)firstVideoOEmbedAnnotation;
 
 @end
