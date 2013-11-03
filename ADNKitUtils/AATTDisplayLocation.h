@@ -8,6 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+@class AATTGeolocation;
+
 @interface AATTDisplayLocation : NSObject
+
+@property NSString *name;
+@property NSString *factualID;
+@property double latitude;
+@property double longitude;
+
++ (AATTDisplayLocation *)displayLocationFromCheckinAnnotation:(ANKAnnotation *)checkinAnnotation;
++ (AATTDisplayLocation *)displayLocationFromOhaiLocationAnnotation:(ANKAnnotation *)ohaiLocationAnnotation;
++ (AATTDisplayLocation *)displayLocationFromGeolocation:(AATTGeolocation *)geolocation;
 
 @end
