@@ -92,11 +92,11 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     }
 }
 
-- (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId limit:(NSUInteger)limit {
-    return [self messagesInChannelWithId:channelId beforeDate:nil limit:limit];
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelId limit:(NSUInteger)limit {
+    return [self messagesInChannelWithID:channelId beforeDate:nil limit:limit];
 }
 
-- (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelId beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
     
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:2];
     [args addObject:channelId];

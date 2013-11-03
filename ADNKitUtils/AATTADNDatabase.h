@@ -18,8 +18,8 @@
 - (void)insertOrReplaceDisplayLocationInstance:(AATTMessagePlus *)messagePlus;
 - (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation;
 
-- (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId limit:(NSUInteger)limit;
-- (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
 
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude;
 
