@@ -40,6 +40,8 @@ static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF 
 
 static NSString *const kCreateHashtagInstancesTable = @"CREATE TABLE IF NOT EXISTS hashtag_instances (hashtag_name TEXT NOT NULL, hashtag_message_id TEXT NOT NULL, hashtag_channel_id TEXT NOT NULL, hashtag_date INTEGER NOT NULL, PRIMARY KEY (hashtag_name, hashtag_message_id))";
 
+static NSString *const kCreateOEmbedInstancesTable = @"CREATE TABLE IF NOT EXISTS oembed_instances (oembed_type TEXT NOT NULL, oembed_message_id TEXT NOT NULL, oembed_channel_id TEXT NOT NULL, oembed_count INTEGER NOT NULL, oembed_date INTEGER NOT NULL, PRIMARY KEY(oembed_type, oembed_message_id))";
+
 static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS geolocations (geolocation_locality TEXT NOT NULL, geolocation_sublocality TEXT, geolocation_latitude REAL NOT NULL, geolocation_longitude REAL NOT NULL, PRIMARY KEY (geolocation_latitude, geolocation_longitude))";
 
 - (id)init {
@@ -56,6 +58,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
             [db executeUpdate:kCreateMessagesTable];
             [db executeUpdate:kCreateDisplayLocationInstancesTable];
             [db executeUpdate:kCreateHashtagInstancesTable];
+            [db executeUpdate:kCreateOEmbedInstancesTable];
             [db executeUpdate:kCreateGeolocationsTable];
         }];
     }
