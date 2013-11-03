@@ -253,9 +253,8 @@ static CLGeocoder *geocoder;
     CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         if(!error) {
-            NSString *loc = [self addressStringForPlacemarks:placemarks];
-            if(loc) {
-                AATTGeolocation *geolocation = [[AATTGeolocation alloc] initWithName:loc latitude:latitude longitude:longitude];
+            AATTGeolocation *geolocation = [self geolocationForPlacemarks:placemarks latitude:latitude longitude:longitude];
+            if(geolocation) {
                 messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromGeolocation:geolocation];
                 
                 if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
@@ -272,19 +271,24 @@ static CLGeocoder *geocoder;
     }];
 }
 
-- (NSString *)addressStringForPlacemarks:(NSArray *)placemarks {
+- (AATTGeolocation *)geolocationForPlacemarks:(NSArray *)placemarks latitude:(double)latitude longitude:(double)longitude {
+    NSString *subLocality = nil;
     NSString *locality = nil;
     for(CLPlacemark *placemark in placemarks) {
-        NSString *subLocality = placemark.subLocality;
+        if(!subLocality) {
+            subLocality = placemark.subLocality;
+        }
         if(subLocality || !locality) {
             locality = placemark.locality;
         }
-        
         if(subLocality && locality) {
-            return [NSString stringWithFormat:@"%@, %@", subLocality, locality];
+            break;
         }
     }
-    return locality;
+    if(subLocality || locality) {
+        return [[AATTGeolocation alloc] initWithLocality:locality subLocality:subLocality latitude:latitude longitude:longitude];
+    }
+    return nil;
 }
 
 @end

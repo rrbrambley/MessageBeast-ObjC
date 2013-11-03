@@ -39,7 +39,10 @@
 }
 
 + (AATTDisplayLocation *)displayLocationFromGeolocation:(AATTGeolocation *)geolocation {
-    return [[AATTDisplayLocation alloc] initWithName:geolocation.name latitude:geolocation.latitude longitude:geolocation.longitude];
+    NSString *name = geolocation.subLocality ? [NSString stringWithFormat:@"%@, %@", geolocation.subLocality, geolocation.locality] : geolocation.locality;
+    AATTDisplayLocation *l = [[AATTDisplayLocation alloc] initWithName:name latitude:geolocation.latitude longitude:geolocation.longitude];
+    l.shortName = geolocation.subLocality;
+    return l;
 }
 
 - (id)initWithName:(NSString *)name latitude:(double)latitude longitude:(double)longitude {

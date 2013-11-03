@@ -10,10 +10,11 @@
 
 @implementation AATTGeolocation
 
-- (id)initWithName:(NSString *)name latitude:(double)latitude longitude:(double)longitude {
+- (id)initWithLocality:(NSString *)locality subLocality:(NSString *)subLocality latitude:(double)latitude longitude:(double)longitude {
     self = [super init];
     if(self) {
-        self.name = name;
+        self.locality = locality;
+        self.subLocality = subLocality;
         self.latitude = latitude;
         self.longitude = longitude;
     }

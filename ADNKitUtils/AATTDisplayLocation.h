@@ -13,6 +13,7 @@
 @interface AATTDisplayLocation : NSObject
 
 @property NSString *name;
+@property NSString *shortName;
 @property NSString *factualID;
 @property double latitude;
 @property double longitude;

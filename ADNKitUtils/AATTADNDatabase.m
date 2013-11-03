@@ -37,7 +37,7 @@ static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messa
 
 static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
 
-static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS geolocations (geolocation_name TEXT NOT NULL, geolocation_latitude REAL NOT NULL, geolocation_longitude REAL NOT NULL)";
+static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS geolocations (geolocation_locality TEXT NOT NULL, geolocation_sublocality TEXT, geolocation_latitude REAL NOT NULL, geolocation_longitude REAL NOT NULL, PRIMARY KEY (geolocation_latitude, geolocation_longitude))";
 
 - (id)init {
     self = [super init];
@@ -67,11 +67,11 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 }
 
 - (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation {
-    static NSString *insertOrReplaceGeolocation = @"INSERT OR REPLACE INTO geolocations (geolocation_name, geolocation_latitude, geolocation_longitude) VALUES(?, ?, ?)";
+    static NSString *insertOrReplaceGeolocation = @"INSERT OR REPLACE INTO geolocations (geolocation_locality, geolocation_sublocality, geolocation_latitude, geolocation_longitude) VALUES(?, ?, ?, ?)";
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         double latitude = [self roundValue:geolocation.latitude decimalPlaces:3];
         double longitude = [self roundValue:geolocation.longitude decimalPlaces:3];
-        [db executeUpdate:insertOrReplaceGeolocation, geolocation.name, [NSNumber numberWithDouble:latitude], [NSNumber numberWithDouble:longitude]];
+        [db executeUpdate:insertOrReplaceGeolocation, geolocation.locality, geolocation.subLocality, [NSNumber numberWithDouble:latitude], [NSNumber numberWithDouble:longitude]];
     }];
 }
 
@@ -203,7 +203,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude {
     __block AATTGeolocation *geolocation = nil;
-    static NSString *select = @"SELECT * FROM geolocations WHERE geolocation_latitude = ? AND geolocation_longitude = ?";
+    static NSString *select = @"SELECT geolocation_locality, geolocation_sublocality FROM geolocations WHERE geolocation_latitude = ? AND geolocation_longitude = ?";
     NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:2];
     [args addObject:[NSNumber numberWithDouble:[self roundValue:latitude decimalPlaces:3]]];
     [args addObject:[NSNumber numberWithDouble:[self roundValue:longitude decimalPlaces:3]]];
@@ -211,7 +211,9 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
         if([resultSet next]) {
-            geolocation = [[AATTGeolocation alloc] initWithName:[resultSet stringForColumnIndex:0] latitude:latitude longitude:longitude];
+            NSString *locality = [resultSet stringForColumnIndex:0];
+            NSString *subLocality = [resultSet stringForColumnIndex:1];
+            geolocation = [[AATTGeolocation alloc] initWithLocality:locality subLocality:subLocality latitude:latitude longitude:longitude];
             [resultSet close];
         }
     }];

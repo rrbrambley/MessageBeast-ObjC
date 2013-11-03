@@ -10,10 +10,11 @@
 
 @interface AATTGeolocation : NSObject
 
-@property NSString *name;
+@property NSString *locality;
+@property NSString *subLocality;
 @property double latitude;
 @property double longitude;
 
-- (id)initWithName:(NSString *)name latitude:(double)latitude longitude:(double)longitude;
+- (id)initWithLocality:(NSString *)locality subLocality:(NSString *)subLocality latitude:(double)latitude longitude:(double)longitude;
 
 @end
