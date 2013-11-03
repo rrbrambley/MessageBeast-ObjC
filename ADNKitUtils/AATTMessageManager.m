@@ -192,6 +192,7 @@ static CLGeocoder *geocoder;
     
     if(self.configuration.isDatabaseInsertionEnabled) {
         [self.database insertOrReplaceMessage:messagePlus];
+        [self.database insertOrReplaceHashtagInstances:messagePlus];
     }
 }
 
