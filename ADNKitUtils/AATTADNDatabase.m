@@ -96,6 +96,27 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     }
 }
 
+- (void)insertOrReplaceHashtagInstances:(AATTMessagePlus *)messagePlus {
+    NSArray *hashtags = messagePlus.message.entities.hashtags;
+    if(hashtags.count > 0) {
+        static NSString *insertOrReplaceHashtagInstances = @"INSERT OR REPLACE INTO hashtag_instances (hashtag_name, hashtag_message_id, hashtag_channel_id, hashtag_date) VALUES(?, ?, ?, ?)";
+        [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
+            
+            for(ANKHashtagEntity *hashtag in hashtags) {
+                NSString *name = hashtag.hashtag;
+                NSString *messageID = messagePlus.message.messageID;
+                NSString *channelID = messagePlus.message.channelID;
+                NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
+                
+                if(![db executeUpdate:insertOrReplaceHashtagInstances, name, messageID, channelID, date]) {
+                    *rollBack = YES;
+                    return;
+                }
+            }
+        }];
+    }
+}
+
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelId limit:(NSUInteger)limit {
     return [self messagesInChannelWithID:channelId beforeDate:nil limit:limit];
 }
