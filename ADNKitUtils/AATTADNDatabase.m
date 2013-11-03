@@ -10,6 +10,7 @@
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
+#import "AATTHashtagInstances.h"
 #import "AATTMessagePlus.h"
 #import "AATTOrderedMessageBatch.h"
 #import "FMDatabase.h"
@@ -229,6 +230,54 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     }];
     
     return instances;
+}
+
+- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID {
+    return [self hashtagInstancesInChannelWithID:channelID sinceDate:nil];
+}
+
+- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID sinceDate:(NSDate *)sinceDate {
+    return [self hashtagInstancesInChannelWithID:channelID beforeDate:nil sinceDate:sinceDate];
+}
+
+- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate sinceDate:(NSDate *)sinceDate {
+    NSMutableOrderedDictionary *allInstances = [[NSMutableOrderedDictionary alloc] init];
+    
+    static NSString *select = @"SELECT hashtag_name, hashtag_message_id FROM hashtag_instances";
+    
+    NSString *where = @" WHERE hashtag_channel_id = ?";
+    NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:3];
+    [args addObject:channelID];
+    
+    if(sinceDate) {
+        where = [NSString stringWithFormat:@"%@ AND hashtag_date >= ?", where];
+        [args addObject:[NSNumber numberWithDouble:[sinceDate timeIntervalSince1970]]];
+    }
+    if(beforeDate) {
+        where = [NSString stringWithFormat:@"%@ AND hashtag_date < ?", where];
+        [args addObject:[NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
+    }
+    
+    where = [NSString stringWithFormat:@"%@ ORDER BY hashtag_date DESC", where];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        NSString *fullSelect = [NSString stringWithFormat:@"%@%@", select, where];
+        
+        FMResultSet *resultSet = [db executeQuery:fullSelect withArgumentsInArray:args];
+        while([resultSet next]) {
+            NSString *hashtagName = [resultSet stringForColumnIndex:0];
+            NSString *messageID = [resultSet stringForColumnIndex:1];
+            
+            AATTHashtagInstances *instances = [allInstances objectForKey:hashtagName];
+            if(!instances) {
+                instances = [[AATTHashtagInstances alloc] initWithName:hashtagName];
+                [allInstances addObject:instances pairedWithKey:hashtagName];
+            }
+            [instances addMessageID:messageID];
+        }
+    }];
+    
+    return allInstances;
 }
 
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude {
