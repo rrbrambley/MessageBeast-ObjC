@@ -7,6 +7,7 @@
 //
 
 #import "AATTADNDatabase.h"
+#import "AATTGeolocation.h"
 #import "AATTMessagePlus.h"
 #import "AATTOrderedMessageBatch.h"
 #import "FMDatabase.h"
@@ -62,6 +63,13 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
         [db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString];
     }];
 }
+
+- (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation {
+    static NSString *insertOrReplaceGeolocation = @"INSERT OR REPLACE INTO geolocations (geolocation_name, geolocation_latitude, geolocation_longitude) VALUES(?, ?, ?)";
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        double latitude = [self roundValue:geolocation.latitude decimalPlaces:3];
+        double longitude = [self roundValue:geolocation.longitude decimalPlaces:3];
+        [db executeUpdate:insertOrReplaceGeolocation, geolocation.name, [NSNumber numberWithDouble:latitude], [NSNumber numberWithDouble:longitude]];
     }];
 }
 
@@ -115,6 +123,23 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
 }
 
+- (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude {
+    __block AATTGeolocation *geolocation = nil;
+    static NSString *select = @"SELECT * FROM geolocations WHERE geolocation_latitude = ? AND geolocation_longitude = ?";
+    NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:2];
+    [args addObject:[NSNumber numberWithDouble:[self roundValue:latitude decimalPlaces:3]]];
+    [args addObject:[NSNumber numberWithDouble:[self roundValue:longitude decimalPlaces:3]]];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
+        if([resultSet next]) {
+            geolocation = [[AATTGeolocation alloc] initWithName:[resultSet stringForColumnIndex:0] latitude:latitude longitude:longitude];
+            [resultSet close];
+        }
+    }];
+    return geolocation;
+}
+
 #pragma mark - Private stuff.
 
 - (NSString *)JSONStringWithMessage:(ANKMessage *)message {
@@ -139,5 +164,15 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return JSONDictionary;
 }
 
+- (double)roundValue:(double)value decimalPlaces:(NSUInteger)decimalPlaces {
+    static NSNumberFormatter *formatter;
+    if(!formatter) {
+        formatter = [[NSNumberFormatter alloc] init];
+        formatter.numberStyle = NSNumberFormatterDecimalStyle;
+        formatter.maximumFractionDigits = 3;
+        formatter.roundingMode = NSNumberFormatterRoundDown;
+    }
+    return [[formatter stringFromNumber:[NSNumber numberWithDouble:value]] doubleValue];
+}
 
 @end

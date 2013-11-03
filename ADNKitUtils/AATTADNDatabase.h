@@ -8,15 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-@class AATTMessagePlus, AATTOrderedMessageBatch;
+@class AATTGeolocation, AATTMessagePlus, AATTOrderedMessageBatch;
 
 @interface AATTADNDatabase : NSObject
 
 + (AATTADNDatabase *)sharedInstance;
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus;
+- (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation;
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId limit:(NSUInteger)limit;
 - (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+
+- (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude;
 
 @end
