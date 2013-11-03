@@ -7,6 +7,7 @@
 //
 
 #import "AATTADNDatabase.h"
+#import "AATTDisplayLocation.h"
 #import "AATTGeolocation.h"
 #import "AATTMessagePlus.h"
 #import "AATTOrderedMessageBatch.h"
@@ -71,6 +72,24 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
         double longitude = [self roundValue:geolocation.longitude decimalPlaces:3];
         [db executeUpdate:insertOrReplaceGeolocation, geolocation.name, [NSNumber numberWithDouble:latitude], [NSNumber numberWithDouble:longitude]];
     }];
+}
+
+- (void)insertOrReplaceDisplayLocationInstance:(AATTMessagePlus *)messagePlus {
+    if(messagePlus.displayLocation) {
+        static NSString *insertOrReplaceDisplayLocationInstance = @"INSERT OR REPLACE INTO location_instances (location_name, location_message_id, location_channel_id, location_latitude, location_longitude, location_factual_id, location_date) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        [self.databaseQueue inDatabase:^(FMDatabase *db) {
+            AATTDisplayLocation *l = messagePlus.displayLocation;
+            NSString *name = l.name;
+            NSString *messageID = messagePlus.message.messageID;
+            NSString *channelID = messagePlus.message.channelID;
+            NSNumber *latitude = [NSNumber numberWithDouble:l.latitude];
+            NSNumber *longitude = [NSNumber numberWithDouble:l.longitude];
+            NSString *factualID = l.factualID;
+            NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
+            
+            [db executeUpdate:insertOrReplaceDisplayLocationInstance, name, messageID, channelID, latitude, longitude, factualID, date];
+        }];
+    }
 }
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId limit:(NSUInteger)limit {

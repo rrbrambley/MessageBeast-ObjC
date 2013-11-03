@@ -15,6 +15,7 @@
 + (AATTADNDatabase *)sharedInstance;
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus;
+- (void)insertOrReplaceDisplayLocationInstance:(AATTMessagePlus *)messagePlus;
 - (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation;
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithId:(NSString *)channelId limit:(NSUInteger)limit;
