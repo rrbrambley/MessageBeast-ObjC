@@ -24,6 +24,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (void)insertOrReplaceDisplayLocationInstance:(AATTMessagePlus *)messagePlus;
 - (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation;
 - (void)insertOrReplaceHashtagInstances:(AATTMessagePlus *)messagePlus;
+- (void)insertOrReplaceOEmbedInstances:(AATTMessagePlus *)messagePlus;
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;

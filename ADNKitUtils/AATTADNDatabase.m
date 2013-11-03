@@ -127,6 +127,30 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     }
 }
 
+- (void)insertOrReplaceOEmbedInstances:(AATTMessagePlus *)messagePlus {
+    [self insertOrReplaceOEmbedInstances:messagePlus OEmbedAnnotations:messagePlus.photoOEmbeds];
+    [self insertOrReplaceOEmbedInstances:messagePlus OEmbedAnnotations:messagePlus.html5VideoOEmbeds];
+}
+
+- (void)insertOrReplaceOEmbedInstances:(AATTMessagePlus *)messagePlus OEmbedAnnotations:(NSArray *)OEmbedAnnotations {
+    if(OEmbedAnnotations.count > 0) {
+        static NSString *insertOrReplaceOEmbedInstance = @"INSERT OR REPLACE INTO oembed_instances (oembed_type, oembed_message_id, oembed_channel_id, oembed_count, oembed_date) VALUES (?, ?, ?, ?, ?)";
+        [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
+            ANKAnnotation *annotation = [OEmbedAnnotations objectAtIndex:0];
+            NSString *type = [[annotation value] objectForKey:@"type"];
+            NSString *messageID = messagePlus.message.messageID;
+            NSString *channelID = messagePlus.message.channelID;
+            NSNumber *count = [NSNumber numberWithUnsignedInteger:OEmbedAnnotations.count];
+            NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
+            
+            if(![db executeUpdate:insertOrReplaceOEmbedInstance, type, messageID, channelID, count, date]) {
+                *rollBack = YES;
+                return;
+            }
+        }];
+    }
+}
+
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelId limit:(NSUInteger)limit {
     return [self messagesInChannelWithID:channelId beforeDate:nil limit:limit];
 }
