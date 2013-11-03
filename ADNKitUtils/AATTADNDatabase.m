@@ -63,25 +63,29 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus {
     static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json) VALUES(?, ?, ?, ?)";
-    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
         NSString *jsonString = [self JSONStringWithMessage:messagePlus.message];
-        [db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString];
+        if(![db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString]) {
+            *rollBack = YES;
+        }
     }];
 }
 
 - (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation {
     static NSString *insertOrReplaceGeolocation = @"INSERT OR REPLACE INTO geolocations (geolocation_locality, geolocation_sublocality, geolocation_latitude, geolocation_longitude) VALUES(?, ?, ?, ?)";
-    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
         double latitude = [self roundValue:geolocation.latitude decimalPlaces:3];
         double longitude = [self roundValue:geolocation.longitude decimalPlaces:3];
-        [db executeUpdate:insertOrReplaceGeolocation, geolocation.locality, geolocation.subLocality, [NSNumber numberWithDouble:latitude], [NSNumber numberWithDouble:longitude]];
+        if(![db executeUpdate:insertOrReplaceGeolocation, geolocation.locality, geolocation.subLocality, [NSNumber numberWithDouble:latitude], [NSNumber numberWithDouble:longitude]]) {
+            *rollBack = YES;
+        }
     }];
 }
 
 - (void)insertOrReplaceDisplayLocationInstance:(AATTMessagePlus *)messagePlus {
     if(messagePlus.displayLocation) {
         static NSString *insertOrReplaceDisplayLocationInstance = @"INSERT OR REPLACE INTO location_instances (location_name, location_message_id, location_channel_id, location_latitude, location_longitude, location_factual_id, location_date) VALUES(?, ?, ?, ?, ?, ?, ?)";
-        [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
             AATTDisplayLocation *l = messagePlus.displayLocation;
             NSString *name = l.name;
             NSString *messageID = messagePlus.message.messageID;
@@ -91,7 +95,9 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
             NSString *factualID = l.factualID;
             NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
             
-            [db executeUpdate:insertOrReplaceDisplayLocationInstance, name, messageID, channelID, latitude, longitude, factualID, date];
+            if(![db executeUpdate:insertOrReplaceDisplayLocationInstance, name, messageID, channelID, latitude, longitude, factualID, date]) {
+                *rollBack = YES;
+            }
         }];
     }
 }
