@@ -48,6 +48,8 @@ static CLGeocoder *geocoder;
     [self.queryParametersByChannel setObject:parameters forKey:channelID];
 }
 
+#pragma mark Load Messages
+
 - (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit {
     NSDate *beforeDate = nil;
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
@@ -80,6 +82,8 @@ static CLGeocoder *geocoder;
     
     return messagePlusses;
 }
+
+#pragma mark Fetch Messages
 
 - (void)fetchMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
@@ -168,7 +172,7 @@ static CLGeocoder *geocoder;
             [self lookupLocationForMessagePlusses:newestMessages persistIfEnabled:YES];
         }
         if(self.configuration.isOEmbedLookupEnabled) {
-            //TODO
+            [self persistOEmbedInstancesForMessagePlusses:newestMessages];
         }
         
         if(block) {
@@ -199,6 +203,8 @@ static CLGeocoder *geocoder;
 - (NSDate *)adjustedDateForMessage:(ANKMessage *)message {
     return self.configuration.dateAdapter ? self.configuration.dateAdapter(message) : message.createdAt;
 }
+
+#pragma mark Location Lookup
 
 - (void)lookupLocationForMessagePlusses:(NSArray *)messagePlusses persistIfEnabled:(BOOL)persistIfEnabled {
     for(AATTMessagePlus *messagePlus in messagePlusses) {
@@ -290,6 +296,14 @@ static CLGeocoder *geocoder;
         return [[AATTGeolocation alloc] initWithLocality:locality subLocality:subLocality latitude:latitude longitude:longitude];
     }
     return nil;
+}
+
+#pragma mark OEmbed Persistence
+
+- (void)persistOEmbedInstancesForMessagePlusses:(NSArray *)messagePlusses {
+    for(AATTMessagePlus *messagePlus in messagePlusses) {
+        [self.database insertOrReplaceOEmbedInstances:messagePlus];
+    }
 }
 
 @end
