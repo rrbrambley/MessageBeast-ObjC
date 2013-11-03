@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTMessagePlus, AATTOrderedMessageBatch, NSOrderedDictionary;
+@class AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, NSOrderedDictionary;
 
 typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
     AATTLocationPrecisionOneHundredMeters = 0, //actually 111 m
@@ -35,6 +35,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID;
 - (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID sinceDate:(NSDate *)sinceDate;
 - (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate sinceDate:(NSDate *)sinceDate;
+- (AATTHashtagInstances *)hashtagInstancesInChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
 
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude;
 

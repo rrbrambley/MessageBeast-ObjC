@@ -280,6 +280,20 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return allInstances;
 }
 
+- (AATTHashtagInstances *)hashtagInstancesInChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
+    AATTHashtagInstances *instances = [[AATTHashtagInstances alloc] initWithName:hashtagName];
+    
+    static NSString *select = @"SELECT hashtag_message_id FROM hashtag_instances WHERE hashtag_channel_id = ? AND hashtag_name = ?";
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, channelID, hashtagName];
+        while([resultSet next]) {
+            [instances addMessageID:[resultSet stringForColumnIndex:0]];
+        }
+    }];
+    return instances;
+}
+
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude {
     __block AATTGeolocation *geolocation = nil;
     static NSString *select = @"SELECT geolocation_locality, geolocation_sublocality FROM geolocations WHERE geolocation_latitude = ? AND geolocation_longitude = ?";
