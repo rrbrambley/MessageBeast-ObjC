@@ -45,7 +45,7 @@ typedef void (^AATTMessageManagerResponseBlock)(NSArray *messagePlusses, BOOL ap
 ///
 /// This is intended to be used as a one-time sync, e.g. after a user signs in. For this reason,
 /// it is required that your AATTMessageManagerConfiguration has its isDatabaseInsertionEnabled property
-/// set to true.
+/// set to YES.
 ///
 /// Because this could potentially result in a very large amount of messages being obtained,
 /// the provided AATTMessageManagerResponseBlock will only be passed the first 100 messages that are
