@@ -12,7 +12,7 @@
 
 @property BOOL isDatabaseInsertionEnabled;
 @property BOOL isLocationLookupEnabled;
-@property BOOL isOEmbedLookupEnabled;
+
 @property (nonatomic, copy) NSDate * (^dateAdapter)(ANKMessage *message);
 
 @end

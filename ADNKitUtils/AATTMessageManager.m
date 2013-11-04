@@ -167,10 +167,7 @@ static CLGeocoder *geocoder;
         if(self.configuration.isLocationLookupEnabled) {
             [self lookupLocationForMessagePlusses:newestMessages persistIfEnabled:YES];
         }
-        if(self.configuration.isOEmbedLookupEnabled) {
-            [self persistOEmbedInstancesForMessagePlusses:newestMessages];
-        }
-        
+
         if(block) {
             block(newestMessages, appended, meta, error);
         }
@@ -193,6 +190,7 @@ static CLGeocoder *geocoder;
     if(self.configuration.isDatabaseInsertionEnabled) {
         [self.database insertOrReplaceMessage:messagePlus];
         [self.database insertOrReplaceHashtagInstances:messagePlus];
+        [self.database insertOrReplaceOEmbedInstances:messagePlus];
     }
 }
 
@@ -292,14 +290,6 @@ static CLGeocoder *geocoder;
         return [[AATTGeolocation alloc] initWithLocality:locality subLocality:subLocality latitude:latitude longitude:longitude];
     }
     return nil;
-}
-
-#pragma mark OEmbed Persistence
-
-- (void)persistOEmbedInstancesForMessagePlusses:(NSArray *)messagePlusses {
-    for(AATTMessagePlus *messagePlus in messagePlusses) {
-        [self.database insertOrReplaceOEmbedInstances:messagePlus];
-    }
 }
 
 @end
