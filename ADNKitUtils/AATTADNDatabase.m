@@ -34,6 +34,8 @@
     return _sharedInstance;
 }
 
+#pragma mark - Table creation
+
 static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id TEXT PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL)";
 
 static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
@@ -43,6 +45,8 @@ static NSString *const kCreateHashtagInstancesTable = @"CREATE TABLE IF NOT EXIS
 static NSString *const kCreateOEmbedInstancesTable = @"CREATE TABLE IF NOT EXISTS oembed_instances (oembed_type TEXT NOT NULL, oembed_message_id TEXT NOT NULL, oembed_channel_id TEXT NOT NULL, oembed_count INTEGER NOT NULL, oembed_date INTEGER NOT NULL, PRIMARY KEY(oembed_type, oembed_message_id))";
 
 static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS geolocations (geolocation_locality TEXT NOT NULL, geolocation_sublocality TEXT, geolocation_latitude REAL NOT NULL, geolocation_longitude REAL NOT NULL, PRIMARY KEY (geolocation_latitude, geolocation_longitude))";
+
+#pragma mark - Initializer
 
 - (id)init {
     self = [super init];
@@ -64,6 +68,8 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     }
     return self;
 }
+
+#pragma mark - Insertion
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus {
     static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json) VALUES(?, ?, ?, ?)";
@@ -150,6 +156,8 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
         }];
     }
 }
+
+#pragma mark - Retrieval
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelId limit:(NSUInteger)limit {
     return [self messagesInChannelWithID:channelId beforeDate:nil limit:limit];
@@ -340,7 +348,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return geolocation;
 }
 
-#pragma mark - Private stuff.
+#pragma mark - Private Stuff
 
 - (NSString *)JSONStringWithMessage:(ANKMessage *)message {
     NSError *error;
