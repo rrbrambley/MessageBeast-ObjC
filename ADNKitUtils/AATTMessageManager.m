@@ -27,6 +27,8 @@
 @property AATTADNDatabase *database;
 @end
 
+static NSUInteger const kSyncBatchSize = 100;
+
 static CLGeocoder *geocoder;
 
 @implementation AATTMessageManager
@@ -81,6 +83,15 @@ static CLGeocoder *geocoder;
 
 #pragma mark Fetch Messages
 
+- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
+    if(!self.configuration.isDatabaseInsertionEnabled) {
+        [NSException raise:@"Illegal state" format:@"fetchAndPersistAllMessagesInChannelWithID:withResponseBlock: can only be executed if the AATTMessageManagerConfiguration.isDatabaseInsertionEnabled property is set to YES"];
+    } else {
+        NSMutableArray *messages = [[NSMutableArray alloc] initWithCapacity:kSyncBatchSize];
+        [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:nil block:block];
+    }
+}
+
 - (void)fetchMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID withResponseBlock:block];
@@ -97,6 +108,39 @@ static CLGeocoder *geocoder;
 }
 
 #pragma mark - Private Stuff
+
+///
+/// this is only meant to be used with fetchAndPersistAllMessagesInChannelWithID
+///
+- (void)fetchAllMessagesInChannelWithID:(NSString *)channelID messagePlusses:(NSMutableArray *)messages sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID block:(AATTMessageManagerResponseBlock)block {
+    NSMutableDictionary *parameters = [[self.queryParametersByChannel objectForKey:channelID] mutableCopy];
+    if(sinceID) {
+        [parameters setObject:sinceID forKey:@"since_id"];
+    }
+    if(beforeID) {
+        [parameters setObject:beforeID forKey:@"before_id"];
+    }
+    [parameters setObject:[NSNumber numberWithUnsignedInteger:kSyncBatchSize] forKey:@"count"];
+    
+    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID withResponseBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+        if(!error) {
+            if(messages.count == 0) {
+                [messages addObjectsFromArray:messagePlusses];
+            }
+            AATTMessagePlus *p1 = [messagePlusses objectAtIndex:0];
+            AATTMessagePlus *p2 = [messagePlusses lastObject];
+            NSLog(@"synced messages %@ through %@", p1.message.messageID, p2.message.messageID);
+            if(meta.moreDataAvailable) {
+                AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+                [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:minMaxPair.minID block:block];
+            } else {
+                block(messages, YES, meta, error);
+            }
+        } else {
+            block(messages, YES, meta, error);
+        }
+    }];
+}
 
 - (void)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID withResponseBlock:(AATTMessageManagerResponseBlock)block {
     NSMutableDictionary *parameters = [[self.queryParametersByChannel objectForKey:channelID] mutableCopy];

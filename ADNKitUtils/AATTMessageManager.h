@@ -41,6 +41,22 @@ typedef void (^AATTMessageManagerResponseBlock)(NSArray *messagePlusses, BOOL ap
 
 #pragma mark Fetch Messages
 
+/// Fetch and persist all messages in a channel.
+///
+/// This is intended to be used as a one-time sync, e.g. after a user signs in. For this reason,
+/// it is required that your AATTMessageManagerConfiguration has its isDatabaseInsertionEnabled property
+/// set to true.
+///
+/// Because this could potentially result in a very large amount of messages being obtained,
+/// the provided AATTMessageManagerResponseBlock will only be passed the first 100 messages that are
+/// obtained, while the others will be persisted to the sqlite database, but not kept in memory.
+/// However, these can easily be loaded into memory afterwards by calling
+/// loadPersistedMessagesForChannelWithID:limit:
+///
+/// @param channelID the id of the channel for which messages should be synced.
+/// @param withResponseBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block;
+
 /// Fetch messages in the channel with the specified ID.
 ///
 /// The since_id and before_id parameters are set by using the in-memory AATTMinMaxPair for
