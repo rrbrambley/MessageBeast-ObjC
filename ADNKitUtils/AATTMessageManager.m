@@ -76,10 +76,6 @@ static CLGeocoder *geocoder;
     if(self.configuration.isLocationLookupEnabled) {
         [self lookupLocationForMessagePlusses:[messagePlusses allObjects] persistIfEnabled:NO];
     }
-    if(self.configuration.isOEmbedLookupEnabled) {
-        //TODO
-    }
-    
     return messagePlusses;
 }
 
