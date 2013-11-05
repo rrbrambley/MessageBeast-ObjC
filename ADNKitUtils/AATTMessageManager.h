@@ -49,13 +49,13 @@ typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messag
 /// set to YES.
 ///
 /// Because this could potentially result in a very large amount of messages being obtained,
-/// the provided AATTMessageManagerResponseBlock will only be passed the first 100 messages that are
+/// the provided AATTMessageManagerCompletionBlock will only be passed the first 100 messages that are
 /// obtained, while the others will be persisted to the sqlite database, but not kept in memory.
 /// However, these can easily be loaded into memory afterwards by calling
 /// loadPersistedMessagesForChannelWithID:limit:
 ///
 /// @param channelID the id of the channel for which messages should be synced.
-/// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+/// @param completionBlock the AATTMessageManagerCompletionBlock to which the results will be delivered.
 - (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
 /// Fetch messages in the channel with the specified ID.
@@ -68,7 +68,7 @@ typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messag
 /// with this manager's configuration (e.g. database insertion).
 ///
 /// @param channelID the ID of the channel for which messages should be fetched.
-/// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+/// @param completionBlock the AATTMessageManagerCompletionBlock to which the results will be delivered.
 ///
 - (void)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
@@ -81,7 +81,7 @@ typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messag
 /// with this manager's configuration (e.g. database insertion).
 ///
 /// @param channelID the ID of the channel for which messages should be fetched.
-/// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+/// @param completionBlock the AATTMessageManagerCompletionBlock to which the results will be delivered.
 ///
 - (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
@@ -94,7 +94,7 @@ typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messag
 /// with this manager's configuration (e.g. database insertion).
 ///
 /// @param channelID the ID of the channel for which messages should be fetched.
-/// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+/// @param completionBlock the AATTMessageManagerCompletionBlock to which the results will be delivered.
 ///
 - (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
