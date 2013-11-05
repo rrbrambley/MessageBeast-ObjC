@@ -209,6 +209,60 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
 }
 
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
+    __block NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] initWithCapacity:messageIDs.count];
+    __block NSString *maxID = nil;
+    __block NSString *minID = nil;
+    
+    NSString *select = @"SELECT message_id, message_date, message_json FROM messages WHERE message_channel_id = ? AND message_id IN (";
+    NSMutableArray *args = [NSMutableArray arrayWithCapacity:(messageIDs.count + 1)];
+    [args addObject:channelID];
+    
+    NSUInteger index = 1;
+    for(NSString *messageID in messageIDs) {
+        [args addObject:messageID];
+        
+        NSString *append;
+        if(index > 1) {
+            append = @", ?";
+        } else {
+            append = @" ?";
+        }
+        select = [NSString stringWithFormat:@"%@%@", select, append];
+        index++;
+    }
+    select = [NSString stringWithFormat:@"%@ ) ORDER BY message_date DESC", select];
+
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
+        
+        ANKMessage *m = nil;
+        while([resultSet next]) {
+            NSString *messageID = [resultSet stringForColumnIndex:0];
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
+            NSString *messageString = [resultSet stringForColumnIndex:2];
+            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageString];
+            m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
+            
+            AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
+            [messagePlus setDisplayDate:date];
+            [messagePlusses setObject:messagePlus forKey:messageID];
+            
+            if(!maxID) {
+                maxID = messageID;
+            }
+        }
+        if(m) {
+            minID = m.messageID;
+        }
+    }];
+    
+    AATTMinMaxPair *minMaxPair = [[AATTMinMaxPair alloc] init];
+    minMaxPair.minID = minID;
+    minMaxPair.maxID = maxID;
+    return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
+}
+
 - (NSArray *)displayLocationInstancesInChannelWithID:(NSString *)channelID {
     static NSString *select = @"SELECT location_name, location_message_id, location_latitude, location_longitude FROM location_instances WHERE location_channel_id = ? ORDER BY location_date DESC";
     
