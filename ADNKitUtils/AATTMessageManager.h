@@ -54,8 +54,8 @@ typedef void (^AATTMessageManagerResponseBlock)(NSArray *messagePlusses, BOOL ap
 /// loadPersistedMessagesForChannelWithID:limit:
 ///
 /// @param channelID the id of the channel for which messages should be synced.
-/// @param withResponseBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
-- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block;
+/// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block;
 
 /// Fetch messages in the channel with the specified ID.
 ///
@@ -67,9 +67,9 @@ typedef void (^AATTMessageManagerResponseBlock)(NSArray *messagePlusses, BOOL ap
 /// with this manager's configuration (e.g. database insertion).
 ///
 /// @param channelID the ID of the channel for which messages should be fetched.
-/// @param withResponseBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+/// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
 ///
-- (void)fetchMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block;
+- (void)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block;
 
 /// Fetch the newest messages in the channel with the specified ID.
 ///
@@ -80,9 +80,9 @@ typedef void (^AATTMessageManagerResponseBlock)(NSArray *messagePlusses, BOOL ap
 /// with this manager's configuration (e.g. database insertion).
 ///
 /// @param channelID the ID of the channel for which messages should be fetched.
-/// @param withResponseBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+/// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
 ///
-- (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block;
+- (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block;
 
 /// Fetch more messages in the channel with the specified ID.
 ///
@@ -93,8 +93,8 @@ typedef void (^AATTMessageManagerResponseBlock)(NSArray *messagePlusses, BOOL ap
 /// with this manager's configuration (e.g. database insertion).
 ///
 /// @param channelID the ID of the channel for which messages should be fetched.
-/// @param withResponseBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
+/// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
 ///
-- (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block;
+- (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block;
 
 @end

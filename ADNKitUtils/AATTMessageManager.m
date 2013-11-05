@@ -83,28 +83,28 @@ static CLGeocoder *geocoder;
 
 #pragma mark Fetch Messages
 
-- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
     if(!self.configuration.isDatabaseInsertionEnabled) {
-        [NSException raise:@"Illegal state" format:@"fetchAndPersistAllMessagesInChannelWithID:withResponseBlock: can only be executed if the AATTMessageManagerConfiguration.isDatabaseInsertionEnabled property is set to YES"];
+        [NSException raise:@"Illegal state" format:@"fetchAndPersistAllMessagesInChannelWithID:completionBlock: can only be executed if the AATTMessageManagerConfiguration.isDatabaseInsertionEnabled property is set to YES"];
     } else {
         NSMutableArray *messages = [[NSMutableArray alloc] initWithCapacity:kSyncBatchSize];
         [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:nil block:block];
     }
 }
 
-- (void)fetchMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID withResponseBlock:block];
+    [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID completionBlock:block];
 }
 
-- (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil withResponseBlock:block];
+    [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil completionBlock:block];
 }
 
-- (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID withResponseBlock:block];
+    [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID completionBlock:block];
 }
 
 #pragma mark - Private Stuff
@@ -122,7 +122,7 @@ static CLGeocoder *geocoder;
     }
     [parameters setObject:[NSNumber numberWithUnsignedInteger:kSyncBatchSize] forKey:@"count"];
     
-    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID withResponseBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             if(messages.count == 0) {
                 [messages addObjectsFromArray:messagePlusses];
@@ -142,7 +142,7 @@ static CLGeocoder *geocoder;
     }];
 }
 
-- (void)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID withResponseBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID completionBlock:(AATTMessageManagerResponseBlock)block {
     NSMutableDictionary *parameters = [[self.queryParametersByChannel objectForKey:channelID] mutableCopy];
     if(sinceID) {
         [parameters setObject:sinceID forKey:@"since_id"];
@@ -156,10 +156,10 @@ static CLGeocoder *geocoder;
         [parameters removeObjectForKey:@"before_id"];
     }
     
-    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID withResponseBlock:block];
+    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID completionBlock:block];
 }
 
-- (void)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID withResponseBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
     [self.client fetchMessagesInChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         BOOL appended = YES;
         NSString *beforeID = [parameters objectForKey:@"before_id"];
