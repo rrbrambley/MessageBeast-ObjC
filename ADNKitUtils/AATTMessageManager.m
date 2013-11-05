@@ -83,7 +83,7 @@ static CLGeocoder *geocoder;
 
 #pragma mark Fetch Messages
 
-- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     if(!self.configuration.isDatabaseInsertionEnabled) {
         [NSException raise:@"Illegal state" format:@"fetchAndPersistAllMessagesInChannelWithID:completionBlock: can only be executed if the AATTMessageManagerConfiguration.isDatabaseInsertionEnabled property is set to YES"];
     } else {
@@ -92,17 +92,17 @@ static CLGeocoder *geocoder;
     }
 }
 
-- (void)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID completionBlock:block];
 }
 
-- (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil completionBlock:block];
 }
 
-- (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID completionBlock:block];
 }
@@ -112,7 +112,7 @@ static CLGeocoder *geocoder;
 ///
 /// this is only meant to be used with fetchAndPersistAllMessagesInChannelWithID
 ///
-- (void)fetchAllMessagesInChannelWithID:(NSString *)channelID messagePlusses:(NSMutableArray *)messages sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID block:(AATTMessageManagerResponseBlock)block {
+- (void)fetchAllMessagesInChannelWithID:(NSString *)channelID messagePlusses:(NSMutableArray *)messages sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID block:(AATTMessageManagerCompletionBlock)block {
     NSMutableDictionary *parameters = [[self.queryParametersByChannel objectForKey:channelID] mutableCopy];
     if(sinceID) {
         [parameters setObject:sinceID forKey:@"since_id"];
@@ -142,7 +142,7 @@ static CLGeocoder *geocoder;
     }];
 }
 
-- (void)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID completionBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID completionBlock:(AATTMessageManagerCompletionBlock)block {
     NSMutableDictionary *parameters = [[self.queryParametersByChannel objectForKey:channelID] mutableCopy];
     if(sinceID) {
         [parameters setObject:sinceID forKey:@"since_id"];
@@ -159,7 +159,7 @@ static CLGeocoder *geocoder;
     [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID completionBlock:block];
 }
 
-- (void)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID completionBlock:(AATTMessageManagerResponseBlock)block {
+- (void)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     [self.client fetchMessagesInChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         BOOL appended = YES;
         NSString *beforeID = [parameters objectForKey:@"before_id"];
