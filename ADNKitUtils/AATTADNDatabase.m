@@ -385,7 +385,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude {
     __block AATTGeolocation *geolocation = nil;
-    static NSString *select = @"SELECT geolocation_locality, geolocation_sublocality FROM geolocations WHERE geolocation_latitude = ? AND geolocation_longitude = ?";
+    static NSString *select = @"SELECT geolocation_locality, geolocation_sublocality FROM geolocations WHERE geolocation_latitude = ? AND geolocation_longitude = ? LIMIT 1";
     NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:2];
     [args addObject:[NSNumber numberWithDouble:[self roundValue:latitude decimalPlaces:3]]];
     [args addObject:[NSNumber numberWithDouble:[self roundValue:longitude decimalPlaces:3]]];
