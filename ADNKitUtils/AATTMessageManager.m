@@ -108,7 +108,9 @@ static CLGeocoder *geocoder;
 }
 
 - (void)refreshMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerRefreshCompletionBlock)block {
-    [self.client fetchMessageWithID:messagePlus.message.messageID inChannelWithID:messagePlus.message.channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+    NSString *channelID = messagePlus.message.channelID;
+    NSMutableDictionary *parameters = [self.queryParametersByChannel objectForKey:channelID];
+    [self.client fetchMessageWithID:messagePlus.message.messageID inChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:responseObject];
             [self adjustDateAndInsertMessagePlus:messagePlus];
