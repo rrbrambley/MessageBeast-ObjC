@@ -29,8 +29,6 @@
 
 static NSUInteger const kSyncBatchSize = 100;
 
-static CLGeocoder *geocoder;
-
 @implementation AATTMessageManager
 
 - (id)initWithANKClient:(ANKClient *)client configuration:(AATTMessageManagerConfiguration *)configuration {
@@ -309,9 +307,7 @@ static CLGeocoder *geocoder;
 }
 
 - (void)reverseGeocode:(AATTMessagePlus *)messagePlus latitude:(double)latitude longitude:(double)longitude persistIfEnabled:(BOOL)persistIfEnabled {
-    if(!geocoder) {
-        geocoder = [[CLGeocoder alloc] init];
-    }
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         if(!error) {
