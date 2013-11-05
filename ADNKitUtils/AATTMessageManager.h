@@ -11,6 +11,7 @@
 @interface AATTMessageManager : NSObject
 
 typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error);
+typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messagePlus, ANKAPIResponseMeta *meta, NSError *error);
 
 #pragma mark Initializer
 
@@ -96,5 +97,15 @@ typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL 
 /// @param completionBlock the AATTMessageManagerResponseBlock block to which the results will be delivered.
 ///
 - (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
+
+/// Fetch a new instance of the specified AATTMessagePlus' backing message.
+///
+/// After the message is fetched, processing will occur in accordance
+/// with this manager's configuration (e.g. database insertion).
+///
+/// @param messagePlus the AATTMessagePlus to refresh.
+/// @param compltionBlock the AATTMessageManagerRefreshCompletionBlock to which the result will be delivered.
+///
+- (void)refreshMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerRefreshCompletionBlock)block;
 
 @end
