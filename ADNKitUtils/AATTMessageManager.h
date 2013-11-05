@@ -40,6 +40,16 @@ typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messag
 ///
 - (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit;
 
+/// Load persisted messages that have the specified display location.
+/// These messages are not kept in memory by the message manager.
+///
+/// @param channelID the id of the channel for which messages should be loaded.
+/// @param displayLocation the AATTDisplayLocation of interest
+/// @param locationPrecision the precision to be used when determining whether two locations
+///        with the same name are considered the same display location.
+///
+- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
+
 #pragma mark Fetch Messages
 
 /// Fetch and persist all messages in a channel.

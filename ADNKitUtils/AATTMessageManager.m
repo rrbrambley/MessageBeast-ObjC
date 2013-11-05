@@ -8,6 +8,7 @@
 
 #import "AATTADNDatabase.h"
 #import "AATTDisplayLocation.h"
+#import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
 #import "AATTMessageManager.h"
 #import "AATTMessageManagerConfiguration.h"
@@ -76,6 +77,22 @@ static NSUInteger const kSyncBatchSize = 100;
     if(self.configuration.isLocationLookupEnabled) {
         [self lookupLocationForMessagePlusses:[messagePlusses allObjects] persistIfEnabled:NO];
     }
+    return messagePlusses;
+}
+
+- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
+    AATTDisplayLocationInstances *instances = [self.database displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:locationPrecision];
+    return [self loadAndConfigureTemporaryMessagesForChannelWithID:channelID messageIDs:instances.messageIDs];
+}
+
+- (NSOrderedDictionary *)loadAndConfigureTemporaryMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSOrderedSet *)messageIDs {
+    AATTOrderedMessageBatch *messageBatch = [self.database messagesInChannelWithID:channelID messageIDs:messageIDs.set];
+    NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
+    
+    if(self.configuration.isLocationLookupEnabled) {
+        [self lookupLocationForMessagePlusses:messagePlusses.allObjects persistIfEnabled:NO];
+    }
+    
     return messagePlusses;
 }
 
