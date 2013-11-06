@@ -10,6 +10,7 @@
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
+#import "AATTHashtagInstances.h"
 #import "AATTMessageManager.h"
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
@@ -83,6 +84,11 @@ static NSUInteger const kSyncBatchSize = 100;
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
     AATTDisplayLocationInstances *instances = [self.database displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:locationPrecision];
     return [self loadAndConfigureTemporaryMessagesForChannelWithID:channelID messageIDs:instances.messageIDs];
+}
+
+- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
+    AATTHashtagInstances *hashtagInstances = [self.database hashtagInstancesInChannelWithID:channelID hashtagName:hashtagName];
+    return [self loadAndConfigureTemporaryMessagesForChannelWithID:channelID messageIDs:hashtagInstances.messageIDs];
 }
 
 - (NSOrderedDictionary *)loadAndConfigureTemporaryMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSOrderedSet *)messageIDs {
