@@ -47,6 +47,8 @@ typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messag
 /// @param displayLocation the AATTDisplayLocation of interest
 /// @param locationPrecision the precision to be used when determining whether two locations
 ///        with the same name are considered the same display location.
+/// @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
+///         chronological order.
 ///
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
 
