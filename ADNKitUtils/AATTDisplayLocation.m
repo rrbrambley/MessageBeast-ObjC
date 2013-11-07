@@ -18,6 +18,7 @@
     NSNumber *longitude = [[checkinAnnotation value] objectForKey:@"longitude"];
     AATTDisplayLocation *loc = [[AATTDisplayLocation alloc] initWithName:name latitude:[latitude doubleValue] longitude:[longitude doubleValue]];
     loc.factualID = factualID;
+    loc.type = AATTDisplayLocationTypeCheckin;
     return loc;
 }
 
@@ -35,13 +36,16 @@
         }
     }
 
-    return [[AATTDisplayLocation alloc] initWithName:name latitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+    AATTDisplayLocation *loc = [[AATTDisplayLocation alloc] initWithName:name latitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+    loc.type = AATTDisplayLocationTypeOhai;
+    return loc;
 }
 
 + (AATTDisplayLocation *)displayLocationFromGeolocation:(AATTGeolocation *)geolocation {
     NSString *name = geolocation.subLocality ? [NSString stringWithFormat:@"%@, %@", geolocation.subLocality, geolocation.locality] : geolocation.locality;
     AATTDisplayLocation *l = [[AATTDisplayLocation alloc] initWithName:name latitude:geolocation.latitude longitude:geolocation.longitude];
     l.shortName = geolocation.subLocality;
+    l.type = AATTDisplayLocationTypeGeolocation;
     return l;
 }
 
