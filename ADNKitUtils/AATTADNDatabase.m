@@ -402,6 +402,41 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return geolocation;
 }
 
+#pragma mark - Deletion
+
+- (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus {
+    static NSString *deleteMessage = @"DELETE FROM messages WHERE message_id = ?";
+    static NSString *deleteHashtags = @"DELETE FROM hashtag_instances WHERE hashtag_name = ? AND hashtag_message_id = ?";
+    static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_name = ? AND location_message_id = ? AND location_latitude = ? AND location_longitude = ?";
+    
+    ANKMessage *message = messagePlus.message;
+
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if(![db executeUpdate:deleteMessage, message.messageID]) {
+            *rollback = YES;
+            return;
+        }
+        
+        NSArray *hashtags = message.entities.hashtags;
+        for(ANKHashtagEntity *hashtag in hashtags) {
+            if(![db executeUpdate:deleteHashtags, hashtag.hashtag, message.messageID]) {
+                *rollback = YES;
+                return;
+            }
+        }
+        
+        AATTDisplayLocation *displayLocation = messagePlus.displayLocation;
+        if(displayLocation) {
+            NSNumber *latitude = [NSNumber numberWithDouble:displayLocation.latitude];
+            NSNumber *longitude = [NSNumber numberWithDouble:displayLocation.longitude];
+            if(![db executeUpdate:deleteLocations, displayLocation.name, message.messageID, latitude, longitude]) {
+                *rollback = YES;
+                return;
+            }
+        }
+    }];
+}
+
 #pragma mark - Private Stuff
 
 - (NSString *)JSONStringWithMessage:(ANKMessage *)message {

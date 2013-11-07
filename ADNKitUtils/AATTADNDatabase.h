@@ -178,4 +178,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude;
 
+#pragma mark - Deletion
+
+/// Delete a message and all persisted data associated (hashtag instances, location instances,
+/// OEmbed instances, etc.) with it.
+///
+/// @param messagePlus the message to delete.
+///
+- (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus;
+
 @end
