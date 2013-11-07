@@ -145,6 +145,24 @@ static NSUInteger const kSyncBatchSize = 100;
     }];
 }
 
+#pragma mark - Delete Messages
+
+- (void)deleteMessage:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {
+    [self.client deleteMessage:messagePlus.message completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+       
+        if(!error) {
+            NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:messagePlus.message.channelID];
+            if(channelMessages) {
+                [channelMessages removeEntryWithObject:messagePlus pairedWithKey:messagePlus.message.messageID];
+            }
+            [self.database deleteMessagePlus:messagePlus];
+            block(meta, error);
+        } else {
+            block(meta, error);
+        }
+    }];
+}
+
 #pragma mark - Private Stuff
 
 ///
