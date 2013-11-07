@@ -408,6 +408,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     static NSString *deleteMessage = @"DELETE FROM messages WHERE message_id = ?";
     static NSString *deleteHashtags = @"DELETE FROM hashtag_instances WHERE hashtag_name = ? AND hashtag_message_id = ?";
     static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_name = ? AND location_message_id = ? AND location_latitude = ? AND location_longitude = ?";
+    static NSString *deleteOEmbeds = @"DELETE FROM oembed_instances WHERE oembed_type = ? AND oembed_message_id = ?";
     
     ANKMessage *message = messagePlus.message;
 
@@ -430,6 +431,20 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
             NSNumber *latitude = [NSNumber numberWithDouble:displayLocation.latitude];
             NSNumber *longitude = [NSNumber numberWithDouble:displayLocation.longitude];
             if(![db executeUpdate:deleteLocations, displayLocation.name, message.messageID, latitude, longitude]) {
+                *rollback = YES;
+                return;
+            }
+        }
+        
+        if(messagePlus.photoOEmbeds.count > 0) {
+            if(![db executeUpdate:deleteOEmbeds, @"photo", message.messageID]) {
+                *rollback = YES;
+                return;
+            }
+        }
+        
+        if(messagePlus.html5VideoOEmbeds.count > 0) {
+            if(![db executeUpdate:deleteOEmbeds, @"html5video", message.messageID]) {
                 *rollback = YES;
                 return;
             }
