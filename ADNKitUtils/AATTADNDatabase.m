@@ -324,15 +324,15 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     return instances;
 }
 
-- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID {
+- (NSArray *)hashtagInstancesInChannelWithID:(NSString *)channelID {
     return [self hashtagInstancesInChannelWithID:channelID sinceDate:nil];
 }
 
-- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID sinceDate:(NSDate *)sinceDate {
+- (NSArray *)hashtagInstancesInChannelWithID:(NSString *)channelID sinceDate:(NSDate *)sinceDate {
     return [self hashtagInstancesInChannelWithID:channelID beforeDate:nil sinceDate:sinceDate];
 }
 
-- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate sinceDate:(NSDate *)sinceDate {
+- (NSArray *)hashtagInstancesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate sinceDate:(NSDate *)sinceDate {
     NSMutableOrderedDictionary *allInstances = [[NSMutableOrderedDictionary alloc] init];
     
     static NSString *select = @"SELECT hashtag_name, hashtag_message_id FROM hashtag_instances";
@@ -369,7 +369,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
         }
     }];
     
-    return allInstances;
+    return [allInstances allObjects];
 }
 
 - (AATTHashtagInstances *)hashtagInstancesInChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {

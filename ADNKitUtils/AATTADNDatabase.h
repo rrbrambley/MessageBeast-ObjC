@@ -128,10 +128,11 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///
 /// @param channelID the ID of the channel containing the messages with which the returned
 ///        AATTHashtagInstances objects are associated.
-/// @return a dictionary, ordered in reverse chronological order, with keys of hashtag names
-///         mapped to AATTHashtagInstances objects.
+/// @return an array of AATTHashtagInstances, each of which contains a set of
+///         message IDs associated with the hashtag. The array will be have
+///         reverse chronological ordering - based on when the hashtag was last used.
 ///
-- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID;
+- (NSArray *)hashtagInstancesInChannelWithID:(NSString *)channelID;
 
 /// Obtain a dictionary of all hashtag instances that were used since a specified date.
 /// The dictionary maps hashtag names to AATTHashtagInstances objects and is in reverse chronological
@@ -140,10 +141,11 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 /// @param channelID the ID of the channel containing the messages with which the returned
 ///        AATTHashtagInstances objects are associated.
 /// @param sinceDate the date since which the returned hashtags were used.
-/// @return a dictionary, ordered in reverse chronological order, with keys of hashtag names
-///         mapped to AATTHashtagInstances objects.
+/// @return an array of AATTHashtagInstances, each of which contains a set of
+///         message IDs associated with the hashtag. The array will be have
+///         reverse chronological ordering - based on when the hashtag was last used.
 ///
-- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID sinceDate:(NSDate *)sinceDate;
+- (NSArray *)hashtagInstancesInChannelWithID:(NSString *)channelID sinceDate:(NSDate *)sinceDate;
 
 /// Obtain a dictionary of all hashtag instances that were used within a specified date window.
 /// The dictionary maps hashtag names to AATTHashtagInstances objects and is in reverse chronological
@@ -153,10 +155,11 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///        AATTHashtagInstances objects are associated.
 /// @param beforeDate the date before which the returned hashtags were used.
 /// @param sinceDate the date since which the returned hashtags were used.
-/// @return a dictionary, ordered in reverse chronological order, with keys of hashtag names
-///         mapped to AATTHashtagInstances objects.
+/// @return an array of AATTHashtagInstances, each of which contains a set of
+///         message IDs associated with the hashtag. The array will be have
+///         reverse chronological ordering - based on when the hashtag was last used.
 ///
-- (NSOrderedDictionary *)hashtagInstancesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate sinceDate:(NSDate *)sinceDate;
+- (NSArray *)hashtagInstancesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate sinceDate:(NSDate *)sinceDate;
 
 /// Obtain an AATTHashtagInstances containing all message IDs with which the specified hashtag
 /// is associated.
