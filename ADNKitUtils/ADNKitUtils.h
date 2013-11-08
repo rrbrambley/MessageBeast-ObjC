@@ -11,15 +11,17 @@
 #import <ADNKit.h>
 
 #import "AATTADNDatabase.h"
+#import "AATTBaseMessageInstances.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
+#import "AATTHashtagInstances.h"
 #import "AATTMessageManager.h"
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
 
 #import "ANKClient+AATTMessageManager.h"
-#import "ANKMessage+AATTAnnotationHelper.h"
 #import "ANKClient+PrivateChannel.h"
+#import "ANKMessage+AATTAnnotationHelper.h"
 
 #import "NSOrderedDictionary.h"
