@@ -60,7 +60,7 @@
     return self.photoOEmbeds.count > 0 ? [self.photoOEmbeds objectAtIndex:0] : nil;
 }
 
-- (ANKAnnotation *)firstVideoOEmbedAnnotation {
+- (ANKAnnotation *)firstHTML5VideoOEmbedAnnotation {
     if(!self.html5VideoOEmbeds) {
         [self initOEmbedAnnotations];
     }
@@ -68,7 +68,7 @@
 }
 
 - (NSURL *)firstHTML5VideoOEmbedSourceURL {
-    ANKAnnotation *annotation = [self firstVideoOEmbedAnnotation];
+    ANKAnnotation *annotation = [self firstHTML5VideoOEmbedAnnotation];
     if(annotation) {
         NSDictionary *value = annotation.value;
         NSArray *sources = [value objectForKey:@"sources"];
