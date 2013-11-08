@@ -38,7 +38,7 @@
 
 static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id TEXT PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL)";
 
-static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
+static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_short_name TEXT, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
 
 static NSString *const kCreateHashtagInstancesTable = @"CREATE TABLE IF NOT EXISTS hashtag_instances (hashtag_name TEXT NOT NULL, hashtag_message_id TEXT NOT NULL, hashtag_channel_id TEXT NOT NULL, hashtag_date INTEGER NOT NULL, PRIMARY KEY (hashtag_name, hashtag_message_id))";
 
@@ -94,10 +94,11 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 
 - (void)insertOrReplaceDisplayLocationInstance:(AATTMessagePlus *)messagePlus {
     if(messagePlus.displayLocation) {
-        static NSString *insertOrReplaceDisplayLocationInstance = @"INSERT OR REPLACE INTO location_instances (location_name, location_message_id, location_channel_id, location_latitude, location_longitude, location_factual_id, location_date) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        static NSString *insertOrReplaceDisplayLocationInstance = @"INSERT OR REPLACE INTO location_instances (location_name, location_short_name, location_message_id, location_channel_id, location_latitude, location_longitude, location_factual_id, location_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
             AATTDisplayLocation *l = messagePlus.displayLocation;
             NSString *name = l.name;
+            NSString *shortName = l.shortName;
             NSString *messageID = messagePlus.message.messageID;
             NSString *channelID = messagePlus.message.channelID;
             NSNumber *latitude = [NSNumber numberWithDouble:l.latitude];
@@ -105,7 +106,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
             NSString *factualID = l.factualID;
             NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
             
-            if(![db executeUpdate:insertOrReplaceDisplayLocationInstance, name, messageID, channelID, latitude, longitude, factualID, date]) {
+            if(![db executeUpdate:insertOrReplaceDisplayLocationInstance, name, shortName, messageID, channelID, latitude, longitude, factualID, date]) {
                 *rollBack = YES;
             }
         }];
@@ -264,7 +265,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 }
 
 - (NSArray *)displayLocationInstancesInChannelWithID:(NSString *)channelID {
-    static NSString *select = @"SELECT location_name, location_message_id, location_latitude, location_longitude FROM location_instances WHERE location_channel_id = ? ORDER BY location_date DESC";
+    static NSString *select = @"SELECT location_name, location_short_name, location_message_id, location_latitude, location_longitude FROM location_instances WHERE location_channel_id = ? ORDER BY location_date DESC";
     
     NSMutableOrderedDictionary *allInstances = [[NSMutableOrderedDictionary alloc] init];
     
@@ -272,9 +273,10 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
         FMResultSet *resultSet = [db executeQuery:select, channelID];
         while([resultSet next]) {
             NSString *name = [resultSet stringForColumnIndex:0];
-            NSString *messageID = [resultSet stringForColumnIndex:1];
-            double latitude = [resultSet doubleForColumnIndex:2];
-            double longitude = [resultSet doubleForColumnIndex:3];
+            NSString *shortName = [resultSet stringForColumnIndex:1];
+            NSString *messageID = [resultSet stringForColumnIndex:2];
+            double latitude = [resultSet doubleForColumnIndex:3];
+            double longitude = [resultSet doubleForColumnIndex:4];
             
             NSString *roundedLatitude = [self roundedValueAsString:latitude decimalPlaces:1];
             NSString *roundedLongitude = [self roundedValueAsString:longitude decimalPlaces:1];
@@ -283,6 +285,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
             if(!instances) {
                 AATTDisplayLocation *loc = [[AATTDisplayLocation alloc] initWithName:name latitude:latitude longitude:longitude];
                 instances = [[AATTDisplayLocationInstances alloc] initWithDisplayLocation:loc];
+                loc.shortName = shortName;
                 [allInstances addObject:instances pairedWithKey:key];
             }
             [instances addMessageID:messageID];
