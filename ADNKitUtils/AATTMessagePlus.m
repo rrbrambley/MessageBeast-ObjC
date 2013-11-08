@@ -67,4 +67,20 @@
     return self.html5VideoOEmbeds.count > 0 ? [self.html5VideoOEmbeds objectAtIndex:0] : nil;
 }
 
+- (NSURL *)firstHTML5VideoOEmbedSourceURL {
+    ANKAnnotation *annotation = [self firstVideoOEmbedAnnotation];
+    if(annotation) {
+        NSDictionary *value = annotation.value;
+        NSArray *sources = [value objectForKey:@"sources"];
+        if(sources.count > 0) {
+            NSDictionary *firstSource = [sources objectAtIndex:0];
+            NSString *url = [firstSource objectForKey:@"url"];
+            if(url) {
+                return [NSURL URLWithString:url];
+            }
+        }
+    }
+    return nil;
+}
+
 @end

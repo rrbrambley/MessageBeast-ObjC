@@ -19,5 +19,6 @@
 - (id)initWithMessage:(ANKMessage *)message;
 - (ANKAnnotation *)firstPhotoOEmbedAnnotation;
 - (ANKAnnotation *)firstVideoOEmbedAnnotation;
+- (NSURL *)firstHTML5VideoOEmbedSourceURL;
 
 @end
