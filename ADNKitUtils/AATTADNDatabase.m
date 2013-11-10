@@ -36,7 +36,7 @@
 
 #pragma mark - Table creation
 
-static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id TEXT PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL)";
+static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id TEXT PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL, message_unsent BOOLEAN)";
 
 static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_short_name TEXT, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
 
@@ -72,10 +72,11 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 #pragma mark - Insertion
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus {
-    static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json) VALUES(?, ?, ?, ?)";
+    static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json, message_unsent) VALUES(?, ?, ?, ?, ?)";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
         NSString *jsonString = [self JSONStringWithMessage:messagePlus.message];
-        if(![db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString]) {
+        NSNumber *unsent = [NSNumber numberWithBool:messagePlus.isUnsent];
+        if(![db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString, unsent]) {
             *rollBack = YES;
         }
     }];
@@ -188,10 +189,13 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
             NSString *messageID = [resultSet stringForColumnIndex:0];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
             NSString *messageString = [resultSet stringForColumnIndex:3];
+            BOOL isUnsent = [resultSet boolForColumnIndex:4];
+            
             NSDictionary *messageJSON = [self JSONDictionaryWithString:messageString];
             m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
-            
+
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
+            messagePlus.isUnsent = isUnsent;
             [messagePlus setDisplayDate:date];
             [messagePlusses setObject:messagePlus forKey:messageID];
             
@@ -215,7 +219,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
     __block NSString *maxID = nil;
     __block NSString *minID = nil;
     
-    NSString *select = @"SELECT message_id, message_date, message_json FROM messages WHERE message_channel_id = ? AND message_id IN (";
+    NSString *select = @"SELECT message_id, message_date, message_json, message_unsent FROM messages WHERE message_channel_id = ? AND message_id IN (";
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:(messageIDs.count + 1)];
     [args addObject:channelID];
     
@@ -242,10 +246,12 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
             NSString *messageID = [resultSet stringForColumnIndex:0];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
             NSString *messageString = [resultSet stringForColumnIndex:2];
+            BOOL isUnsent = [resultSet boolForColumnIndex:3];
             NSDictionary *messageJSON = [self JSONDictionaryWithString:messageString];
             m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
             
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
+            messagePlus.isUnsent = isUnsent;
             [messagePlus setDisplayDate:date];
             [messagePlusses setObject:messagePlus forKey:messageID];
             
