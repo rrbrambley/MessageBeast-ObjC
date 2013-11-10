@@ -13,6 +13,7 @@
 @property ANKMessage *message;
 @property NSDate *displayDate;
 @property AATTDisplayLocation *displayLocation;
+@property BOOL isUnsent;
 @property (nonatomic) NSArray *photoOEmbeds;
 @property (nonatomic) NSArray *html5VideoOEmbeds;
 
