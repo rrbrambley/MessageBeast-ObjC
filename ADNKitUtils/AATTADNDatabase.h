@@ -83,6 +83,15 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 /// @return An ordered batch of messages
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
 
+/// Obtain all unsent AATTMessagePlus objects in the specified channel.
+///
+/// Unlike the other message getters, this returns messages in chronological order
+/// because this is the order in which they should be sent to the server.
+///
+/// @param channelID the ID of the channel containing the messages.
+/// @return an NSOrderedDictionary with message ID keys mapped to AATTMessagePlus objects.
+- (NSOrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID;
+
 /// Obtain an NSArray of AATTDisplayLocationInstances for a channel with the specified ID.
 /// Each AATTDisplayLocationInstances contains all message IDs with which its display location
 /// is associated.
