@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
 		E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82C91821AE770057245C /* AATTMessageManager.m */; };
 		E29A82CD1821AEBC0057245C /* AATTMessageManagerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */; };
 		E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82DB1821B1070057245C /* AATTADNDatabase.m */; };
@@ -87,6 +88,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
+		E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
 		E29A82C81821AE770057245C /* AATTMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManager.h; sourceTree = "<group>"; };
 		E29A82C91821AE770057245C /* AATTMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManager.m; sourceTree = "<group>"; };
 		E29A82CB1821AEBC0057245C /* AATTMessageManagerConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManagerConfiguration.h; sourceTree = "<group>"; };
@@ -167,6 +170,8 @@
 				E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */,
 				E29A8322182301F00057245C /* AATTMinMaxPair.h */,
 				E29A8323182301F00057245C /* AATTMinMaxPair.m */,
+				E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */,
+				E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -404,6 +409,7 @@
 				E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */,
 				E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */,
 				E2C751791825C2BF003BE00E /* AATTGeolocation.m in Sources */,
+				E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */,
 				E2BA21521826CB5D0023363A /* AATTHashtagInstances.m in Sources */,
 				E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */,
 				E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */,
