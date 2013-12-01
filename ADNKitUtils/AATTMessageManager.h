@@ -81,8 +81,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 /// loadPersistedMessagesForChannelWithID:limit:
 ///
 /// @param channelID the id of the channel for which messages should be synced.
+/// @param batchSyncBlock the AATTMessageManagerBatchSyncBlock to which batch updates will be delivered.
+///        This can be used to perform extra processing on individual messages. May be nil.
 /// @param completionBlock the AATTMessageManagerCompletionBlock to which the results will be delivered.
-- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
+- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock completionBlock:(AATTMessageManagerCompletionBlock)block;
 
 /// Fetch messages in the channel with the specified ID.
 ///

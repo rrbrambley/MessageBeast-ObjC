@@ -104,12 +104,12 @@ static NSUInteger const kSyncBatchSize = 100;
 
 #pragma mark Fetch Messages
 
-- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock completionBlock:(AATTMessageManagerCompletionBlock)block {
     if(!self.configuration.isDatabaseInsertionEnabled) {
         [NSException raise:@"Illegal state" format:@"fetchAndPersistAllMessagesInChannelWithID:completionBlock: can only be executed if the AATTMessageManagerConfiguration.isDatabaseInsertionEnabled property is set to YES"];
     } else {
         NSMutableArray *messages = [[NSMutableArray alloc] initWithCapacity:kSyncBatchSize];
-        [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:nil block:block];
+        [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:nil batchSyncBlock:batchSyncBlock block:block];
     }
 }
 
@@ -168,7 +168,7 @@ static NSUInteger const kSyncBatchSize = 100;
 ///
 /// this is only meant to be used with fetchAndPersistAllMessagesInChannelWithID
 ///
-- (void)fetchAllMessagesInChannelWithID:(NSString *)channelID messagePlusses:(NSMutableArray *)messages sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID block:(AATTMessageManagerCompletionBlock)block {
+- (void)fetchAllMessagesInChannelWithID:(NSString *)channelID messagePlusses:(NSMutableArray *)messages sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock block:(AATTMessageManagerCompletionBlock)block {
     NSMutableDictionary *parameters = [[self.queryParametersByChannel objectForKey:channelID] mutableCopy];
     if(sinceID) {
         [parameters setObject:sinceID forKey:@"since_id"];
@@ -186,9 +186,14 @@ static NSUInteger const kSyncBatchSize = 100;
             AATTMessagePlus *p1 = [messagePlusses objectAtIndex:0];
             AATTMessagePlus *p2 = [messagePlusses lastObject];
             NSLog(@"synced messages %@ through %@", p1.message.messageID, p2.message.messageID);
+            
+            if(batchSyncBlock != nil) {
+                batchSyncBlock(messagePlusses, meta, error);
+            }
+            
             if(meta.moreDataAvailable) {
                 AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-                [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:minMaxPair.minID block:block];
+                [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:minMaxPair.minID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock block:block];
             } else {
                 block(messages, YES, meta, error);
             }
