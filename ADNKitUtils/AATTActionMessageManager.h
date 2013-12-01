@@ -7,11 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@class AATTMessageManager;
+#import "AATTMessageManager.h"
 
 @interface AATTActionMessageManager : NSObject
 
 - (id)initWithMessageManager:(AATTMessageManager *)messageManager;
-
+- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId batchSyncBlock:(AATTMessageManagerBatchSyncBlock)block completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
 @end

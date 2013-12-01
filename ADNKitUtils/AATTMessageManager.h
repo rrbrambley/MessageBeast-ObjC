@@ -6,11 +6,14 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
-@class AATTMessageManagerConfiguration, NSOrderedDictionary;
+#import "AATTADNDatabase.h"
+
+@class AATTDisplayLocation, AATTMessageManagerConfiguration, AATTMessagePlus, NSOrderedDictionary;
 
 @interface AATTMessageManager : NSObject
 
 typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error);
+typedef void (^AATTMessageManagerBatchSyncBlock)(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messagePlus, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *meta, NSError *error);
 
