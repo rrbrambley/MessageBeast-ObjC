@@ -10,5 +10,6 @@
 
 - (NSDate *)ohaiDisplayDate;
 - (ANKAnnotation *)firstAnnotationOfType:(NSString *)type;
+- (NSString *)targetMessageId;
 
 @end
