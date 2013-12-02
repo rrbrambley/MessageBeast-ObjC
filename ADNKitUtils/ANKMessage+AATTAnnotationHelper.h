@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+static NSString *const kMessageAnnotationTargetMessage = @"com.alwaysallthetime.action.target_message";
+
 @interface ANKMessage (AATTAnnotationHelper)
 
 - (NSDate *)ohaiDisplayDate;

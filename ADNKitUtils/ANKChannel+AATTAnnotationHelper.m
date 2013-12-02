@@ -11,8 +11,6 @@
 
 @implementation ANKChannel (AATTAnnotationHelper)
 
-static NSString *const kChannelAnnotationActionMetadata = @"com.alwaysallthetime.action.metadata";
-
 - (NSString *)targetChannelId {
     ANKAnnotation *a = [self firstAnnotationOfType:kChannelAnnotationActionMetadata];
     return [a.value objectForKey:@"channel_id"];

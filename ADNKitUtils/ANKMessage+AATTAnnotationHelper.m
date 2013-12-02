@@ -13,8 +13,6 @@
 
 @implementation ANKMessage (AATTAnnotationHelper)
 
-static NSString *const kMessageAnnotationTargetMessage = @"com.alwaysallthetime.action.target_message";
-
 - (NSDate *)ohaiDisplayDate {
     ANKAnnotation *annotation = [self firstAnnotationOfType:@"net.app.ohai.displaydate"];
     if(annotation) {
