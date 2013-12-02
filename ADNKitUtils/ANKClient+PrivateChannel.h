@@ -12,11 +12,15 @@
  
  see: https://github.com/appdotnet/object-metadata/blob/master/channel-types/net.app.ohai.journal.md
  */
+
+static NSString *const kChannelTypeAction = @"com.alwaysallthetime.action";
+
 @interface ANKClient (PrivateChannel)
 
 typedef void (^PrivateChannelCompletionBlock)(id responseObject, NSError *error);
 
 - (void)fetchPrivateChannelWithType:(NSString *)type block:(PrivateChannelCompletionBlock)block;
+- (void)fetchOrCreateActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(PrivateChannelCompletionBlock)block;
 - (void)createAndSubscribeToPrivateChannelWithType:(NSString *)type block:(PrivateChannelCompletionBlock)block;
 
 @end

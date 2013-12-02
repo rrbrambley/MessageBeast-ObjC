@@ -25,4 +25,17 @@
 						failure:[self failureHandlerForClientHandler:completionHandler]];
 }
 
+- (ANKJSONRequestOperation *)fetchCurrentUserSubscribedChannelsWithTypes:(NSArray *)types parameters:(NSDictionary *)additionalParameters completion:(ANKClientCompletionBlock)completionHandler {
+	if (!types) {
+		types = @[];
+	}
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:additionalParameters];
+    [parameters setObject:[types componentsJoinedByString:@","] forKey:@"channel_types"];
+       
+	return [self enqueueGETPath:@"channels"
+					 parameters:parameters
+						success:[self successHandlerForCollectionOfResourceClass:[ANKChannel class] clientHandler:completionHandler]
+						failure:[self failureHandlerForClientHandler:completionHandler]];
+}
+
 @end
