@@ -184,10 +184,11 @@ static NSUInteger const kSyncBatchSize = 100;
             if(messages.count == 0) {
                 [messages addObjectsFromArray:messagePlusses];
             }
-            AATTMessagePlus *p1 = [messagePlusses objectAtIndex:0];
-            AATTMessagePlus *p2 = [messagePlusses lastObject];
-            NSLog(@"synced messages %@ through %@", p1.message.messageID, p2.message.messageID);
-            
+            if(messagePlusses.count > 0) {
+                AATTMessagePlus *p1 = [messagePlusses objectAtIndex:0];
+                AATTMessagePlus *p2 = [messagePlusses lastObject];
+                NSLog(@"synced messages %@ through %@", p1.message.messageID, p2.message.messageID);
+            }
             if(batchSyncBlock != nil) {
                 batchSyncBlock(messagePlusses, meta, error);
             }
