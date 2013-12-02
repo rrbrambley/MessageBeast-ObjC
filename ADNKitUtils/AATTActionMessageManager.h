@@ -11,6 +11,10 @@
 
 @interface AATTActionMessageManager : NSObject
 
+typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChannel, NSError *error);
+
 - (id)initWithMessageManager:(AATTMessageManager *)messageManager;
-- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId batchSyncBlock:(AATTMessageManagerBatchSyncBlock)block completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
+
+- (void)initActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(AATTActionMessageManagerChannelInitBlock)completionBlock;
+- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
 @end
