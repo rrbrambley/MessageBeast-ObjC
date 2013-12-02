@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
+		E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
 		E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82C91821AE770057245C /* AATTMessageManager.m */; };
 		E29A82CD1821AEBC0057245C /* AATTMessageManagerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */; };
 		E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82DB1821B1070057245C /* AATTADNDatabase.m */; };
@@ -90,6 +91,8 @@
 /* Begin PBXFileReference section */
 		E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
 		E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
+		E287DA23184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKAnnotatableResource+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
+		E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKAnnotatableResource+AATTAnnotationHelper.m"; sourceTree = "<group>"; };
 		E29A82C81821AE770057245C /* AATTMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManager.h; sourceTree = "<group>"; };
 		E29A82C91821AE770057245C /* AATTMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManager.m; sourceTree = "<group>"; };
 		E29A82CB1821AEBC0057245C /* AATTMessageManagerConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManagerConfiguration.h; sourceTree = "<group>"; };
@@ -309,6 +312,8 @@
 				E29A830E1822C49D0057245C /* ANKClient+AATTMessageManager.m */,
 				E29A83131822D15D0057245C /* ANKMessage+AATTAnnotationHelper.h */,
 				E29A83141822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m */,
+				E287DA23184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.h */,
+				E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -413,6 +418,7 @@
 				E2BA21521826CB5D0023363A /* AATTHashtagInstances.m in Sources */,
 				E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */,
 				E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */,
+				E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */,
 				E29A83061822B6650057245C /* AATTOrderedMessageBatch.m in Sources */,
 				E2BA21371825DE150023363A /* AATTBaseMessageInstances.m in Sources */,
 				E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */,

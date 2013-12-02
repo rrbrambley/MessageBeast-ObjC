@@ -16,6 +16,7 @@
 #import "AATTMessagePlus.h"
 #import "AATTMinMaxPair.h"
 #import "AATTOrderedMessageBatch.h"
+#import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKClient+AATTMessageManager.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 #import "NSOrderedDictionary.h"

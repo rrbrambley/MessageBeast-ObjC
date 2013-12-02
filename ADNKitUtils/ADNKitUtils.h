@@ -20,6 +20,7 @@
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
 
+#import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKClient+AATTMessageManager.h"
 #import "ANKClient+PrivateChannel.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
