@@ -84,16 +84,16 @@ static NSUInteger const kSyncBatchSize = 100;
 
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
     AATTDisplayLocationInstances *instances = [self.database displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:locationPrecision];
-    return [self loadAndConfigureTemporaryMessagesForChannelWithID:channelID messageIDs:instances.messageIDs];
+    return [self loadPersistedMessagesTemporarilyForChannelWithID:channelID messageIDs:instances.messageIDs.set];
 }
 
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
     AATTHashtagInstances *hashtagInstances = [self.database hashtagInstancesInChannelWithID:channelID hashtagName:hashtagName];
-    return [self loadAndConfigureTemporaryMessagesForChannelWithID:channelID messageIDs:hashtagInstances.messageIDs];
+    return [self loadPersistedMessagesTemporarilyForChannelWithID:channelID messageIDs:hashtagInstances.messageIDs.set];
 }
 
-- (NSOrderedDictionary *)loadAndConfigureTemporaryMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSOrderedSet *)messageIDs {
-    AATTOrderedMessageBatch *messageBatch = [self.database messagesInChannelWithID:channelID messageIDs:messageIDs.set];
+- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
+    AATTOrderedMessageBatch *messageBatch = [self.database messagesInChannelWithID:channelID messageIDs:messageIDs];
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
     
     if(self.configuration.isLocationLookupEnabled) {

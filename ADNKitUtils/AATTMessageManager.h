@@ -66,6 +66,16 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 ///
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
 
+/// Load persisted messages.
+/// These messages are not kept in memory by the message manager.
+///
+/// @param channelID the id of the channel for which messages should be loaded.
+/// @param messageIDs the messages to load.
+/// @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
+///         chronological order.
+///
+- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
+
 #pragma mark Fetch Messages
 
 /// Fetch and persist all messages in a channel.
