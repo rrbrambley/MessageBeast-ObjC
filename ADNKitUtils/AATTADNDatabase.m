@@ -46,6 +46,8 @@ static NSString *const kCreateOEmbedInstancesTable = @"CREATE TABLE IF NOT EXIST
 
 static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS geolocations (geolocation_locality TEXT NOT NULL, geolocation_sublocality TEXT, geolocation_latitude REAL NOT NULL, geolocation_longitude REAL NOT NULL, PRIMARY KEY (geolocation_latitude, geolocation_longitude))";
 
+static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS action_messages (action_message_id TEXT PRIMARY KEY, action_message_channel_id TEXT NOT NULL, action_message_target_message_id TEXT NOT NULL, action_message_target_channel_id TEXT NOT NULL)";
+
 #pragma mark - Initializer
 
 - (id)init {
@@ -64,6 +66,7 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
             [db executeUpdate:kCreateHashtagInstancesTable];
             [db executeUpdate:kCreateOEmbedInstancesTable];
             [db executeUpdate:kCreateGeolocationsTable];
+            [db executeUpdate:kCreateActionMessagesTable];
         }];
     }
     return self;
