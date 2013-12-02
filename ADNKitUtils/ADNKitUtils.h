@@ -10,6 +10,7 @@
 
 #import <ADNKit.h>
 
+#import "AATTActionMessageManager.h"
 #import "AATTADNDatabase.h"
 #import "AATTBaseMessageInstances.h"
 #import "AATTDisplayLocation.h"
