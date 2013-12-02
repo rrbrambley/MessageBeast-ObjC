@@ -162,6 +162,17 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
     }
 }
 
+- (void)insertOrReplaceActionMessage:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId {
+    static NSString *insertOrReplaceActionMessage = @"INSERT OR REPLACE INTO action_messages (action_message_id, action_message_channel_id, action_message_target_message_id, action_message_target_channel_id) VALUES (?, ?, ?, ?)";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        ANKMessage *message = messagePlus.message;
+        if(![db executeUpdate:insertOrReplaceActionMessage, message.messageID, message.channelID, targetMessageId, targetChannelId]) {
+            *rollback = YES;
+            return;
+        }
+    }];
+}
+
 #pragma mark - Retrieval
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelId limit:(NSUInteger)limit {
