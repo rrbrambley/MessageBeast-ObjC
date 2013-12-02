@@ -11,7 +11,7 @@
 
 @implementation ANKChannel (AATTAnnotationHelper)
 
-- (NSString *)targetChannelId {
+- (NSString *)targetChannelID {
     ANKAnnotation *a = [self firstAnnotationOfType:kChannelAnnotationActionMetadata];
     return [a.value objectForKey:@"channel_id"];
 }

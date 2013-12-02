@@ -10,7 +10,7 @@ static NSString *const kChannelAnnotationActionMetadata = @"com.alwaysallthetime
 
 @interface ANKChannel (AATTAnnotationHelper)
 
-- (NSString *)targetChannelId;
+- (NSString *)targetChannelID;
 - (NSString *)actionChannelType;
 
 @end
