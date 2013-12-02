@@ -50,7 +50,7 @@ static NSUInteger const kSyncBatchSize = 100;
 #pragma mark Getters
 
 - (ANKClient *)client {
-    return self.client;
+    return _client;
 }
 
 #pragma mark Setters
