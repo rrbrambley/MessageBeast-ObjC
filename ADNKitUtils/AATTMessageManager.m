@@ -25,7 +25,7 @@
 @property NSMutableDictionary *queryParametersByChannel;
 @property NSMutableDictionary *minMaxPairs;
 @property NSMutableDictionary *messagesByChannelID;
-@property ANKClient *client;
+@property (nonatomic) ANKClient *client;
 @property AATTMessageManagerConfiguration *configuration;
 @property AATTADNDatabase *database;
 @end
@@ -46,6 +46,14 @@ static NSUInteger const kSyncBatchSize = 100;
     }
     return self;
 }
+
+#pragma mark Getters
+
+- (ANKClient *)client {
+    return self.client;
+}
+
+#pragma mark Setters
 
 - (void)setQueryParametersForChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters {
     [self.queryParametersByChannel setObject:parameters forKey:channelID];

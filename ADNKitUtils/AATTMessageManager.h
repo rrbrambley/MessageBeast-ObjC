@@ -21,6 +21,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
 - (id)initWithANKClient:(ANKClient *)client configuration:(AATTMessageManagerConfiguration *)configuration;
 
+#pragma mark Getters
+
+- (ANKClient *)client;
+
 #pragma mark Setters
 
 /// Set the query parameters that should be used for the specified channel.
