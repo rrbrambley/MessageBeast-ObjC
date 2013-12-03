@@ -6,12 +6,29 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#import "AATTADNPersistence.h"
 #import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKClient+PrivateChannel.h"
 #import "ANKClient+AATTMessageManager.h"
 #import "ANKChannel+AATTAnnotationHelper.h"
 
 @implementation ANKClient (PrivateChannel)
+
+- (void)getOrCreatePrivateChannelWithType:(NSString *)type completionBlock:(PrivateChannelCompletionBlock)block {
+    ANKChannel *channel = [AATTADNPersistence channelWithType:type];
+    if(!channel) {
+        [self fetchPrivateChannelWithType:type block:^(id responseObject, NSError *error) {
+            if(!responseObject) {
+                [self createAndSubscribeToPrivateChannelWithType:type block:block];
+            } else {
+                [AATTADNPersistence saveChannel:responseObject];
+                block(responseObject, nil);
+            }
+        }];
+    } else {
+        block(channel, nil);
+    }
+}
 
 - (void)fetchPrivateChannelWithType:(NSString *)type block:(PrivateChannelCompletionBlock)block {
     [self fetchCurrentUserSubscribedChannelsWithTypes:[NSArray arrayWithObject:type] completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
@@ -37,6 +54,9 @@
                     }
                 }
             }
+            if(theChannel) {
+                [AATTADNPersistence saveChannel:theChannel];
+            }
             block(theChannel, nil);
         }
     }];
@@ -47,6 +67,9 @@
     [self fetchCurrentUserSubscribedChannelsWithTypes:@[kChannelTypeAction] parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             ANKChannel *theChannel = [self newestActionChannelInArray:responseObject actionType:actionType targetChannelID:targetChannelID];
+            if(theChannel) {
+                [AATTADNPersistence saveActionChannel:theChannel actionType:actionType targetChannelID:targetChannelID];
+            }
             block(theChannel, error);
         } else {
             block(responseObject, error);
@@ -54,22 +77,32 @@
     }];
 }
 
-- (void)fetchOrCreateActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(PrivateChannelCompletionBlock)block {
-    [self fetchActionChannelWithType:actionType targetChannelID:targetChannel.channelID completionBlock:^(id responseObject, NSError *error) {
-        if(error) {
-            block(responseObject, error);
-        } else if(!responseObject) {
-            [self createAndSubscribeToActionChannelWithType:actionType targetChannelID:targetChannel.channelID completionBlock:block];
-        } else {
-            block(responseObject, error);
-        }
-    }];
+- (void)getOrCreateActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(PrivateChannelCompletionBlock)block {
+    ANKChannel *channel = [AATTADNPersistence channelWithActionType:actionType targetChannelID:targetChannel.channelID];
+    if(!channel) {
+        [self fetchActionChannelWithType:actionType targetChannelID:targetChannel.channelID completionBlock:^(id responseObject, NSError *error) {
+            if(error) {
+                block(responseObject, error);
+            } else if(!responseObject) {
+                [self createAndSubscribeToActionChannelWithType:actionType targetChannelID:targetChannel.channelID completionBlock:block];
+            } else {
+                block(responseObject, error);
+            }
+        }];
+    } else {
+        block(channel, nil);
+    }
 }
 
 - (void)createAndSubscribeToActionChannelWithType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID completionBlock:(PrivateChannelCompletionBlock)block {
     NSDictionary *metadataValue = @{ @"action_type" : actionType, @"channel_id" : targetChannelID };
     ANKAnnotation *metadataAnnotation = [ANKAnnotation annotationWithType:kChannelAnnotationActionMetadata value:metadataValue];
-    [self createAndSubscribeToPrivateChannelWithType:kChannelTypeAction annotations:@[metadataAnnotation] block:block];
+    [self createAndSubscribeToPrivateChannelWithType:kChannelTypeAction annotations:@[metadataAnnotation] block:^(id responseObject, NSError *error) {
+        if(responseObject && !error) {
+            [AATTADNPersistence saveActionChannel:responseObject actionType:actionType targetChannelID:targetChannelID];
+        }
+        block(responseObject, error);
+    }];
 }
 
 - (void)createAndSubscribeToPrivateChannelWithType:(NSString *)type block:(PrivateChannelCompletionBlock)block {
@@ -98,6 +131,7 @@
             block(nil, error);
         } else {
             [self subscribeToChannel:responseObject completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+                [AATTADNPersistence saveChannel:responseObject];
                 block(responseObject, error);
             }];
         }

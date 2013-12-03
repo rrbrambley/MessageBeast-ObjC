@@ -19,8 +19,11 @@ static NSString *const kChannelTypeAction = @"com.alwaysallthetime.action";
 
 typedef void (^PrivateChannelCompletionBlock)(id responseObject, NSError *error);
 
+- (void)getOrCreatePrivateChannelWithType:(NSString *)type completionBlock:(PrivateChannelCompletionBlock)block;
+- (void)getOrCreateActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(PrivateChannelCompletionBlock)block;
+
 - (void)fetchPrivateChannelWithType:(NSString *)type block:(PrivateChannelCompletionBlock)block;
-- (void)fetchOrCreateActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(PrivateChannelCompletionBlock)block;
+- (void)fetchActionChannelWithType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID completionBlock:(PrivateChannelCompletionBlock)block;
 - (void)createAndSubscribeToPrivateChannelWithType:(NSString *)type block:(PrivateChannelCompletionBlock)block;
 
 @end
