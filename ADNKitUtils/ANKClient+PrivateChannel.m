@@ -78,30 +78,30 @@
 }
 
 - (void)getOrCreateActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(PrivateChannelCompletionBlock)block {
-    ANKChannel *channel = [AATTADNPersistence channelWithActionType:actionType targetChannelID:targetChannel.channelID];
-    if(!channel) {
-        [self fetchActionChannelWithType:actionType targetChannelID:targetChannel.channelID completionBlock:^(id responseObject, NSError *error) {
+    ANKChannel *actionChannel = [AATTADNPersistence channelWithActionType:actionType targetChannelID:targetChannel.channelID];
+    if(!actionChannel) {
+        [self fetchActionChannelWithType:actionType targetChannelID:targetChannel.channelID completionBlock:^(ANKChannel *channel, NSError *error) {
             if(error) {
-                block(responseObject, error);
-            } else if(!responseObject) {
+                block(channel, error);
+            } else if(!channel) {
                 [self createAndSubscribeToActionChannelWithType:actionType targetChannelID:targetChannel.channelID completionBlock:block];
             } else {
-                block(responseObject, error);
+                block(channel, error);
             }
         }];
     } else {
-        block(channel, nil);
+        block(actionChannel, nil);
     }
 }
 
 - (void)createAndSubscribeToActionChannelWithType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID completionBlock:(PrivateChannelCompletionBlock)block {
     NSDictionary *metadataValue = @{ @"action_type" : actionType, @"channel_id" : targetChannelID };
     ANKAnnotation *metadataAnnotation = [ANKAnnotation annotationWithType:kChannelAnnotationActionMetadata value:metadataValue];
-    [self createAndSubscribeToPrivateChannelWithType:kChannelTypeAction annotations:@[metadataAnnotation] block:^(id responseObject, NSError *error) {
-        if(responseObject && !error) {
-            [AATTADNPersistence saveActionChannel:responseObject actionType:actionType targetChannelID:targetChannelID];
+    [self createAndSubscribeToPrivateChannelWithType:kChannelTypeAction annotations:@[metadataAnnotation] block:^(ANKChannel *channel, NSError *error) {
+        if(channel && !error) {
+            [AATTADNPersistence saveActionChannel:channel actionType:actionType targetChannelID:targetChannelID];
         }
-        block(responseObject, error);
+        block(channel, error);
     }];
 }
 

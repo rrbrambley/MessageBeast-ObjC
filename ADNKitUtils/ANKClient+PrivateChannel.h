@@ -17,7 +17,7 @@ static NSString *const kChannelTypeAction = @"com.alwaysallthetime.action";
 
 @interface ANKClient (PrivateChannel)
 
-typedef void (^PrivateChannelCompletionBlock)(id responseObject, NSError *error);
+typedef void (^PrivateChannelCompletionBlock)(ANKChannel *channel, NSError *error);
 
 - (void)getOrCreatePrivateChannelWithType:(NSString *)type completionBlock:(PrivateChannelCompletionBlock)block;
 - (void)getOrCreateActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(PrivateChannelCompletionBlock)block;
