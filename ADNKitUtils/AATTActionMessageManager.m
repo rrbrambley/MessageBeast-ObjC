@@ -23,6 +23,16 @@
 
 @implementation AATTActionMessageManager
 
++ (AATTActionMessageManager *)sharedInstanceWithMessageManager:(AATTMessageManager *)messageManager {
+    static AATTActionMessageManager *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[AATTActionMessageManager alloc] initWithMessageManager:messageManager];
+    });
+    
+    return sharedInstance;
+}
+
 - (id)initWithMessageManager:(AATTMessageManager *)messageManager {
     self = [super init];
     if(self) {

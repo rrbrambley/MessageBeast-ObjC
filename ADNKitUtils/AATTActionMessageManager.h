@@ -13,7 +13,7 @@
 
 typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChannel, NSError *error);
 
-- (id)initWithMessageManager:(AATTMessageManager *)messageManager;
++ (AATTActionMessageManager *)sharedInstanceWithMessageManager:(AATTMessageManager *)messageManager;
 
 - (void)initActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(AATTActionMessageManagerChannelInitBlock)completionBlock;
 - (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
