@@ -12,6 +12,7 @@
 
 #import "AATTActionMessageManager.h"
 #import "AATTADNDatabase.h"
+#import "AATTADNPersistence.h"
 #import "AATTBaseMessageInstances.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"

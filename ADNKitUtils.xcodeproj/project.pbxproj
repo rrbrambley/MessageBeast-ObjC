@@ -10,6 +10,8 @@
 		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
 		E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */; };
 		E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
+		E287DA2C184E42670035CE71 /* NSObject+AATTPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA2B184E42670035CE71 /* NSObject+AATTPersistence.m */; };
+		E287DA2F184E42A80035CE71 /* AATTADNPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA2E184E42A80035CE71 /* AATTADNPersistence.m */; };
 		E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82C91821AE770057245C /* AATTMessageManager.m */; };
 		E29A82CD1821AEBC0057245C /* AATTMessageManagerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */; };
 		E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82DB1821B1070057245C /* AATTADNDatabase.m */; };
@@ -96,6 +98,10 @@
 		E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKChannel+AATTAnnotationHelper.m"; sourceTree = "<group>"; };
 		E287DA23184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKAnnotatableResource+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
 		E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKAnnotatableResource+AATTAnnotationHelper.m"; sourceTree = "<group>"; };
+		E287DA2A184E42670035CE71 /* NSObject+AATTPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+AATTPersistence.h"; sourceTree = "<group>"; };
+		E287DA2B184E42670035CE71 /* NSObject+AATTPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+AATTPersistence.m"; sourceTree = "<group>"; };
+		E287DA2D184E42A80035CE71 /* AATTADNPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTADNPersistence.h; sourceTree = "<group>"; };
+		E287DA2E184E42A80035CE71 /* AATTADNPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTADNPersistence.m; sourceTree = "<group>"; };
 		E29A82C81821AE770057245C /* AATTMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManager.h; sourceTree = "<group>"; };
 		E29A82C91821AE770057245C /* AATTMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManager.m; sourceTree = "<group>"; };
 		E29A82CB1821AEBC0057245C /* AATTMessageManagerConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManagerConfiguration.h; sourceTree = "<group>"; };
@@ -167,6 +173,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E287DA29184E42330035CE71 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				E287DA2A184E42670035CE71 /* NSObject+AATTPersistence.h */,
+				E287DA2B184E42670035CE71 /* NSObject+AATTPersistence.m */,
+				E287DA2D184E42A80035CE71 /* AATTADNPersistence.h */,
+				E287DA2E184E42A80035CE71 /* AATTADNPersistence.m */,
+			);
+			name = Persistence;
+			sourceTree = "<group>";
+		};
 		E29A82C41821AE490057245C /* Manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,6 +297,7 @@
 				E2E5A72E18180218009DECDB /* ADNKitUtils.h */,
 				E29A82FD1821C15D0057245C /* Model */,
 				E29A82D91821B0DE0057245C /* DB */,
+				E287DA29184E42330035CE71 /* Persistence */,
 				E29A82C41821AE490057245C /* Manager */,
 				E2E5A7311818024E009DECDB /* Categories */,
 				E2E5A6DC1817FBF9009DECDB /* Supporting Files */,
@@ -419,11 +437,13 @@
 				E29A83031822B42D0057245C /* AATTDisplayLocation.m in Sources */,
 				E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */,
 				E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */,
+				E287DA2C184E42670035CE71 /* NSObject+AATTPersistence.m in Sources */,
 				E2C751791825C2BF003BE00E /* AATTGeolocation.m in Sources */,
 				E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */,
 				E2BA21521826CB5D0023363A /* AATTHashtagInstances.m in Sources */,
 				E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */,
 				E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */,
+				E287DA2F184E42A80035CE71 /* AATTADNPersistence.m in Sources */,
 				E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */,
 				E29A83061822B6650057245C /* AATTOrderedMessageBatch.m in Sources */,
 				E2BA21371825DE150023363A /* AATTBaseMessageInstances.m in Sources */,
