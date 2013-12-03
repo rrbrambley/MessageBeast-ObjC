@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#import "AATTActionMessageManager.h"
 #import "AATTADNDatabase.h"
 #import "AATTADNPersistence.h"
 #import "AATTDisplayLocation.h"
@@ -19,6 +20,8 @@
 #import "AATTOrderedMessageBatch.h"
 #import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKClient+AATTMessageManager.h"
+#import "ANKClient+PrivateChannel.h"
+#import "ANKChannel+AATTAnnotationHelper.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 #import "NSOrderedDictionary.h"
 
@@ -135,6 +138,47 @@ static NSUInteger const kSyncBatchSize = 100;
 
 #pragma mark Fetch Messages
 
+- (void)fetchAndPersistAllMessagesInChannels:(NSArray *)channels completionBlock:(AATTMessageManagerMultichannelSyncBlock)block {
+    int i = 0;
+    while(i < channels.count && [self fullSyncStateForChannelWithID:[channels objectAtIndex:i]] == AATTChannelFullSyncStateComplete) {
+        i++;
+    }
+    if(i == channels.count) {
+        block(YES, nil);
+    } else {
+        [self fetchAndPersistAllMessagesInChannels:channels currentChannelIndex:i completionBlock:block];
+    }
+}
+
+- (void)fetchAndPersistAllMessagesInChannels:(NSArray *)channels currentChannelIndex:(NSInteger)currentChannelIndex completionBlock:(AATTMessageManagerMultichannelSyncBlock)block {
+    
+    AATTMessageManagerCompletionBlock currentChannelSyncBlock = ^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+        if(error) {
+            block(NO, error);
+        } else {
+            NSInteger i = currentChannelIndex + 1;
+            while(i < channels.count && [self fullSyncStateForChannelWithID:[channels objectAtIndex:i]] == AATTChannelFullSyncStateComplete) {
+                i++;
+            }
+            if(i == channels.count) {
+                block(YES, nil);
+            } else {
+                [self fetchAndPersistAllMessagesInChannels:channels currentChannelIndex:i completionBlock:block];
+            }
+        }
+    };
+    
+    ANKChannel *nextChannel = [channels objectAtIndex:currentChannelIndex];
+    NSString *type = nextChannel.type;
+    if([kChannelTypeAction isEqualToString:type]) {
+        NSString *targetChannelID = [nextChannel targetChannelID];
+        AATTActionMessageManager *actionMessageManager = [AATTActionMessageManager sharedInstanceWithMessageManager:self];
+        [actionMessageManager fetchAndPersistAllMessagesInActionChannelWithID:nextChannel.channelID targetChannelId:targetChannelID completionBlock:currentChannelSyncBlock];
+    } else {
+        [self fetchAndPersistAllMessagesInChannelWithID:nextChannel.channelID batchSyncBlock:nil completionBlock:currentChannelSyncBlock];
+    }
+}
+
 - (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock completionBlock:(AATTMessageManagerCompletionBlock)block {
     if(!self.configuration.isDatabaseInsertionEnabled) {
         [NSException raise:@"Illegal state" format:@"fetchAndPersistAllMessagesInChannelWithID:completionBlock: can only be executed if the AATTMessageManagerConfiguration.isDatabaseInsertionEnabled property is set to YES"];
@@ -228,6 +272,7 @@ static NSUInteger const kSyncBatchSize = 100;
                 AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
                 [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:minMaxPair.minID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock block:block];
             } else {
+                NSLog(@"Setting full sync state to COMPLETE for channel %@", channelID);
                 [self setFullSyncState:AATTChannelFullSyncStateComplete forChannelWithID:channelID];
                 block(messages, YES, meta, error);
             }

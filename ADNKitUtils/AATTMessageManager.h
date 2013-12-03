@@ -19,6 +19,7 @@ typedef NS_ENUM(NSUInteger, AATTChannelFullSyncState) {
 @interface AATTMessageManager : NSObject
 
 typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error);
+typedef void (^AATTMessageManagerMultichannelSyncBlock)(BOOL success, NSError *error);
 typedef void (^AATTMessageManagerBatchSyncBlock)(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messagePlus, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *meta, NSError *error);
@@ -91,6 +92,8 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
 
 #pragma mark Fetch Messages
+
+- (void)fetchAndPersistAllMessagesInChannels:(NSArray *)channels completionBlock:(AATTMessageManagerMultichannelSyncBlock)block;
 
 /// Fetch and persist all messages in a channel.
 ///
