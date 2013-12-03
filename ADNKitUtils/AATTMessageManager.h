@@ -10,6 +10,12 @@
 
 @class AATTDisplayLocation, AATTMessageManagerConfiguration, AATTMessagePlus, NSOrderedDictionary;
 
+typedef NS_ENUM(NSUInteger, AATTChannelFullSyncState) {
+	AATTChannelFullSyncStateNotStarted = 0,
+	AATTChannelFullSyncStateStarted,
+	AATTChannelFullSyncStateComplete
+};
+
 @interface AATTMessageManager : NSObject
 
 typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error);
@@ -24,6 +30,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 #pragma mark Getters
 
 - (ANKClient *)client;
+
+- (AATTChannelFullSyncState)fullSyncStateForChannelWithID:(NSString *)channelID;
+
+- (AATTChannelFullSyncState)fullSyncStateForChannels:(NSArray *)channels;
 
 #pragma mark Setters
 

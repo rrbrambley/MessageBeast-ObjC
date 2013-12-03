@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AATTMessageManager.h"
 
 @interface AATTADNPersistence : NSObject
 
@@ -15,5 +16,8 @@
 
 + (void)saveActionChannel:(ANKChannel *)channel actionType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID;
 + (ANKChannel *)channelWithActionType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID;
+
++ (void)saveFullSyncState:(AATTChannelFullSyncState)fullSyncState channelID:(NSString *)channelID;
++ (AATTChannelFullSyncState)fullSyncStateForChannelWithID:(NSString *)channelID;
 
 @end

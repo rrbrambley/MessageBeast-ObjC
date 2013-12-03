@@ -7,6 +7,7 @@
 //
 
 #import "AATTADNDatabase.h"
+#import "AATTADNPersistence.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
@@ -53,10 +54,31 @@ static NSUInteger const kSyncBatchSize = 100;
     return _client;
 }
 
+- (AATTChannelFullSyncState)fullSyncStateForChannelWithID:(NSString *)channelID {
+    return [AATTADNPersistence fullSyncStateForChannelWithID:channelID];
+}
+
+- (AATTChannelFullSyncState)fullSyncStateForChannels:(NSArray *)channels {
+    AATTChannelFullSyncState state = AATTChannelFullSyncStateComplete;
+    for(ANKChannel *channel in channels) {
+        AATTChannelFullSyncState thisChannelState = [self fullSyncStateForChannelWithID:channel.channelID];
+        if(thisChannelState == AATTChannelFullSyncStateStarted) {
+            return AATTChannelFullSyncStateStarted;
+        } else if(thisChannelState == AATTChannelFullSyncStateNotStarted) {
+            state = AATTChannelFullSyncStateNotStarted;
+        }
+    }
+    return state;
+}
+
 #pragma mark Setters
 
 - (void)setQueryParametersForChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters {
     [self.queryParametersByChannel setObject:parameters forKey:channelID];
+}
+
+- (void)setFullSyncState:(AATTChannelFullSyncState)fullSyncState forChannelWithID:(NSString *)channelID {
+    [AATTADNPersistence saveFullSyncState:fullSyncState channelID:channelID];
 }
 
 #pragma mark Load Messages
@@ -118,6 +140,7 @@ static NSUInteger const kSyncBatchSize = 100;
         [NSException raise:@"Illegal state" format:@"fetchAndPersistAllMessagesInChannelWithID:completionBlock: can only be executed if the AATTMessageManagerConfiguration.isDatabaseInsertionEnabled property is set to YES"];
     } else {
         NSMutableArray *messages = [[NSMutableArray alloc] initWithCapacity:kSyncBatchSize];
+        [self setFullSyncState:AATTChannelFullSyncStateStarted forChannelWithID:channelID];
         [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:nil batchSyncBlock:batchSyncBlock block:block];
     }
 }
@@ -205,6 +228,7 @@ static NSUInteger const kSyncBatchSize = 100;
                 AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
                 [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:minMaxPair.minID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock block:block];
             } else {
+                [self setFullSyncState:AATTChannelFullSyncStateComplete forChannelWithID:channelID];
                 block(messages, YES, meta, error);
             }
         } else {

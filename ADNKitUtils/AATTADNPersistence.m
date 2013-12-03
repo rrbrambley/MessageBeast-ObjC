@@ -27,4 +27,20 @@
     return (ANKChannel *)[self codingObjectForKey:[NSString stringWithFormat:@"actionChannel_%@_%@", actionType, targetChannelID]];
 }
 
++ (void)saveFullSyncState:(AATTChannelFullSyncState)fullSyncState channelID:(NSString *)channelID {
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    if(standardUserDefaults) {
+        [standardUserDefaults setInteger:fullSyncState forKey:[NSString stringWithFormat:@"syncState_%@", channelID]];
+        [standardUserDefaults synchronize];
+    }
+}
+
++ (AATTChannelFullSyncState)fullSyncStateForChannelWithID:(NSString *)channelID {
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    if(standardUserDefaults) {
+        return [standardUserDefaults integerForKey:[NSString stringWithFormat:@"syncState_%@", channelID]];
+    }
+    return AATTChannelFullSyncStateComplete;
+}
+
 @end
