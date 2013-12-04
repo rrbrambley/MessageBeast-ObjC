@@ -254,7 +254,9 @@ static NSUInteger const kSyncBatchSize = 100;
     }
     [parameters setObject:[NSNumber numberWithUnsignedInteger:kSyncBatchSize] forKey:@"count"];
     
-    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+    BOOL keepInMemory = messages.count == 0;
+    
+    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:keepInMemory completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             if(messages.count == 0) {
                 [messages addObjectsFromArray:messagePlusses];
@@ -269,8 +271,11 @@ static NSUInteger const kSyncBatchSize = 100;
             }
             
             if(meta.moreDataAvailable) {
-                AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-                [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:minMaxPair.minID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock block:block];
+                //never rely on MinMaxPair for min id here because
+                //when keepInMemory = false, the MinMaxPair will not change
+                //(and this would keep requesting the same batch over and over).
+                AATTMessagePlus *minMessage = [messagePlusses lastObject];
+                [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:minMessage.message.messageID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock block:block];
             } else {
                 NSLog(@"Setting full sync state to COMPLETE for channel %@", channelID);
                 [self setFullSyncState:AATTChannelFullSyncStateComplete forChannelWithID:channelID];
@@ -296,28 +301,30 @@ static NSUInteger const kSyncBatchSize = 100;
         [parameters removeObjectForKey:@"before_id"];
     }
     
-    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID completionBlock:block];
+    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:YES completionBlock:block];
 }
 
-- (void)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (void)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID keepInMemory:(BOOL)keepInMemory completionBlock:(AATTMessageManagerCompletionBlock)block {
     [self.client fetchMessagesInChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         BOOL appended = YES;
         NSString *beforeID = [parameters objectForKey:@"before_id"];
         NSString *sinceID = [parameters objectForKey:@"since_id"];
         
         AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-        if(beforeID && !sinceID) {
+        if(beforeID && !sinceID && keepInMemory) {
             NSString *newMinID = meta.minID;
             if(newMinID) {
                 minMaxPair.minID = newMinID;
             }
         } else if(!beforeID && sinceID) {
             appended = NO;
-            NSString *newMaxID = meta.maxID;
-            if(newMaxID) {
-                minMaxPair.maxID = newMaxID;
+            if(keepInMemory) {
+                NSString *newMaxID = meta.maxID;
+                if(newMaxID) {
+                    minMaxPair.maxID = newMaxID;
+                }
             }
-        } else if(!beforeID && !sinceID) {
+        } else if(!beforeID && !sinceID && keepInMemory) {
             minMaxPair.minID = meta.minID;
             minMaxPair.maxID = meta.maxID;
         }
@@ -346,7 +353,9 @@ static NSUInteger const kSyncBatchSize = 100;
             [newChannelMessages addEntriesFromOrderedDictionary:channelMessagePlusses];
         }
         
-        [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
+        if(keepInMemory) {
+            [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
+        }
         
         if(self.configuration.isLocationLookupEnabled) {
             [self lookupLocationForMessagePlusses:newestMessages persistIfEnabled:YES];
