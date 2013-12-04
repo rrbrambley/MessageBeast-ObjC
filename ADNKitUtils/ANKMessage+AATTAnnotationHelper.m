@@ -13,10 +13,22 @@
 
 @implementation ANKMessage (AATTAnnotationHelper)
 
+- (NSDateFormatter *)dateFormatter {
+	static NSDateFormatter *sharedDateFormatter = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		sharedDateFormatter = [[NSDateFormatter alloc] init];
+		sharedDateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+        sharedDateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+	});
+	return sharedDateFormatter;
+}
+
 - (NSDate *)ohaiDisplayDate {
     ANKAnnotation *annotation = [self firstAnnotationOfType:@"net.app.ohai.displaydate"];
     if(annotation) {
-        return [[ANKValueTransformations transformations] NSDateFromNSString:[[annotation value] objectForKey:@"date"]];
+        NSString *dateString = [[annotation value] objectForKey:@"date"];
+        return [[self dateFormatter] dateFromString:dateString];
     }
     return nil;
 }
