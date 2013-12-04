@@ -247,6 +247,19 @@ static NSUInteger const kSyncBatchSize = 100;
     }];
 }
 
+#pragma mark - Create Messages
+
+- (void)createMessageInChannelWithID:(NSString *)channelID message:(ANKMessage *)message completionBlock:(AATTMessageManagerCompletionBlock)block {
+    
+    [self.client createMessage:message inChannelWithID:channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+        if(error) {
+            block(responseObject, NO, meta, error);
+        } else {
+            [self fetchNewestMessagesInChannelWithID:channelID completionBlock:block];
+        }
+    }];
+}
+
 #pragma mark - Private Stuff
 
 ///
