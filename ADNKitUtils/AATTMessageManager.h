@@ -36,6 +36,8 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
 - (AATTChannelFullSyncState)fullSyncStateForChannels:(NSArray *)channels;
 
+- (NSArray *)loadedMessagesForChannelWithID:(NSString *)channelID;
+
 #pragma mark Setters
 
 /// Set the query parameters that should be used for the specified channel.

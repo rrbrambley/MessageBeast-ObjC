@@ -74,6 +74,14 @@ static NSUInteger const kSyncBatchSize = 100;
     return state;
 }
 
+- (NSArray *)loadedMessagesForChannelWithID:(NSString *)channelID {
+    NSOrderedDictionary *messages = [self.messagesByChannelID objectForKey:channelID];
+    if(messages.count == 0) {
+        return nil;
+    }
+    return [messages allObjects];
+}
+
 #pragma mark Setters
 
 - (void)setQueryParametersForChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters {
