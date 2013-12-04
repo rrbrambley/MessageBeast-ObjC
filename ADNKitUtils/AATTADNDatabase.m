@@ -36,7 +36,7 @@
 
 #pragma mark - Table creation
 
-static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id TEXT PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL, message_unsent BOOLEAN)";
+static NSString *const kCreateMessagesTable = @"CREATE VIRTUAL TABLE IF NOT EXISTS messages USING fts3 (message_id TEXT PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL, message_text TEXT, message_unsent BOOLEAN, message_send_attempts INTEGER)";
 
 static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_short_name TEXT, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
 
@@ -75,13 +75,22 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
 #pragma mark - Insertion
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus {
-    static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json, message_unsent) VALUES(?, ?, ?, ?, ?)";
+    static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json, message_text, message_unsent, message_send_attempts) VALUES(?, ?, ?, ?, ?, ?, ?)";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
-        NSString *jsonString = [self JSONStringWithMessage:messagePlus.message];
+        ANKMessage *message = messagePlus.message;
+        NSString *messageText = message.text;
+        
+        message.text = nil;
+        
+        NSString *jsonString = [self JSONStringWithMessage:message];
         NSNumber *unsent = [NSNumber numberWithBool:messagePlus.isUnsent];
-        if(![db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString, unsent]) {
+        NSNumber *sendAttempts = [NSNumber numberWithInteger:messagePlus.sendAttemptsCount];
+        
+        if(![db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString, messageText, unsent, sendAttempts]) {
             *rollBack = YES;
         }
+        
+        message.text = messageText;
     }];
 }
 
@@ -202,15 +211,19 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
         while([resultSet next]) {
             NSString *messageID = [resultSet stringForColumnIndex:0];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
-            NSString *messageString = [resultSet stringForColumnIndex:3];
-            BOOL isUnsent = [resultSet boolForColumnIndex:4];
+            NSString *messageJSONString = [resultSet stringForColumnIndex:3];
+            NSString *messageText = [resultSet stringForColumnIndex:4];
+            BOOL isUnsent = [resultSet boolForColumnIndex:5];
+            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:6];
             
-            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageString];
+            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageJSONString];
             m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
+            m.text = messageText;
 
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
             messagePlus.isUnsent = isUnsent;
-            [messagePlus setDisplayDate:date];
+            messagePlus.sendAttemptsCount = sendAttemptsCount;
+            messagePlus.displayDate = date;
             [messagePlusses setObject:messagePlus forKey:messageID];
             
             if(!maxID) {
@@ -233,7 +246,7 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
     __block NSString *maxID = nil;
     __block NSString *minID = nil;
     
-    NSString *select = @"SELECT message_id, message_date, message_json, message_unsent FROM messages WHERE message_channel_id = ? AND message_id IN (";
+    NSString *select = @"SELECT message_id, message_date, message_json, message_text, message_unsent, message_send_attempts FROM messages WHERE message_channel_id = ? AND message_id IN (";
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:(messageIDs.count + 1)];
     [args addObject:channelID];
     
@@ -259,14 +272,19 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
         while([resultSet next]) {
             NSString *messageID = [resultSet stringForColumnIndex:0];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
-            NSString *messageString = [resultSet stringForColumnIndex:2];
-            BOOL isUnsent = [resultSet boolForColumnIndex:3];
-            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageString];
+            NSString *messageJSONString = [resultSet stringForColumnIndex:2];
+            NSString *messageText = [resultSet stringForColumnIndex:3];
+            BOOL isUnsent = [resultSet boolForColumnIndex:4];
+            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:5];
+            
+            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageJSONString];
             m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
+            m.text = messageText;
             
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
             messagePlus.isUnsent = isUnsent;
-            [messagePlus setDisplayDate:date];
+            messagePlus.sendAttemptsCount = sendAttemptsCount;
+            messagePlus.displayDate = date;
             [messagePlusses setObject:messagePlus forKey:messageID];
             
             if(!maxID) {
@@ -287,20 +305,25 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
 - (NSOrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID {
     NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] init];
     
-    static NSString *select = @"SELECT message_id, message_date, message_json FROM messages WHERE message_channel_id = ? AND message_unsent = ? ORDER BY message_date ASC";
+    static NSString *select = @"SELECT message_id, message_date, message_json, message_text, message_send_attempts FROM messages WHERE message_channel_id = ? AND message_unsent = ? ORDER BY message_date ASC";
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, channelID, [NSNumber numberWithInt:1]];
         while([resultSet next]) {
             NSString *messageID = [resultSet objectForColumnIndex:0];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
-            NSString *messageString = [resultSet stringForColumnIndex:2];
-            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageString];
+            NSString *messageJSONString = [resultSet stringForColumnIndex:2];
+            NSString *messageText = [resultSet stringForColumnIndex:3];
+            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:4];
+            
+            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageJSONString];
             ANKMessage *message = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
+            message.text = messageText;
             
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:message];
             messagePlus.displayDate = date;
             messagePlus.isUnsent = YES;
+            messagePlus.sendAttemptsCount = sendAttemptsCount;
             [messagePlusses setObject:messagePlus forKey:messageID];
         }
     }];
