@@ -55,7 +55,7 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
     if(self) {
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
-        NSString *writableDBPath = [documentsDirectory stringByAppendingPathComponent:@"aattadndatabbase.sqlite3"];
+        NSString *writableDBPath = [documentsDirectory stringByAppendingPathComponent:@"aattadndatabase.sqlite3"];
         
         self.databaseQueue = [FMDatabaseQueue databaseQueueWithPath:writableDBPath];
         [self.databaseQueue inDatabase:^(FMDatabase *db) {
