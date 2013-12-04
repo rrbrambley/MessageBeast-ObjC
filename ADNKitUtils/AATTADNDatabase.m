@@ -48,6 +48,8 @@ static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS g
 
 static NSString *const kCreatePendingFilesTable = @"CREATE TABLE IF NOT EXISTS pending_files (pending_file_id TEXT PRIMARY KEY, pending_file_url TEXT NOT NULL, pending_file_type TEXT NOT NULL, pending_file_name TEXT NOT NULL, pending_file_mimetype TEXT NOT NULL, pending_file_kind TEXT, pending_file_public BOOLEAN, pending_file_send_attempts INTEGER)";
 
+static NSString *const kCreatePendingOEmbedsTable = @"CREATE TABLE IF NOT EXISTS pending_oembeds (pending_oembed_pending_file_id TEXT NOT NULL, pending_oembed_message_id TEXT NOT NULL, pending_oembed_channel_id TEXT NOT NULL, PRIMARY KEY (pending_oembed_pending_file_id, pending_oembed_message_id, pending_oembed_channel_id))";
+
 static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS action_messages (action_message_id TEXT PRIMARY KEY, action_message_channel_id TEXT NOT NULL, action_message_target_message_id TEXT NOT NULL, action_message_target_channel_id TEXT NOT NULL)";
 
 #pragma mark - Initializer
@@ -69,6 +71,7 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
             [db executeUpdate:kCreateOEmbedInstancesTable];
             [db executeUpdate:kCreateGeolocationsTable];
             [db executeUpdate:kCreatePendingFilesTable];
+            [db executeUpdate:kCreatePendingOEmbedsTable];
             [db executeUpdate:kCreateActionMessagesTable];
         }];
     }
