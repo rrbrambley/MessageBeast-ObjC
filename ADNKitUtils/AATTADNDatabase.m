@@ -192,6 +192,18 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
+- (void)insertOrReplacePendingDeletionForMessagePlus:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles {
+    static NSString *insertOrReplacePendingDeletion = @"INSERT OR REPLACE INTO pending_message_deletions (pending_message_deletion_message_id, pending_message_deletion_channel_id, pending_message_deletion_delete_associated_files) VALUES (?, ?, ?)";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        ANKMessage *message = messagePlus.message;
+        NSNumber *delete = [NSNumber numberWithBool:deleteAssociatedFiles];
+        if(![db executeUpdate:insertOrReplacePendingDeletion, message.messageID, message.channelID, delete]) {
+            *rollback = YES;
+            return;
+        }
+    }];
+}
+
 #pragma mark - Retrieval
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelId limit:(NSUInteger)limit {

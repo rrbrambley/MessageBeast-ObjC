@@ -65,6 +65,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///
 - (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId;
 
+- (void)insertOrReplacePendingDeletionForMessagePlus:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles;
+
 #pragma mark - Retrieval
 
 /// Obtain a batch of persisted AATTMessagePlus objects in reverse chronological order.
