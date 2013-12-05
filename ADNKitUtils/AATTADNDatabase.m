@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#import "AATTActionMessageSpec.h"
 #import "AATTADNDatabase.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
@@ -479,6 +480,62 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         }
     }];
     return geolocation;
+}
+
+- (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs {
+    return [self actionMessageSpecsForTargetMessagesWithIDs:targetMessageIDs inActionChannelWithID:nil];
+}
+
+- (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs inActionChannelWithID:(NSString *)actionChannelID {
+    NSMutableArray *actionMessageSpecs = [[NSMutableArray alloc] initWithCapacity:targetMessageIDs.count];
+    NSString *select = @"SELECT * FROM action_messages WHERE";
+    
+    NSInteger startIndex = 0;
+    NSMutableArray *args = nil;
+    if(actionChannelID) {
+        args = [NSMutableArray arrayWithCapacity:targetMessageIDs.count + 1];
+        [args setObject:actionChannelID atIndexedSubscript:0];
+        select = [NSString stringWithFormat:@"%@ action_message_channel_id = ? AND", select];
+        startIndex = 1;
+    } else {
+        args = [NSMutableArray arrayWithCapacity:targetMessageIDs.count];
+    }
+    
+    select = [NSString stringWithFormat:@"%@ action_message_target_message_id IN (", select];
+    
+    NSUInteger index = startIndex;
+    for(NSString *messageID in targetMessageIDs) {
+        [args setObject:messageID atIndexedSubscript:index];
+        
+        NSString *append;
+        if(index > startIndex) {
+            append = @", ?";
+        } else {
+            append = @" ?";
+        }
+        index++;
+        select = [NSString stringWithFormat:@"%@%@", select, append];
+    }
+    select = [NSString stringWithFormat:@"%@)", select];
+
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
+        while([resultSet next]) {
+            NSString *aMessageID = [resultSet stringForColumnIndex:0];
+            NSString *aChannelID = [resultSet stringForColumnIndex:1];
+            NSString *tMessageID = [resultSet stringForColumnIndex:2];
+            NSString *tChannelID = [resultSet stringForColumnIndex:3];
+            
+            AATTActionMessageSpec *spec = [[AATTActionMessageSpec alloc] init];
+            spec.actionMessageID = aMessageID;
+            spec.actionChannelID = aChannelID;
+            spec.targetMessageID = tMessageID;
+            spec.targetChannelID = tChannelID;
+            [actionMessageSpecs addObject:spec];
+        }
+    }];
+    
+    return actionMessageSpecs;
 }
 
 #pragma mark - Deletion

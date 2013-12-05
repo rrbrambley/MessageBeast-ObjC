@@ -198,6 +198,10 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude;
 
+- (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs;
+
+- (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs inActionChannelWithID:(NSString *)actionChannelID;
+
 #pragma mark - Deletion
 
 /// Delete a message and all persisted data associated (hashtag instances, location instances,
