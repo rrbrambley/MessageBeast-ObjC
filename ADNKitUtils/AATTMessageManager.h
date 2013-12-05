@@ -124,10 +124,13 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 /// After messages are fetched, processing on the messages will occur in accordance
 /// with this manager's configuration (e.g. database insertion).
 ///
+/// This method can only succesfully execute if there are 0 unsent messages in the specified channel.
+///
 /// @param channelID the ID of the channel for which messages should be fetched.
 /// @param completionBlock the AATTMessageManagerCompletionBlock to which the results will be delivered.
+/// @return NO if the fetch cannot be executed because unsent message must be sent first, or YES otherwise.
 ///
-- (void)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
+- (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
 /// Fetch the newest messages in the channel with the specified ID.
 ///
@@ -137,10 +140,13 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 /// After messages are fetched, processing on the messages will occur in accordance
 /// with this manager's configuration (e.g. database insertion).
 ///
+/// This method can only succesfully execute if there are 0 unsent messages in the specified channel.
+///
 /// @param channelID the ID of the channel for which messages should be fetched.
 /// @param completionBlock the AATTMessageManagerCompletionBlock to which the results will be delivered.
+/// @return NO if the fetch cannot be executed because unsent message must be sent first, or YES otherwise.
 ///
-- (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
+- (BOOL)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
 /// Fetch more messages in the channel with the specified ID.
 ///
@@ -150,10 +156,13 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 /// After messages are fetched, processing on the messages will occur in accordance
 /// with this manager's configuration (e.g. database insertion).
 ///
+/// This method can only succesfully execute if there are 0 unsent messages in the specified channel.
+///
 /// @param channelID the ID of the channel for which messages should be fetched.
 /// @param completionBlock the AATTMessageManagerCompletionBlock to which the results will be delivered.
+/// @return NO if the fetch cannot be executed because unsent message must be sent first, or YES otherwise.
 ///
-- (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
+- (BOOL)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
 /// Fetch a new instance of the specified AATTMessagePlus' backing message.
 ///

@@ -29,6 +29,7 @@
 @property NSMutableDictionary *queryParametersByChannel;
 @property NSMutableDictionary *minMaxPairs;
 @property NSMutableDictionary *messagesByChannelID;
+@property NSMutableDictionary *unsentMessagesByChannelID;
 @property (nonatomic) ANKClient *client;
 @property AATTMessageManagerConfiguration *configuration;
 @property AATTADNDatabase *database;
@@ -46,6 +47,7 @@ static NSUInteger const kSyncBatchSize = 100;
         self.queryParametersByChannel = [NSMutableDictionary dictionaryWithCapacity:1];
         self.minMaxPairs = [NSMutableDictionary dictionaryWithCapacity:1];
         self.messagesByChannelID = [NSMutableDictionary dictionaryWithCapacity:1];
+        self.unsentMessagesByChannelID = [NSMutableDictionary dictionaryWithCapacity:1];
         self.database = [AATTADNDatabase sharedInstance];
     }
     return self;
@@ -197,19 +199,19 @@ static NSUInteger const kSyncBatchSize = 100;
     }
 }
 
-- (void)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID completionBlock:block];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID completionBlock:block];
 }
 
-- (void)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (BOOL)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil completionBlock:block];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil completionBlock:block];
 }
 
-- (void)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (BOOL)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID completionBlock:block];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID completionBlock:block];
 }
 
 - (void)refreshMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerRefreshCompletionBlock)block {
@@ -262,6 +264,24 @@ static NSUInteger const kSyncBatchSize = 100;
 
 #pragma mark - Private Stuff
 
+- (NSMutableOrderedDictionary *)existingOrNewMessagesDictionaryforChannelWithID:(NSString *)channelID {
+    NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:channelID];
+    if(!channelMessages) {
+        channelMessages = [NSMutableOrderedDictionary orderedDictionary];
+        [self.messagesByChannelID setObject:channelMessages forKey:channelID];
+    }
+    return channelMessages;
+}
+
+- (NSMutableOrderedDictionary *)existingOrNewUnsentMessagesDictionaryforChannelWithID:(NSString *)channelID {
+    NSMutableOrderedDictionary *channelMessages = [self.unsentMessagesByChannelID objectForKey:channelID];
+    if(!channelMessages) {
+        channelMessages = [self.database unsentMessagesInChannelWithID:channelID].mutableCopy;
+        [self.unsentMessagesByChannelID setObject:channelMessages forKey:channelID];
+    }
+    return channelMessages;
+}
+
 ///
 /// this is only meant to be used with fetchAndPersistAllMessagesInChannelWithID
 ///
@@ -308,7 +328,7 @@ static NSUInteger const kSyncBatchSize = 100;
     }];
 }
 
-- (void)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID completionBlock:(AATTMessageManagerCompletionBlock)block {
     NSMutableDictionary *parameters = [[self.queryParametersByChannel objectForKey:channelID] mutableCopy];
     if(sinceID) {
         [parameters setObject:sinceID forKey:@"since_id"];
@@ -322,10 +342,15 @@ static NSUInteger const kSyncBatchSize = 100;
         [parameters removeObjectForKey:@"before_id"];
     }
     
-    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:YES completionBlock:block];
+    return [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:YES completionBlock:block];
 }
 
-- (void)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID keepInMemory:(BOOL)keepInMemory completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (BOOL)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID keepInMemory:(BOOL)keepInMemory completionBlock:(AATTMessageManagerCompletionBlock)block {
+    NSMutableOrderedDictionary *unsentMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
+    if(unsentMessages.count > 0) {
+        return NO;
+    }
+    
     [self.client fetchMessagesInChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         BOOL appended = YES;
         NSString *beforeID = [parameters objectForKey:@"before_id"];
@@ -386,6 +411,8 @@ static NSUInteger const kSyncBatchSize = 100;
             block(newestMessages, appended, meta, error);
         }
     }];
+    
+    return YES;
 }
 
 - (AATTMinMaxPair *)minMaxPairForChannelID:(NSString *)channelID {
