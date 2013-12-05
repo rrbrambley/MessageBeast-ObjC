@@ -531,6 +531,26 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
+#pragma mark - Other
+
+- (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID {
+    static NSString *select = @"SELECT action_message_id FROM action_messages WHERE action_message_channel_id = ? AND action_message_target_message_id = ?";
+    
+    NSArray *args = @[actionChannelID, targetMessageID];
+    
+    __block BOOL has = NO;
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
+        if([resultSet next]) {
+            [resultSet close];
+            has = YES;
+        }
+    }];
+     
+    return has;
+}
+
 #pragma mark - Private Stuff
 
 - (NSString *)JSONStringWithMessage:(ANKMessage *)message {

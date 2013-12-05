@@ -207,4 +207,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///
 - (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus;
 
+#pragma mark - Other
+
+- (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID;
+
 @end
