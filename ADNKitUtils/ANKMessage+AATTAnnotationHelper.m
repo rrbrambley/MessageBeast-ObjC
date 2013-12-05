@@ -38,4 +38,12 @@
     return [targetMessage.value objectForKey:@"id"];
 }
 
+- (void)addDisplayDateAnnotationWithDate:(NSDate *)date {
+    NSDictionary *value = @{@"date" : [[self dateFormatter] stringFromDate:date]};
+    ANKAnnotation *annotation = [ANKAnnotation annotationWithType:@"net.app.ohai.displaydate" value:value];
+    NSMutableArray *annotations = [NSMutableArray arrayWithArray:self.annotations];
+    [annotations addObject:annotation];
+    self.annotations = annotations;
+}
+
 @end
