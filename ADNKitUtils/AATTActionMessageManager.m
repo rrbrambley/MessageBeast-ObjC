@@ -63,7 +63,7 @@
             NSLog(@"synced batch of %d messages", messagePlusses.count);
             for(AATTMessagePlus *messagePlus in messagePlusses) {
                 NSString *targetMessageId = [messagePlus.message targetMessageId];
-                [self.database insertOrReplaceActionMessage:messagePlus targetMessageId:targetMessageId targetChannelId:targetChannelId];
+                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageId:targetMessageId targetChannelId:targetChannelId];
             }
         } else {
             NSLog(@"Batch sync failed with error: %@", error.localizedDescription);

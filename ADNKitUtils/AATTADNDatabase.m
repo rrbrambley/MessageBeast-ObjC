@@ -52,7 +52,7 @@ static NSString *const kCreatePendingFilesTable = @"CREATE TABLE IF NOT EXISTS p
 
 static NSString *const kCreatePendingOEmbedsTable = @"CREATE TABLE IF NOT EXISTS pending_oembeds (pending_oembed_pending_file_id TEXT NOT NULL, pending_oembed_message_id TEXT NOT NULL, pending_oembed_channel_id TEXT NOT NULL, PRIMARY KEY (pending_oembed_pending_file_id, pending_oembed_message_id, pending_oembed_channel_id))";
 
-static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS action_messages (action_message_id TEXT PRIMARY KEY, action_message_channel_id TEXT NOT NULL, action_message_target_message_id TEXT NOT NULL, action_message_target_channel_id TEXT NOT NULL)";
+static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EXISTS action_messages (action_message_id TEXT PRIMARY KEY, action_message_channel_id TEXT NOT NULL, action_message_target_message_id TEXT NOT NULL, action_message_target_channel_id TEXT NOT NULL)";
 
 #pragma mark - Initializer
 
@@ -75,7 +75,7 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
             [db executeUpdate:kCreatePendingMessageDeletionsTable];
             [db executeUpdate:kCreatePendingFilesTable];
             [db executeUpdate:kCreatePendingOEmbedsTable];
-            [db executeUpdate:kCreateActionMessagesTable];
+            [db executeUpdate:kCreateActionMessageSpecsTable];
         }];
     }
     return self;
@@ -180,11 +180,11 @@ static NSString *const kCreateActionMessagesTable = @"CREATE TABLE IF NOT EXISTS
     }
 }
 
-- (void)insertOrReplaceActionMessage:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId {
-    static NSString *insertOrReplaceActionMessage = @"INSERT OR REPLACE INTO action_messages (action_message_id, action_message_channel_id, action_message_target_message_id, action_message_target_channel_id) VALUES (?, ?, ?, ?)";
+- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId {
+    static NSString *insertOrReplaceActionMessageSpec = @"INSERT OR REPLACE INTO action_messages (action_message_id, action_message_channel_id, action_message_target_message_id, action_message_target_channel_id) VALUES (?, ?, ?, ?)";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         ANKMessage *message = messagePlus.message;
-        if(![db executeUpdate:insertOrReplaceActionMessage, message.messageID, message.channelID, targetMessageId, targetChannelId]) {
+        if(![db executeUpdate:insertOrReplaceActionMessageSpec, message.messageID, message.channelID, targetMessageId, targetChannelId]) {
             *rollback = YES;
             return;
         }

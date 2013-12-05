@@ -57,13 +57,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///
 - (void)insertOrReplaceOEmbedInstances:(AATTMessagePlus *)messagePlus;
 
-/// Insert an action message
+/// Insert an action message spec.
 ///
 /// @param messagePlus the action message
 /// @param targetMessageId the ID of the target message
 /// @param targetChannelId the ID of the target message's channel.
 ///
-- (void)insertOrReplaceActionMessage:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId;
+- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId;
 
 #pragma mark - Retrieval
 
