@@ -17,10 +17,14 @@
 @property NSInteger sendAttemptsCount;
 @property (nonatomic) NSArray *photoOEmbeds;
 @property (nonatomic) NSArray *html5VideoOEmbeds;
+@property NSSet *pendingOEmbeds;
+
++ (instancetype)unsentMessagePlusForChannelWithID:(NSString *)channelID messageID:(NSString *)messageID message:(ANKMessage *)message pendingFileIDsForOEmbeds:(NSSet *)pendingFileIDsForOEmbeds;
 
 - (id)initWithMessage:(ANKMessage *)message;
 - (ANKAnnotation *)firstPhotoOEmbedAnnotation;
 - (ANKAnnotation *)firstHTML5VideoOEmbedAnnotation;
 - (NSURL *)firstHTML5VideoOEmbedSourceURL;
+- (void)incrementSendAttemptsCount;
 
 @end

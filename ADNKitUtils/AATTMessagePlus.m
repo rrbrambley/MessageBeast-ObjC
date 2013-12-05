@@ -7,8 +7,25 @@
 //
 
 #import "AATTMessagePlus.h"
+#import "ANKMessage+AATTAnnotationHelper.h"
 
 @implementation AATTMessagePlus
+
++ (instancetype)unsentMessagePlusForChannelWithID:(NSString *)channelID messageID:(NSString *)messageID message:(ANKMessage *)message pendingFileIDsForOEmbeds:(NSSet *)pendingFileIDsForOEmbeds {
+
+    NSDate *date = [NSDate date];
+    
+    message.messageID = messageID;
+    message.channelID = channelID;
+    [message addDisplayDateAnnotationWithDate:date];
+    
+    AATTMessagePlus *unsentMessagePlus = [[AATTMessagePlus alloc] initWithMessage:message];
+    unsentMessagePlus.isUnsent = YES;
+    unsentMessagePlus.displayDate = date;
+    unsentMessagePlus.pendingOEmbeds = [NSSet setWithSet:pendingFileIDsForOEmbeds];
+    
+    return unsentMessagePlus;
+}
 
 - (id)initWithMessage:(ANKMessage *)message {
     self = [super init];
@@ -81,6 +98,10 @@
         }
     }
     return nil;
+}
+
+- (void)incrementSendAttemptsCount {
+    self.sendAttemptsCount++;
 }
 
 @end
