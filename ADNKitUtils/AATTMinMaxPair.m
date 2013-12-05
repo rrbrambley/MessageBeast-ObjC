@@ -11,10 +11,10 @@
 @implementation AATTMinMaxPair
 
 - (AATTMinMaxPair *)combineWith:(AATTMinMaxPair *)otherMinMaxPair {
-    NSNumber *thisMin = self.minID ? [NSNumber numberWithInteger:[self.minID integerValue]] : nil;
-    NSNumber *thisMax = self.maxID ? [NSNumber numberWithInteger:[self.maxID integerValue]] : nil;
-    NSNumber *otherMin = otherMinMaxPair.minID ? [NSNumber numberWithInteger:[otherMinMaxPair.minID integerValue]] : nil;
-    NSNumber *otherMax = otherMinMaxPair.maxID ? [NSNumber numberWithInteger:[otherMinMaxPair.maxID integerValue]] : nil;
+    NSNumber *thisMin = [self minIDAsNumber];
+    NSNumber *thisMax = [self maxIDAsNumber];
+    NSNumber *otherMin = [otherMinMaxPair minIDAsNumber];
+    NSNumber *otherMax = [otherMinMaxPair maxIDAsNumber];
     
     NSString *newMin = nil;
     NSString *newMax = nil;
@@ -39,6 +39,14 @@
     pair.maxID = newMax;
     
     return pair;
+}
+
+- (NSNumber *)maxIDAsNumber {
+    return self.maxID ? [NSNumber numberWithInteger:[self.maxID integerValue]] : nil;
+}
+
+- (NSNumber *)minIDAsNumber {
+    return self.minID ? [NSNumber numberWithInteger:[self.minID integerValue]] : nil;
 }
 
 @end

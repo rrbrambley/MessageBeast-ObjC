@@ -14,5 +14,7 @@
 @property NSString *maxID;
 
 - (AATTMinMaxPair *)combineWith:(AATTMinMaxPair *)otherMinMaxPair;
+- (NSNumber *)maxIDAsNumber;
+- (NSNumber *)minIDAsNumber;
 
 @end
