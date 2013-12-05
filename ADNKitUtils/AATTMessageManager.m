@@ -236,19 +236,50 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 #pragma mark - Delete Messages
 
 - (void)deleteMessage:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {
-    [self.client deleteMessage:messagePlus.message completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-       
-        if(!error) {
-            NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:messagePlus.message.channelID];
-            if(channelMessages) {
-                [channelMessages removeEntryWithObject:messagePlus pairedWithKey:messagePlus.message.messageID];
-            }
+    if(messagePlus.isUnsent) {
+        ANKMessage *message = messagePlus.message;
+        NSString *messageID = message.messageID;
+        NSString *channelID = message.channelID;
+        
+        [self.database deleteMessagePlus:messagePlus];
+        [[self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID] removeEntryWithKey:messageID];
+        
+        [self didDeleteMessageWithID:messageID inChannelWithID:channelID];
+        block(nil, nil);
+    } else {
+        void (^delete)(void) = ^void(void) {
             [self.database deleteMessagePlus:messagePlus];
-            block(meta, error);
-        } else {
-            block(meta, error);
-        }
-    }];
+            [self didDeleteMessageWithID:messagePlus.message.messageID inChannelWithID:messagePlus.message.channelID];
+        };
+        
+        [self.client deleteMessage:messagePlus.message completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                delete();
+                [self.database deletePendingMessageDeletionForMessagePlus:messagePlus];
+                block(meta, error);
+            } else {
+                delete();
+                [self.database insertOrReplacePendingDeletionForMessagePlus:messagePlus deleteAssociatedFiles:NO];
+                block(meta, error);
+            }
+        }];
+    }
+}
+
+- (void)didDeleteMessageWithID:(NSString *)messageID inChannelWithID:(NSString *)channelID {
+    NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
+    [channelMessages removeEntryWithKey:messageID];
+    
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    if(channelMessages.count > 0) {
+        minMaxPair.maxID = channelMessages.keyEnumerator.nextObject;
+    } else {
+        minMaxPair.maxID = nil;
+    }
+    
+    if([messageID isEqualToString:minMaxPair.minID]) {
+        minMaxPair.minID = channelMessages.allKeys.lastObject;
+    }
 }
 
 #pragma mark - Create Messages
