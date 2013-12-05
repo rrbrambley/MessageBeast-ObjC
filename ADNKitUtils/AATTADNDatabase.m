@@ -600,6 +600,15 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
+- (void)deletePendingMessageDeletionForMessagePlus:(AATTMessagePlus *)messagePlus {
+    static NSString *delete = @"DELETE FROM pending_message_deletions WHERE pending_message_deletion_message_id = ?";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if(![db executeUpdate:delete, messagePlus.message.messageID]) {
+            *rollback = YES;
+        }
+    }];
+}
+
 #pragma mark - Other
 
 - (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID {
