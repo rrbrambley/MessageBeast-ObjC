@@ -16,6 +16,8 @@ typedef NS_ENUM(NSUInteger, AATTChannelFullSyncState) {
 	AATTChannelFullSyncStateComplete
 };
 
+extern NSString *const AATTMessageManagerDidSendUnsentMessagesNotification;
+
 @interface AATTMessageManager : NSObject
 
 typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error);
@@ -181,5 +183,11 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 #pragma mark - Create Messages
 
 - (void)createMessageInChannelWithID:(NSString *)channelID message:(ANKMessage *)message completionBlock:(AATTMessageManagerCompletionBlock)block;
+
+- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message;
+
+- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileIDs:(NSSet *)pendingFileIDs;
+
+- (void)sendAllUnsentForChannelWithID:(NSString *)channelID;
 
 @end
