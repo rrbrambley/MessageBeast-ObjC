@@ -43,4 +43,20 @@
     return [self.database pendingFileWithID:pendingFileID];
 }
 
+- (void)uploadPendingFileWithID:(NSString *)pendingFileID completionBlock:(AATTFileManagerCompletionBlock)completionBlock {
+    AATTPendingFile *pendingFile = [self pendingFileWithID:pendingFileID];
+    ANKFile *file = pendingFile.file;
+    [self.client createFile:file withContentsOfURL:file.URL progress:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+        
+    } completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+        if(!error) {
+            [self.database deletePendingFile:pendingFile];
+        } else {
+            [pendingFile incrementSendAttemptsCount];
+            [self.database insertOrReplacePendingFile:pendingFile];
+            completionBlock(nil, meta, error);
+        }
+    }];
+}
+
 @end
