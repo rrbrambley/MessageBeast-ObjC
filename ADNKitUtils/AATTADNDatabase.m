@@ -14,6 +14,7 @@
 #import "AATTHashtagInstances.h"
 #import "AATTMessagePlus.h"
 #import "AATTOrderedMessageBatch.h"
+#import "AATTPendingFile.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "NSOrderedDictionary.h"
@@ -198,6 +199,18 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         ANKMessage *message = messagePlus.message;
         NSNumber *delete = [NSNumber numberWithBool:deleteAssociatedFiles];
         if(![db executeUpdate:insertOrReplacePendingDeletion, message.messageID, message.channelID, delete]) {
+            *rollback = YES;
+            return;
+        }
+    }];
+}
+
+- (void)insertOrReplacePendingFile:(AATTPendingFile *)pendingFile {
+    static NSString *insert = @"INSERT OR REPLACE INTO pending_files (pending_file_id, pending_file_url, pending_file_type, pending_file_name, pending_file_mimetype, pending_file_kind, pending_file_public, pending_file_send_attempts) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        NSNumber *public = [NSNumber numberWithBool:pendingFile.isPublic];
+        NSNumber *sendAttempts = [NSNumber numberWithInteger:pendingFile.sendAttemptsCount];
+        if(![db executeUpdate:insert, pendingFile.ID, pendingFile.URL, pendingFile.type, pendingFile.name, pendingFile.mimeType, pendingFile.kind, public, sendAttempts]) {
             *rollback = YES;
             return;
         }

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, NSOrderedDictionary;
+@class AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, AATTPendingFile, NSOrderedDictionary;
 
 typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
     AATTLocationPrecisionOneHundredMeters = 0, //actually 111 m
@@ -66,6 +66,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId;
 
 - (void)insertOrReplacePendingDeletionForMessagePlus:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles;
+
+- (void)insertOrReplacePendingFile:(AATTPendingFile *)pendingFile;
 
 #pragma mark - Retrieval
 
