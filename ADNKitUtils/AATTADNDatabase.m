@@ -563,6 +563,29 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     return actionMessageSpecs;
 }
 
+- (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID {
+    static NSString *select = @"SELECT * FROM pending_files WHERE pending_file_id = ?";
+    __block AATTPendingFile *pendingFile = nil;
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, pendingFileID];
+        if([resultSet next]) {
+            pendingFile = [[AATTPendingFile alloc] init];
+            pendingFile.ID = pendingFileID;
+            pendingFile.URL = [resultSet objectForColumnIndex:1];
+            pendingFile.type = [resultSet stringForColumnIndex:2];
+            pendingFile.name = [resultSet stringForColumnIndex:3];
+            pendingFile.mimeType = [resultSet stringForColumnIndex:4];
+            pendingFile.kind = [resultSet stringForColumnIndex:5];
+            pendingFile.isPublic = [resultSet boolForColumnIndex:6];
+            pendingFile.sendAttemptsCount = [resultSet intForColumnIndex:7];
+            
+            [resultSet close];
+        }
+    }];
+    return pendingFile;
+}
+
 #pragma mark - Deletion
 
 - (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus {
