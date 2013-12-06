@@ -219,6 +219,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 
 - (void)deletePendingMessageDeletionForMessagePlus:(AATTMessagePlus *)messagePlus;
 
+- (void)deletePendingFile:(AATTPendingFile *)pendingFile;
+
 #pragma mark - Other
 
 - (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID;
