@@ -101,8 +101,19 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             *rollBack = YES;
         }
         
+        if(messagePlus.pendingOEmbeds.count > 0) {
+            for(NSString *pendingOEmbed in messagePlus.pendingOEmbeds) {
+                [self insertOrReplacePendingOEmbedForPendingFileID:pendingOEmbed messageID:message.messageID channelID:message.channelID db:db];
+            }
+        }
+        
         message.text = messageText;
     }];
+}
+
+- (void)insertOrReplacePendingOEmbedForPendingFileID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID db:(FMDatabase *)db {
+    static NSString *insert = @"INSERT OR REPLACE INTO pending_oembeds (pending_oembed_pending_file_id, pending_oembed_message_id, pending_oembed_channel_id) VALUES (?, ?, ?)";
+    [db executeUpdate:insert, pendingFileID, messageID, channelID];
 }
 
 - (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation {
