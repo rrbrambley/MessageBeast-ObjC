@@ -665,6 +665,15 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
+- (void)deletePendingOEmbedForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID {
+    static NSString *delete = @"DELETE FROM pending_oembeds WHERE pending_oembed_pending_file_id = ? AND pending_oembed_message_id = ? AND pending_oembed_channel_id = ?";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if(![db executeUpdate:delete, pendingFileID, messageID, channelID]) {
+            *rollback = YES;
+        }
+    }];
+}
+
 #pragma mark - Other
 
 - (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID {
