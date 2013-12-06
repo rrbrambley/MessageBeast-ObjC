@@ -33,6 +33,7 @@
 		E2BA21521826CB5D0023363A /* AATTHashtagInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BA21511826CB5D0023363A /* AATTHashtagInstances.m */; };
 		E2C751791825C2BF003BE00E /* AATTGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C751781825C2BF003BE00E /* AATTGeolocation.m */; };
 		E2D2F71E184FF26B00A72B8B /* AATTActionMessageSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D2F71D184FF26B00A72B8B /* AATTActionMessageSpec.m */; };
+		E2D2F72A18521E7200A72B8B /* AATTADNFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D2F72918521E7200A72B8B /* AATTADNFileManager.m */; };
 		E2D2F72D185220B000A72B8B /* AATTPendingFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D2F72C185220B000A72B8B /* AATTPendingFile.m */; };
 		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
 		E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
@@ -146,6 +147,8 @@
 		E2C751781825C2BF003BE00E /* AATTGeolocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTGeolocation.m; sourceTree = "<group>"; };
 		E2D2F71C184FF26B00A72B8B /* AATTActionMessageSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageSpec.h; sourceTree = "<group>"; };
 		E2D2F71D184FF26B00A72B8B /* AATTActionMessageSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageSpec.m; sourceTree = "<group>"; };
+		E2D2F72818521E7200A72B8B /* AATTADNFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTADNFileManager.h; sourceTree = "<group>"; };
+		E2D2F72918521E7200A72B8B /* AATTADNFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTADNFileManager.m; sourceTree = "<group>"; };
 		E2D2F72B185220B000A72B8B /* AATTPendingFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingFile.h; sourceTree = "<group>"; };
 		E2D2F72C185220B000A72B8B /* AATTPendingFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingFile.m; sourceTree = "<group>"; };
 		E2E5A6D61817FBF9009DECDB /* libADNKitUtils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libADNKitUtils.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +204,8 @@
 				E29A8323182301F00057245C /* AATTMinMaxPair.m */,
 				E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */,
 				E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */,
+				E2D2F72818521E7200A72B8B /* AATTADNFileManager.h */,
+				E2D2F72918521E7200A72B8B /* AATTADNFileManager.m */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -449,6 +454,7 @@
 				E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */,
 				E287DA2C184E42670035CE71 /* NSObject+AATTPersistence.m in Sources */,
 				E2C751791825C2BF003BE00E /* AATTGeolocation.m in Sources */,
+				E2D2F72A18521E7200A72B8B /* AATTADNFileManager.m in Sources */,
 				E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */,
 				E2BA21521826CB5D0023363A /* AATTHashtagInstances.m in Sources */,
 				E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */,
