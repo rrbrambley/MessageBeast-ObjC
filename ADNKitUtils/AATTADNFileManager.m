@@ -12,23 +12,15 @@
 
 @interface AATTADNFileManager ()
 @property AATTADNDatabase *database;
+@property ANKClient *client;
 @end
 
 @implementation AATTADNFileManager
 
-+ (instancetype)sharedInstance {
-    static AATTADNFileManager *sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[AATTADNFileManager alloc] init];
-    });
-    
-    return sharedInstance;
-}
-
-- (id)init {
+- (id)initWithClient:(ANKClient *)client {
     self = [super init];
     if(self) {
+        self.client = client;
         self.database = [AATTADNDatabase sharedInstance];
     }
     return self;

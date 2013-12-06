@@ -10,7 +10,8 @@
 
 @interface AATTADNFileManager : NSObject
 
-+ (instancetype)sharedInstance;
+
+- (id)initWithClient:(ANKClient *)client;
 
 - (AATTPendingFile *)addPendingFileWithURL:(NSURL *)URL type:(NSString *)type mimeType:(NSString *)mimeType kind:(NSString *)kind isPublic:(BOOL)isPublic;
 - (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID;
