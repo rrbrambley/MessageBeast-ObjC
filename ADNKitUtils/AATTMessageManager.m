@@ -11,6 +11,7 @@
 #import "AATTADNPersistence.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
+#import "AATTADNFileManager.h"
 #import "AATTGeolocation.h"
 #import "AATTHashtagInstances.h"
 #import "AATTMessageManager.h"
@@ -30,9 +31,11 @@
 @property NSMutableDictionary *minMaxPairs;
 @property NSMutableDictionary *messagesByChannelID;
 @property NSMutableDictionary *unsentMessagesByChannelID;
+@property NSMutableDictionary *pendingFiles;
 @property (nonatomic) ANKClient *client;
 @property AATTMessageManagerConfiguration *configuration;
 @property AATTADNDatabase *database;
+@property AATTADNFileManager *fileManager;
 @end
 
 static NSUInteger const kSyncBatchSize = 100;
@@ -50,7 +53,9 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         self.minMaxPairs = [NSMutableDictionary dictionaryWithCapacity:1];
         self.messagesByChannelID = [NSMutableDictionary dictionaryWithCapacity:1];
         self.unsentMessagesByChannelID = [NSMutableDictionary dictionaryWithCapacity:1];
+        self.pendingFiles = [NSMutableDictionary dictionary];
         self.database = [AATTADNDatabase sharedInstance];
+        self.fileManager = [[AATTADNFileManager alloc] initWithClient:client];
     }
     return self;
 }
@@ -359,55 +364,54 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 - (void)sendUnsentMessages:(NSMutableOrderedDictionary *)unsentMessages sentMessageIDs:(NSMutableArray *)sentMessageIDs {
     AATTMessagePlus *messagePlus = unsentMessages.objectEnumerator.nextObject;
-    if(messagePlus.pendingOEmbeds.count > 0) {
-        //TODO
-        return;
-    }
-    
-    ANKMessage *message = messagePlus.message.copy;
-    
-    //we had them set for display locally, but we should
-    //let the server generate the "real" entities.
-    message.entities = nil;
-    
-    [self.client createMessage:message inChannelWithID:message.channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-        if(!error) {
-            [unsentMessages removeEntryWithKey:message.messageID];
-            [sentMessageIDs addObject:message.messageID];
+    [self uploadPendingOEmbedsForMessagePlus:messagePlus completionBlock:^(BOOL success) {
+        if(success) {
+            ANKMessage *message = messagePlus.message.copy;
             
-            [self.database deleteMessagePlus:messagePlus];
+            //we had them set for display locally, but we should
+            //let the server generate the "real" entities.
+            message.entities = nil;
             
-            NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:message.channelID];
-            [channelMessages removeEntryWithKey:message.messageID];
-            
-            AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:message.channelID];
-            if(unsentMessages.count > 0) {
-                NSString *nextID = unsentMessages.keyEnumerator.nextObject;
-                minMaxPair.maxID = nextID;
-                [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs];
-            } else {
-                if(channelMessages.count > 0) {
-                    //step back in time until we find the first message that was NOT one
-                    //of the unsent messages. this will be the max id.
-                    NSEnumerator *enumerator = channelMessages.keyEnumerator;
-                    NSString *nextID = nil;
-                    while((nextID = enumerator.nextObject)) {
-                        if(![sentMessageIDs containsObject:nextID]) {
-                            minMaxPair.maxID = nextID;
-                            break;
+            [self.client createMessage:message inChannelWithID:message.channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+                if(!error) {
+                    [unsentMessages removeEntryWithKey:message.messageID];
+                    [sentMessageIDs addObject:message.messageID];
+                    
+                    [self.database deleteMessagePlus:messagePlus];
+                    
+                    NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:message.channelID];
+                    [channelMessages removeEntryWithKey:message.messageID];
+                    
+                    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:message.channelID];
+                    if(unsentMessages.count > 0) {
+                        NSString *nextID = unsentMessages.keyEnumerator.nextObject;
+                        minMaxPair.maxID = nextID;
+                        [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs];
+                    } else {
+                        if(channelMessages.count > 0) {
+                            //step back in time until we find the first message that was NOT one
+                            //of the unsent messages. this will be the max id.
+                            NSEnumerator *enumerator = channelMessages.keyEnumerator;
+                            NSString *nextID = nil;
+                            while((nextID = enumerator.nextObject)) {
+                                if(![sentMessageIDs containsObject:nextID]) {
+                                    minMaxPair.maxID = nextID;
+                                    break;
+                                }
+                            }
+                        } else {
+                            minMaxPair.maxID = nil;
                         }
+                        
+                        NSDictionary *userInfo = @{@"channelID" : message.channelID, @"messageIDs" : sentMessageIDs};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidSendUnsentMessagesNotification object:self userInfo:userInfo];
                     }
                 } else {
-                    minMaxPair.maxID = nil;
+                    NSLog(@"Failed to send unsent message; %@", error.localizedDescription);
+                    [messagePlus incrementSendAttemptsCount];
+                    [self.database insertOrReplaceMessage:messagePlus];
                 }
-                
-                NSDictionary *userInfo = @{@"channelID" : message.channelID, @"messageIDs" : sentMessageIDs};
-                [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidSendUnsentMessagesNotification object:self userInfo:userInfo];
-            }
-        } else {
-            NSLog(@"Failed to send unsent message; %@", error.localizedDescription);
-            [messagePlus incrementSendAttemptsCount];
-            [self.database insertOrReplaceMessage:messagePlus];
+            }];
         }
     }];
 }
@@ -430,6 +434,15 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         [self.unsentMessagesByChannelID setObject:channelMessages forKey:channelID];
     }
     return channelMessages;
+}
+
+- (NSMutableArray *)existingOrNewMessagesNeedingPendingFileArrayForFileWithID:(NSString *)pendingFileID {
+    NSMutableArray *messagesNeedingPendingFile = [self.pendingFiles objectForKey:pendingFileID];
+    if(!messagesNeedingPendingFile) {
+        messagesNeedingPendingFile = [NSMutableArray arrayWithCapacity:1];
+        [self.pendingFiles setObject:messagesNeedingPendingFile forKey:pendingFileID];
+    }
+    return messagesNeedingPendingFile;
 }
 
 ///
@@ -587,6 +600,33 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 - (NSDate *)adjustedDateForMessage:(ANKMessage *)message {
     return self.configuration.dateAdapter ? self.configuration.dateAdapter(message) : message.createdAt;
+}
+
+
+- (void)uploadPendingOEmbedsForMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(void (^)(BOOL success))completionBlock {
+    if(messagePlus.pendingOEmbeds.count > 0) {
+        NSString *pendingFileID = messagePlus.pendingOEmbeds.objectEnumerator.nextObject;
+        NSMutableArray *messagesNeedingPendingFile = [self existingOrNewMessagesNeedingPendingFileArrayForFileWithID:pendingFileID];
+        [messagesNeedingPendingFile addObject:messagePlus];
+        //TODO: this should somehow be prepopulated?
+        
+        [self.fileManager uploadPendingFileWithID:pendingFileID completionBlock:^(ANKFile *file, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                NSMutableArray *messagePlusses = [self existingOrNewMessagesNeedingPendingFileArrayForFileWithID:pendingFileID];
+                for(AATTMessagePlus *messagePlus in messagePlusses) {
+                    [messagePlus replacePendingOEmbedWithOEmbedAnnotationForPendingFileWithID:pendingFileID file:file];
+                    [self.database insertOrReplaceMessage:messagePlus];
+                    [self.database deletePendingOEmbedForPendingFileWithID:pendingFileID messageID:messagePlus.message.messageID channelID:messagePlus.message.channelID];
+                }
+                [self uploadPendingOEmbedsForMessagePlus:messagePlus completionBlock:completionBlock];
+            } else {
+                completionBlock(NO);
+            }
+        }];
+        return;
+    } else {
+        completionBlock(YES);
+    }
 }
 
 #pragma mark Location Lookup
