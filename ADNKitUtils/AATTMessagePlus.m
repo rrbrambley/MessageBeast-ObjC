@@ -22,7 +22,7 @@
     AATTMessagePlus *unsentMessagePlus = [[AATTMessagePlus alloc] initWithMessage:message];
     unsentMessagePlus.isUnsent = YES;
     unsentMessagePlus.displayDate = date;
-    unsentMessagePlus.pendingOEmbeds = [NSSet setWithSet:pendingFileIDsForOEmbeds];
+    unsentMessagePlus.pendingOEmbeds = [NSMutableSet setWithSet:pendingFileIDsForOEmbeds];
     
     return unsentMessagePlus;
 }
@@ -102,6 +102,20 @@
 
 - (void)incrementSendAttemptsCount {
     self.sendAttemptsCount++;
+}
+
+- (void)replacePendingOEmbedWithOEmbedAnnotationForPendingFileWithID:(NSString *)pendingFileID file:(ANKFile *)file {
+    if([self.pendingOEmbeds containsObject:pendingFileID]) {
+        [self.pendingOEmbeds removeObject:pendingFileID];
+        
+        ANKAnnotation *annotation = [ANKAnnotation oembedAnnotationForFile:file];
+        NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:(self.message.annotations.count + 1)];
+        if(self.message.annotations) {
+            [annotations addObjectsFromArray:annotations];
+        }
+        [annotations addObject:annotation];
+        self.message.annotations = annotations;
+    }
 }
 
 @end
