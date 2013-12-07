@@ -12,6 +12,7 @@
 
 #import "AATTActionMessageManager.h"
 #import "AATTADNDatabase.h"
+#import "AATTADNFileManager.h"
 #import "AATTADNPersistence.h"
 #import "AATTBaseMessageInstances.h"
 #import "AATTDisplayLocation.h"
@@ -21,6 +22,7 @@
 #import "AATTMessageManager.h"
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
+#import "AATTPendingFile.h"
 
 #import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKChannel+AATTAnnotationHelper.h"
