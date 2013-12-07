@@ -30,6 +30,7 @@
     ANKFile *file = [ANKFile fileWithFileAtURL:self.URL];
     file.isPublic = self.isPublic;
     file.type = self.type;
+    file.name = self.name;
     return file;
 }
 
