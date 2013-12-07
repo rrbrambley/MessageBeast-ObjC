@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "AATTADNDatabase.h"
 #import "AATTADNFileManager.h"
 #import "AATTPendingFile.h"
@@ -51,16 +53,25 @@
 - (void)uploadPendingFileWithID:(NSString *)pendingFileID completionBlock:(AATTFileManagerCompletionBlock)completionBlock {
     AATTPendingFile *pendingFile = [self pendingFileWithID:pendingFileID];
     ANKFile *file = pendingFile.file;
-    [self.client createFile:file withContentsOfURL:file.URL progress:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+    ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
+    
+    [assetslibrary assetForURL:pendingFile.URL resultBlock:^(ALAsset *asset) {
+        ALAssetRepresentation *representation = [asset defaultRepresentation];
+        CGImageRef ref = [representation fullResolutionImage];
+        NSData *data = UIImageJPEGRepresentation([UIImage imageWithCGImage:ref], 1);
         
-    } completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-        if(!error) {
-            [self.database deletePendingFile:pendingFile];
-        } else {
-            [pendingFile incrementSendAttemptsCount];
-            [self.database insertOrReplacePendingFile:pendingFile];
-            completionBlock(nil, meta, error);
-        }
+        [self.client createFile:file withData:data completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                [self.database deletePendingFile:pendingFile];
+                completionBlock(responseObject, meta, error);
+            } else {
+                [pendingFile incrementSendAttemptsCount];
+                [self.database insertOrReplacePendingFile:pendingFile];
+                completionBlock(nil, meta, error);
+            }
+        }];
+    } failureBlock:^(NSError *error) {
+        completionBlock(nil, nil, error);
     }];
 }
 
