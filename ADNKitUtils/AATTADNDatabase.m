@@ -221,7 +221,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         NSNumber *public = [NSNumber numberWithBool:pendingFile.isPublic];
         NSNumber *sendAttempts = [NSNumber numberWithInteger:pendingFile.sendAttemptsCount];
-        if(![db executeUpdate:insert, pendingFile.ID, pendingFile.URL, pendingFile.type, pendingFile.name, pendingFile.mimeType, pendingFile.kind, public, sendAttempts]) {
+        if(![db executeUpdate:insert, pendingFile.ID, pendingFile.URL.description, pendingFile.type, pendingFile.name, pendingFile.mimeType, pendingFile.kind, public, sendAttempts]) {
             *rollback = YES;
             return;
         }
@@ -583,7 +583,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         if([resultSet next]) {
             pendingFile = [[AATTPendingFile alloc] init];
             pendingFile.ID = pendingFileID;
-            pendingFile.URL = [resultSet objectForColumnIndex:1];
+            pendingFile.URL = [NSURL URLWithString:[resultSet stringForColumnIndex:1]];
             pendingFile.type = [resultSet stringForColumnIndex:2];
             pendingFile.name = [resultSet stringForColumnIndex:3];
             pendingFile.mimeType = [resultSet stringForColumnIndex:4];
