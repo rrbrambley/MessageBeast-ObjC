@@ -10,6 +10,17 @@
 
 @implementation AATTPendingFile
 
++ (instancetype)pendingFileWithFileAtURL:(NSURL *)URL {
+    ANKFile *file = [ANKFile fileWithFileAtURL:URL];
+    AATTPendingFile *pendingFile = [[AATTPendingFile alloc] init];
+    pendingFile.name = file.name;
+    pendingFile.mimeType = file.mimeType;
+    pendingFile.kind = file.kind;
+    pendingFile.URL = URL;
+    pendingFile.ID = [[NSUUID UUID] UUIDString];
+    return pendingFile;
+}
+
 - (NSInteger)incrementSendAttemptsCount {
     self.sendAttemptsCount++;
     return self.sendAttemptsCount;

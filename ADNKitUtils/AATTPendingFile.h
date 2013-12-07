@@ -20,6 +20,8 @@
 @property NSInteger sendAttemptsCount;
 @property (readonly) ANKFile *file;
 
++ (instancetype)pendingFileWithFileAtURL:(NSURL *)URL;
+
 - (NSInteger)incrementSendAttemptsCount;
 
 @end
