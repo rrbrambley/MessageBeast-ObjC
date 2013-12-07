@@ -26,10 +26,11 @@
     return self;
 }
 
-- (AATTPendingFile *)addPendingFileWithURL:(NSURL *)URL type:(NSString *)type mimeType:(NSString *)mimeType kind:(NSString *)kind isPublic:(BOOL)isPublic {
+- (AATTPendingFile *)addPendingFileWithURL:(NSURL *)URL name:(NSString *)name type:(NSString *)type mimeType:(NSString *)mimeType kind:(NSString *)kind isPublic:(BOOL)isPublic {
     AATTPendingFile *pendingFile = [[AATTPendingFile alloc] init];
     pendingFile.URL = URL;
     pendingFile.ID = [[NSUUID UUID] UUIDString];
+    pendingFile.name = name;
     pendingFile.type = type;
     pendingFile.mimeType = mimeType;
     pendingFile.kind = kind;

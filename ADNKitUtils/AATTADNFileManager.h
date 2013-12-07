@@ -14,7 +14,7 @@ typedef void (^AATTFileManagerCompletionBlock)(ANKFile *file, ANKAPIResponseMeta
 
 - (id)initWithClient:(ANKClient *)client;
 
-- (AATTPendingFile *)addPendingFileWithURL:(NSURL *)URL type:(NSString *)type mimeType:(NSString *)mimeType kind:(NSString *)kind isPublic:(BOOL)isPublic;
+- (AATTPendingFile *)addPendingFileWithURL:(NSURL *)URL name:(NSString *)name type:(NSString *)type mimeType:(NSString *)mimeType kind:(NSString *)kind isPublic:(BOOL)isPublic;
 - (void)addPendingFile:(AATTPendingFile *)pendingFile;
 - (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID;
 - (void)uploadPendingFileWithID:(NSString *)pendingFileID completionBlock:(AATTFileManagerCompletionBlock)completionBlock;
