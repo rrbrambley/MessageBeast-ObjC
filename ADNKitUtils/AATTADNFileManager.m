@@ -39,6 +39,10 @@
     return pendingFile;
 }
 
+- (void)addPendingFile:(AATTPendingFile *)pendingFile {
+    [self.database insertOrReplacePendingFile:pendingFile];
+}
+
 - (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID {
     return [self.database pendingFileWithID:pendingFileID];
 }
