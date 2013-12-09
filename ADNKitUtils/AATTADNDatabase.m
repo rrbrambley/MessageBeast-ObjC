@@ -349,6 +349,17 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
 }
 
+- (AATTMessagePlus *)messagePlusForMessageInChannelWithID:(NSString *)channelID messageID:(NSString *)messageID {
+    NSMutableSet *messageIDs = [NSMutableSet setWithCapacity:1];
+    [messageIDs addObject:messageID];
+    AATTOrderedMessageBatch *messageBatch = [self messagesInChannelWithID:channelID messageIDs:messageIDs];
+    NSOrderedDictionary *orderedMessages = messageBatch.messagePlusses;
+    if(orderedMessages.count == 1) {
+        return [orderedMessages lastObject];
+    }
+    return nil;
+}
+
 - (NSOrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID {
     NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] init];
     
