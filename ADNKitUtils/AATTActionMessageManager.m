@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#import "AATTActionMessageSpec.h"
 #import "ANKClient+PrivateChannel.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 #import "AATTActionMessageManager.h"
@@ -88,7 +89,60 @@
     }];
 }
 
+#pragma mark - Apply/Remove Actions
+
+- (void)applyActionForActionChannelWithID:(NSString *)actionChannelID toTargetMessagePlus:(AATTMessagePlus *)messagePlus  {
+    if(![self isActionedTargetMessageID:messagePlus.message.messageID inActionChannelWithID:actionChannelID]) {
+        NSMutableOrderedDictionary *actionedMessages = [self existingOrNewActionedMessagesMapForActionChannelWithID:actionChannelID];
+        ANKMessage *message = messagePlus.message;
+        NSString *targetMessageID = message.messageID;
+        if(![actionedMessages objectForKey:targetMessageID]) {
+            ANKMessage *m = [[ANKMessage alloc] init];
+            m.isMachineOnly = YES;
+            [m addTargetMessageAnnotationWithTargetMessageID:targetMessageID];
+            
+            AATTMessagePlus *unsentActionMessage = [self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:actionChannelID message:m];
+            [actionedMessages setObject:messagePlus forKey:targetMessageID];
+            [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageId:targetMessageID targetChannelId:message.channelID];
+        }
+    }
+}
+
+- (void)removeActionForActionChannelWithID:(NSString *)actionChannelID fromTargetMessageWithID:(NSString *)targetMessageID  {
+    NSArray *targetMessageIDs = @[targetMessageID];
+    NSArray *actionMessageSpecs = [self.database actionMessageSpecsForTargetMessagesWithIDs:targetMessageIDs inActionChannelWithID:actionChannelID];
+    
+    if(actionMessageSpecs.count == 1) {
+        [self.database deleteActionMessageSpecWithTargetMessageID:targetMessageID actionChannelID:actionChannelID];
+        NSMutableOrderedDictionary *actionedMessages = [self existingOrNewActionedMessagesMapForActionChannelWithID:actionChannelID];
+        if([actionedMessages objectForKey:targetMessageID]) {
+            [actionedMessages removeEntryWithKey:targetMessageID];
+        }
+        
+        AATTActionMessageSpec *spec = [actionMessageSpecs objectAtIndex:0];
+        AATTMessagePlus *actionMessagePlus = [self.database messagePlusForMessageInChannelWithID:actionChannelID messageID:spec.actionMessageID];
+        [self.messageManager deleteMessage:actionMessagePlus completionBlock:^(ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                NSLog(@"Successfully deleted action message %@ for target message %@", spec.actionMessageID, targetMessageID);
+            } else {
+                NSLog(@"Failed to delete action message %@ for target message %@", spec.actionMessageID, targetMessageID);
+            }
+        }];
+    } else {
+        NSLog(@"Attempting to remove action channel %@ action; target message ID %@ yielded %d db results", actionChannelID, targetMessageID, actionMessageSpecs.count);
+    }
+}
+
 #pragma mark - Private
+
+- (NSMutableOrderedDictionary *)existingOrNewActionedMessagesMapForActionChannelWithID:(NSString *)channelID {
+    NSMutableOrderedDictionary *channelDictionary = [self.actionedMessages objectForKey:channelID];
+    if(!channelDictionary) {
+        channelDictionary = [NSMutableOrderedDictionary orderedDictionary];
+        [self.actionedMessages setObject:channelDictionary forKey:channelID];
+    }
+    return channelDictionary;
+}
 
 - (NSArray *)storeTargetMessagesInMemoryForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId {
     NSSet *targetMessageIds = [self targetMessageIdsForMessagePlusses:actionMessages];

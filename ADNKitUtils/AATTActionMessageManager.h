@@ -15,9 +15,20 @@ typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChann
 
 + (AATTActionMessageManager *)sharedInstanceWithMessageManager:(AATTMessageManager *)messageManager;
 
+#pragma mark - Action Channel
+
 - (void)initActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(AATTActionMessageManagerChannelInitBlock)completionBlock;
+
+#pragma mark - Lookup
 
 - (BOOL)isActionedTargetMessageID:(NSString *)targetMessageID inActionChannelWithID:(NSString *)actionChannelID;
 
+#pragma mark - Retrieval
+
 - (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
+
+#pragma mark - Apply/Remove Actions
+
+- (void)applyActionForActionChannelWithID:(NSString *)actionChannelID toTargetMessagePlus:(AATTMessagePlus *)messagePlus;
+- (void)removeActionForActionChannelWithID:(NSString *)actionChannelID fromTargetMessageWithID:(NSString *)targetMessageID;
 @end
