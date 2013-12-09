@@ -218,6 +218,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 
 - (void)insertOrReplacePendingFile:(AATTPendingFile *)pendingFile {
     static NSString *insert = @"INSERT OR REPLACE INTO pending_files (pending_file_id, pending_file_url, pending_file_type, pending_file_name, pending_file_mimetype, pending_file_kind, pending_file_public, pending_file_send_attempts) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    NSParameterAssert(pendingFile.URL);
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         NSNumber *public = [NSNumber numberWithBool:pendingFile.isPublic];
         NSNumber *sendAttempts = [NSNumber numberWithInteger:pendingFile.sendAttemptsCount];
