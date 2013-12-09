@@ -14,5 +14,6 @@ static NSString *const kMessageAnnotationTargetMessage = @"com.alwaysallthetime.
 - (NSString *)targetMessageId;
 
 - (void)addDisplayDateAnnotationWithDate:(NSDate *)date;
+- (void)addTargetMessageAnnotationWithTargetMessageID:(NSString *)targetMessageID;
 
 @end

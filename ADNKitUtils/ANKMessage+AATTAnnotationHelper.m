@@ -46,4 +46,12 @@
     self.annotations = annotations;
 }
 
+- (void)addTargetMessageAnnotationWithTargetMessageID:(NSString *)targetMessageID {
+    NSDictionary *value = @{@"id" : targetMessageID};
+    ANKAnnotation *annotation = [ANKAnnotation annotationWithType:@"com.alwaysallthetime.action.target_message" value:value];
+    NSMutableArray *annotations = [NSMutableArray arrayWithArray:self.annotations];
+    [annotations addObject:annotation];
+    self.annotations = annotations;
+}
+
 @end
