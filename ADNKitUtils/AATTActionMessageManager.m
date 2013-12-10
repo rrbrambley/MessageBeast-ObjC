@@ -138,7 +138,7 @@
 - (NSMutableOrderedDictionary *)existingOrNewActionedMessagesMapForActionChannelWithID:(NSString *)channelID {
     NSMutableOrderedDictionary *channelDictionary = [self.actionedMessages objectForKey:channelID];
     if(!channelDictionary) {
-        channelDictionary = [NSMutableOrderedDictionary orderedDictionary];
+        channelDictionary = [[NSMutableOrderedDictionary alloc] init];
         [self.actionedMessages setObject:channelDictionary forKey:channelID];
     }
     return channelDictionary;
