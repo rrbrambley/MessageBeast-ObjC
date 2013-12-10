@@ -81,7 +81,6 @@
         }
     } completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
-            [self storeTargetMessagesInMemoryForActionMessages:messagePlusses actionChannelId:actionChannelId targetChannelId:targetChannelId];
             completionBlock(messagePlusses, appended, meta, error);
         } else {
             completionBlock(messagePlusses, appended, meta, error);
@@ -144,11 +143,9 @@
     return channelDictionary;
 }
 
-- (NSArray *)storeTargetMessagesInMemoryForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId {
+- (NSArray *)targetMessagePlussesForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId {
     NSSet *targetMessageIds = [self targetMessageIdsForMessagePlusses:actionMessages];
     NSOrderedDictionary *targetMessages = [self.messageManager loadPersistedMessagesTemporarilyForChannelWithID:targetChannelId messageIDs:targetMessageIds];
-    //TODO: prolly wanna sort dat.
-    [self.actionedMessages setObject:targetMessages forKey:actionChannelId];
     return [targetMessages allObjects];
 }
 
