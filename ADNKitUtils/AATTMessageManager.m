@@ -273,7 +273,9 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 - (void)didDeleteMessageWithID:(NSString *)messageID inChannelWithID:(NSString *)channelID {
     NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
-    [channelMessages removeEntryWithKey:messageID];
+    if([channelMessages objectForKey:messageID]) {
+        [channelMessages removeEntryWithKey:messageID];
+    }
     
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     if(channelMessages.count > 0) {
