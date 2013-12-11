@@ -8,6 +8,7 @@
 
 #import "AATTActionMessageSpec.h"
 #import "ANKClient+PrivateChannel.h"
+#import "ANKChannel+AATTAnnotationHelper.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 #import "AATTActionMessageManager.h"
 #import "AATTADNDatabase.h"
@@ -41,8 +42,14 @@
         self.actionChannels = [NSMutableDictionary dictionaryWithCapacity:1];
         self.actionedMessages = [NSMutableDictionary dictionaryWithCapacity:1];
         self.database = [AATTADNDatabase sharedInstance];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendUnsentMessages:) name:AATTMessageManagerDidSendUnsentMessagesNotification object:nil];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Action Channel
@@ -151,14 +158,45 @@
     }];
 }
 
+#pragma mark - NSNotification
+
+- (void)didSendUnsentMessages:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSString *channelID = [userInfo objectForKey:@"channelID"];
+    NSArray *messageIDs = [userInfo objectForKey:@"messageIDs"];
+    
+    //this is not an action channel.
+    //it might be a target channel of one of our action channels though.
+    if(![self.actionChannels objectForKey:channelID]) {
+        //some messages were sent, instead of just removing the faked messages,
+        //just remove the whole channel's map. we will have to reload them later, but
+        //this way we can assure that they'll be all in the right order, etc.
+        [self.actionedMessages removeObjectForKey:channelID];
+        
+        //remove all action messages that point to this now nonexistent target message id
+        NSArray *sentTargetMessages = [self.database actionMessageSpecsForTargetMessagesWithIDs:messageIDs];
+        for(AATTActionMessageSpec *spec in sentTargetMessages) {
+            [self.database deleteActionMessageSpecWithTargetMessageID:spec.targetMessageID actionChannelID:spec.actionChannelID];
+        }
+    } else {
+        //it's an action channel
+        //delete the action messages in the database with the sent message ids,
+        //retrieve the new ones
+        
+        ANKChannel *actionChannel = [self.actionChannels objectForKey:channelID];
+        NSString *targetChannelID = [actionChannel targetChannelID];
+        [self.messageManager fetchNewestMessagesInChannelWithID:channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
             if(!error) {
-                NSLog(@"Successfully deleted action message %@ for target message %@", spec.actionMessageID, targetMessageID);
+                for(NSString *sentMessageID in messageIDs) {
+                    [self.database deleteActionMessageSpecForActionMessageWithID:sentMessageID];
+                }
+                for(AATTMessagePlus *messagePlus in messagePlusses) {
+                    [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageId:messagePlus.message.targetMessageId targetChannelId:targetChannelID];
+                }
             } else {
-                NSLog(@"Failed to delete action message %@ for target message %@", spec.actionMessageID, targetMessageID);
+                NSLog(@"Could not fetch newest messages for action channel with ID %@; %@", channelID, error.localizedDescription);
             }
         }];
-    } else {
-        NSLog(@"Attempting to remove action channel %@ action; target message ID %@ yielded %d db results", actionChannelID, targetMessageID, actionMessageSpecs.count);
     }
 }
 
