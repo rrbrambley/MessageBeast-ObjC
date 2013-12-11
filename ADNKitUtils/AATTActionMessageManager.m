@@ -112,16 +112,44 @@
     NSArray *targetMessageIDs = @[targetMessageID];
     NSArray *actionMessageSpecs = [self.database actionMessageSpecsForTargetMessagesWithIDs:targetMessageIDs inActionChannelWithID:actionChannelID];
     
-    if(actionMessageSpecs.count == 1) {
+    if(actionMessageSpecs.count > 0) {
         [self.database deleteActionMessageSpecWithTargetMessageID:targetMessageID actionChannelID:actionChannelID];
         NSMutableOrderedDictionary *actionedMessages = [self existingOrNewActionedMessagesMapForActionChannelWithID:actionChannelID];
         if([actionedMessages objectForKey:targetMessageID]) {
             [actionedMessages removeEntryWithKey:targetMessageID];
         }
         
-        AATTActionMessageSpec *spec = [actionMessageSpecs objectAtIndex:0];
-        AATTMessagePlus *actionMessagePlus = [self.database messagePlusForMessageInChannelWithID:actionChannelID messageID:spec.actionMessageID];
-        [self.messageManager deleteMessage:actionMessagePlus completionBlock:^(ANKAPIResponseMeta *meta, NSError *error) {
+        [self deleteActionMessageFromActionChannelWithID:actionChannelID usingSpecFromArray:actionMessageSpecs atIndex:0 completionBlock:^(void) {
+            NSLog(@"deleted %lu actionMessages in channel %@", (unsigned long)actionMessageSpecs.count, actionChannelID);
+        }];
+    } else {
+        NSLog(@"Attempting to remove action channel %@ action; target message ID %@ yielded %d db results", actionChannelID, targetMessageID, actionMessageSpecs.count);
+    }
+}
+
+//
+// It is possible to have multiple action messages targeting the same message. This typically doesn't happen,
+// but since it's possible, we should make sure to delete *all* of the action messages
+//
+- (void)deleteActionMessageFromActionChannelWithID:(NSString *)actionChannelID usingSpecFromArray:(NSArray *)actionMessageSpecs atIndex:(NSUInteger)currentIndex completionBlock:(void (^)(void))completionBlock {
+    AATTActionMessageSpec *spec = [actionMessageSpecs objectAtIndex:currentIndex];
+    AATTMessagePlus *actionMessagePlus = [self.database messagePlusForMessageInChannelWithID:actionChannelID messageID:spec.actionMessageID];
+    
+    [self.messageManager deleteMessage:actionMessagePlus completionBlock:^(ANKAPIResponseMeta *meta, NSError *error) {
+        if(error) {
+            NSLog(@"Failed to delete action message %@ for target message %@", spec.actionMessageID, spec.targetMessageID);
+        } else {
+            NSLog(@"Successfully deleted action message %@ for target message %@", spec.actionMessageID, spec.targetMessageID);
+        }
+        NSInteger nextIndex = currentIndex + 1;
+        if(nextIndex < actionMessageSpecs.count) {
+            [self deleteActionMessageFromActionChannelWithID:actionChannelID usingSpecFromArray:actionMessageSpecs atIndex:nextIndex completionBlock:completionBlock];
+        } else {
+            completionBlock();
+        }
+    }];
+}
+
             if(!error) {
                 NSLog(@"Successfully deleted action message %@ for target message %@", spec.actionMessageID, targetMessageID);
             } else {
