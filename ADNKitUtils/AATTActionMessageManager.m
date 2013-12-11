@@ -119,7 +119,7 @@
             [actionedMessages removeEntryWithKey:targetMessageID];
         }
         
-        [self deleteActionMessageFromActionChannelWithID:actionChannelID usingSpecFromArray:actionMessageSpecs atIndex:0 completionBlock:^(void) {
+        [self deleteActionMessageUsingSpecFromArray:actionMessageSpecs atIndex:0 completionBlock:^(void) {
             NSLog(@"deleted %lu actionMessages in channel %@", (unsigned long)actionMessageSpecs.count, actionChannelID);
         }];
     } else {
@@ -131,8 +131,9 @@
 // It is possible to have multiple action messages targeting the same message. This typically doesn't happen,
 // but since it's possible, we should make sure to delete *all* of the action messages
 //
-- (void)deleteActionMessageFromActionChannelWithID:(NSString *)actionChannelID usingSpecFromArray:(NSArray *)actionMessageSpecs atIndex:(NSUInteger)currentIndex completionBlock:(void (^)(void))completionBlock {
+- (void)deleteActionMessageUsingSpecFromArray:(NSArray *)actionMessageSpecs atIndex:(NSUInteger)currentIndex completionBlock:(void (^)(void))completionBlock {
     AATTActionMessageSpec *spec = [actionMessageSpecs objectAtIndex:currentIndex];
+    NSString *actionChannelID = spec.actionChannelID;
     AATTMessagePlus *actionMessagePlus = [self.database messagePlusForMessageInChannelWithID:actionChannelID messageID:spec.actionMessageID];
     
     [self.messageManager deleteMessage:actionMessagePlus completionBlock:^(ANKAPIResponseMeta *meta, NSError *error) {
@@ -143,7 +144,7 @@
         }
         NSInteger nextIndex = currentIndex + 1;
         if(nextIndex < actionMessageSpecs.count) {
-            [self deleteActionMessageFromActionChannelWithID:actionChannelID usingSpecFromArray:actionMessageSpecs atIndex:nextIndex completionBlock:completionBlock];
+            [self deleteActionMessageUsingSpecFromArray:actionMessageSpecs atIndex:nextIndex completionBlock:completionBlock];
         } else {
             completionBlock();
         }
