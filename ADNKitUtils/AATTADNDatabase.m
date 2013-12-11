@@ -686,6 +686,15 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
+- (void)deleteActionMessageSpecForActionMessageWithID:(NSString *)actionMessageID {
+    static NSString *delete = @"DELETE FROM action_messages WHERE action_message_id = ?";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if(![db executeUpdate:delete, actionMessageID]) {
+            *rollback = YES;
+        }
+    }];
+}
+
 - (void)deleteActionMessageSpecWithTargetMessageID:(NSString *)targetMessageID actionChannelID:(NSString *)actionChannelID {
     static NSString *delete = @"DELETE FROM action_messages WHERE action_message_channel_id = ? AND action_message_target_message_id = ?";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {

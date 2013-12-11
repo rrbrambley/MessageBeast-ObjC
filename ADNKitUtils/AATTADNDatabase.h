@@ -225,6 +225,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 
 - (void)deletePendingOEmbedForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID;
 
+- (void)deleteActionMessageSpecForActionMessageWithID:(NSString *)actionMessageID;
+
 - (void)deleteActionMessageSpecWithTargetMessageID:(NSString *)targetMessageID actionChannelID:(NSString *)actionChannelID;
 
 #pragma mark - Other
