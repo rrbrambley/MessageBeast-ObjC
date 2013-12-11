@@ -51,6 +51,7 @@
     [self.messageManager.client getOrCreateActionChannelWithType:actionType targetChannel:targetChannel completionBlock:^(id responseObject, NSError *error) {
         if(responseObject) {
             ANKChannel *channel = responseObject;
+            [self.actionChannels setObject:channel forKey:channel.channelID];
             NSDictionary *parameters = @{@"include_deleted" : @0, @"include_machine" : @1, @"include_message_annotations" : @1};
             [self.messageManager setQueryParametersForChannelWithID:channel.channelID parameters:parameters];
             completionBlock(responseObject, error);
