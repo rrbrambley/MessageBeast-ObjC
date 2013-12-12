@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E24F2515185A736700957D43 /* AATTPendingMessageDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */; };
 		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
 		E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */; };
 		E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
@@ -95,6 +96,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingMessageDeletion.h; sourceTree = "<group>"; };
+		E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingMessageDeletion.m; sourceTree = "<group>"; };
 		E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
 		E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
 		E287DA20184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKChannel+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
@@ -258,6 +261,8 @@
 				E2BA21511826CB5D0023363A /* AATTHashtagInstances.m */,
 				E2D2F72B185220B000A72B8B /* AATTPendingFile.h */,
 				E2D2F72C185220B000A72B8B /* AATTPendingFile.m */,
+				E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */,
+				E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -457,6 +462,7 @@
 				E2D2F72A18521E7200A72B8B /* AATTADNFileManager.m in Sources */,
 				E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */,
 				E2BA21521826CB5D0023363A /* AATTHashtagInstances.m in Sources */,
+				E24F2515185A736700957D43 /* AATTPendingMessageDeletion.m in Sources */,
 				E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */,
 				E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */,
 				E287DA2F184E42A80035CE71 /* AATTADNPersistence.m in Sources */,
