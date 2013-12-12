@@ -260,7 +260,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         [self.client deleteMessage:messagePlus.message completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
             if(!error) {
                 delete();
-                [self.database deletePendingMessageDeletionForMessagePlus:messagePlus];
+                [self.database deletePendingMessageDeletionForMessageWithID:messagePlus.message.messageID];
                 block(meta, error);
             } else {
                 delete();

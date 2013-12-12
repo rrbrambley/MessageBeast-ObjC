@@ -221,7 +221,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///
 - (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus;
 
-- (void)deletePendingMessageDeletionForMessagePlus:(AATTMessagePlus *)messagePlus;
+- (void)deletePendingMessageDeletionForMessageWithID:(NSString *)messageID;
 
 - (void)deletePendingFile:(AATTPendingFile *)pendingFile;
 
