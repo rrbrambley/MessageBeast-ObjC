@@ -210,6 +210,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 
 - (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID;
 
+- (NSDictionary *)pendingMessageDeletionsInChannelWithID:(NSString *)channelID;
+
 #pragma mark - Deletion
 
 /// Delete a message and all persisted data associated (hashtag instances, location instances,

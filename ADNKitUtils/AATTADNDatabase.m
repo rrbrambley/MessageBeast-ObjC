@@ -15,6 +15,7 @@
 #import "AATTMessagePlus.h"
 #import "AATTOrderedMessageBatch.h"
 #import "AATTPendingFile.h"
+#import "AATTPendingMessageDeletion.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "NSOrderedDictionary.h"
@@ -607,6 +608,22 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         }
     }];
     return pendingFile;
+}
+
+- (NSDictionary *)pendingMessageDeletionsInChannelWithID:(NSString *)channelID {
+    static NSString *select = @"SELECT pending_message_deletion_message_id, pending_message_deletion_delete_associated_files FROM pending_message_deletions WHERE pending_message_deletion_channel_id = ?";
+    NSMutableDictionary *deletions = [[NSMutableDictionary alloc] init];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, channelID];
+        while([resultSet next]) {
+            NSString *messageID = [resultSet stringForColumnIndex:0];
+            BOOL deleteAssociatedFiles = [resultSet boolForColumnIndex:1];
+            AATTPendingMessageDeletion *deletion = [[AATTPendingMessageDeletion alloc] initWithMessageID:messageID channelID:channelID deleteAssociatedFiles:deleteAssociatedFiles];
+            [deletions setObject:deletion forKey:messageID];
+        }
+    }];
+    return deletions;
 }
 
 #pragma mark - Deletion
