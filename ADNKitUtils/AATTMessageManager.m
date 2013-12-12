@@ -348,6 +348,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 - (void)sendAllUnsentForChannelWithID:(NSString *)channelID {
     [self sendUnsentMessagesInChannelWithID:channelID];
+    [self sendPendingDeletionsInChannelWithID:channelID];
 }
 
 - (BOOL)sendUnsentMessagesInChannelWithID:(NSString *)channelID {
@@ -418,6 +419,19 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
             }];
         }
     }];
+}
+
+- (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID {
+    NSDictionary *deletions = [self.database pendingMessageDeletionsInChannelWithID:channelID];
+    if(deletions.count > 0) {
+        for(NSString *messageID in deletions.allKeys) {
+            [self.client deleteMessageWithID:messageID inChannelWithID:channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+                if(!error) {
+                    [self.database deletePendingMessageDeletionForMessageWithID:messageID];
+                }
+            }];
+        }
+    }
 }
 
 #pragma mark - Private Stuff
