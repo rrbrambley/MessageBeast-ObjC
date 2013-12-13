@@ -531,6 +531,9 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     if(unsentMessages.count > 0) {
         return NO;
     }
+    if([self.database pendingMessageDeletionsInChannelWithID:channelID].count > 0) {
+        return NO;
+    }
     
     [self.client fetchMessagesInChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         BOOL appended = YES;
