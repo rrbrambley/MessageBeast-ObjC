@@ -889,6 +889,7 @@
 				E24F28A3185BBED100957D43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E2E5A6D11817FBF9009DECDB /* Build configuration list for PBXProject "ADNKitUtils" */ = {
 			isa = XCConfigurationList;
