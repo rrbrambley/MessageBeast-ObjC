@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
-#import <ANKValueTransformations.h>
-
 #import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 

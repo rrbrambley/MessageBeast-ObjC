@@ -8,6 +8,72 @@
 
 /* Begin PBXBuildFile section */
 		E24F2515185A736700957D43 /* AATTPendingMessageDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */; };
+		E24F2885185BBED000957D43 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2884185BBED000957D43 /* Cocoa.framework */; };
+		E24F28FF185BC04500957D43 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F28FE185BC04500957D43 /* libsqlite3.dylib */; };
+		E24F2900185BC05900957D43 /* ADNKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71D1817FDC3009DECDB /* ADNKit.framework */; };
+		E24F2902185BC07400957D43 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2901185BC07400957D43 /* CoreServices.framework */; };
+		E24F2904185BC07E00957D43 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2903185BC07E00957D43 /* SystemConfiguration.framework */; };
+		E24F2906185BC08400957D43 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2905185BC08400957D43 /* Foundation.framework */; };
+		E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83201822FF090057245C /* NSOrderedDictionary.m */; };
+		E24F2908185BC13100957D43 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E01821B8AA0057245C /* FMDatabase.m */; };
+		E24F2909185BC13100957D43 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */; };
+		E24F290A185BC13100957D43 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E41821B8AA0057245C /* FMDatabasePool.m */; };
+		E24F290B185BC13100957D43 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */; };
+		E24F290C185BC13100957D43 /* fmdb.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E71821B8AA0057245C /* fmdb.m */; };
+		E24F290D185BC13100957D43 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E91821B8AA0057245C /* FMResultSet.m */; };
+		E24F290E185BC13100957D43 /* AATTMessagePlus.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82FF1821C17E0057245C /* AATTMessagePlus.m */; };
+		E24F290F185BC13100957D43 /* AATTDisplayLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83021822B42D0057245C /* AATTDisplayLocation.m */; };
+		E24F2910185BC13100957D43 /* AATTGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C751781825C2BF003BE00E /* AATTGeolocation.m */; };
+		E24F2911185BC13100957D43 /* AATTBaseMessageInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BA21361825DE150023363A /* AATTBaseMessageInstances.m */; };
+		E24F2912185BC13100957D43 /* AATTDisplayLocationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BA213C1825DF6E0023363A /* AATTDisplayLocationInstances.m */; };
+		E24F2913185BC13100957D43 /* AATTHashtagInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BA21511826CB5D0023363A /* AATTHashtagInstances.m */; };
+		E24F2914185BC13100957D43 /* AATTPendingFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D2F72C185220B000A72B8B /* AATTPendingFile.m */; };
+		E24F2915185BC13100957D43 /* AATTPendingMessageDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */; };
+		E24F2916185BC13100957D43 /* AATTADNDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82DB1821B1070057245C /* AATTADNDatabase.m */; };
+		E24F2917185BC13100957D43 /* AATTOrderedMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83051822B6650057245C /* AATTOrderedMessageBatch.m */; };
+		E24F2918185BC13100957D43 /* AATTActionMessageSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D2F71D184FF26B00A72B8B /* AATTActionMessageSpec.m */; };
+		E24F2919185BC13100957D43 /* NSObject+AATTPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA2B184E42670035CE71 /* NSObject+AATTPersistence.m */; };
+		E24F291A185BC13100957D43 /* AATTADNPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA2E184E42A80035CE71 /* AATTADNPersistence.m */; };
+		E24F291B185BC13100957D43 /* AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82C91821AE770057245C /* AATTMessageManager.m */; };
+		E24F291C185BC13100957D43 /* AATTMessageManagerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82CC1821AEBC0057245C /* AATTMessageManagerConfiguration.m */; };
+		E24F291D185BC13100957D43 /* AATTMinMaxPair.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A8323182301F00057245C /* AATTMinMaxPair.m */; };
+		E24F291E185BC13100957D43 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
+		E24F291F185BC13100957D43 /* AATTADNFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D2F72918521E7200A72B8B /* AATTADNFileManager.m */; };
+		E24F2920185BC13100957D43 /* ANKClient+PrivateChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E5A738181805E6009DECDB /* ANKClient+PrivateChannel.m */; };
+		E24F2921185BC13100957D43 /* ANKClient+AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A830E1822C49D0057245C /* ANKClient+AATTMessageManager.m */; };
+		E24F2922185BC13100957D43 /* ANKMessage+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83141822D15D0057245C /* ANKMessage+AATTAnnotationHelper.m */; };
+		E24F2923185BC13100957D43 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */; };
+		E24F2924185BC13100957D43 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
+		E24F2926185BC22900957D43 /* ADNKitUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = E2E5A72E18180218009DECDB /* ADNKitUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2930185CD97800957D43 /* NSOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A831F1822FF090057245C /* NSOrderedDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2931185CD97800957D43 /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82DF1821B8AA0057245C /* FMDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E11821B8AA0057245C /* FMDatabaseAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E31821B8AA0057245C /* FMDatabasePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2934185CD97800957D43 /* FMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E51821B8AA0057245C /* FMDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2935185CD97800957D43 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E81821B8AA0057245C /* FMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2936185CD97800957D43 /* AATTMessagePlus.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82FE1821C17E0057245C /* AATTMessagePlus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2937185CD97800957D43 /* AATTDisplayLocation.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A83011822B42D0057245C /* AATTDisplayLocation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2938185CD97800957D43 /* AATTGeolocation.h in Headers */ = {isa = PBXBuildFile; fileRef = E2C751771825C2BF003BE00E /* AATTGeolocation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2939185CD97800957D43 /* AATTBaseMessageInstances.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BA21351825DE150023363A /* AATTBaseMessageInstances.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F293A185CD97800957D43 /* AATTDisplayLocationInstances.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BA213B1825DF6E0023363A /* AATTDisplayLocationInstances.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F293B185CD97800957D43 /* AATTHashtagInstances.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BA21501826CB5D0023363A /* AATTHashtagInstances.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F293C185CD97800957D43 /* AATTPendingFile.h in Headers */ = {isa = PBXBuildFile; fileRef = E2D2F72B185220B000A72B8B /* AATTPendingFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F293D185CD97800957D43 /* AATTPendingMessageDeletion.h in Headers */ = {isa = PBXBuildFile; fileRef = E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F293E185CD97800957D43 /* AATTADNDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82DA1821B1070057245C /* AATTADNDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F293F185CD97800957D43 /* AATTOrderedMessageBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A83041822B6650057245C /* AATTOrderedMessageBatch.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2940185CD97800957D43 /* AATTActionMessageSpec.h in Headers */ = {isa = PBXBuildFile; fileRef = E2D2F71C184FF26B00A72B8B /* AATTActionMessageSpec.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2941185CD97800957D43 /* NSObject+AATTPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA2A184E42670035CE71 /* NSObject+AATTPersistence.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2942185CD97800957D43 /* AATTADNPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA2D184E42A80035CE71 /* AATTADNPersistence.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2943185CD97800957D43 /* AATTMessageManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82C81821AE770057245C /* AATTMessageManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2944185CD97800957D43 /* AATTMessageManagerConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82CB1821AEBC0057245C /* AATTMessageManagerConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2945185CD97800957D43 /* AATTMinMaxPair.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A8322182301F00057245C /* AATTMinMaxPair.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2946185CD97800957D43 /* AATTActionMessageManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2947185CD97800957D43 /* AATTADNFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E2D2F72818521E7200A72B8B /* AATTADNFileManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2948185CD97800957D43 /* ANKClient+PrivateChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = E2E5A737181805E6009DECDB /* ANKClient+PrivateChannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2949185CD97800957D43 /* ANKClient+AATTMessageManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A830D1822C49D0057245C /* ANKClient+AATTMessageManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F294A185CD97800957D43 /* ANKMessage+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A83131822D15D0057245C /* ANKMessage+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F294B185CD97800957D43 /* ANKChannel+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA20184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F294C185CD97800957D43 /* ANKAnnotatableResource+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA23184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
 		E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */; };
 		E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
@@ -45,6 +111,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		E24F28AB185BBEFD00957D43 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5DC3710716E0808C00190862;
+			remoteInfo = "ADNKit-OSX";
+		};
 		E2E5A7181817FDC3009DECDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
@@ -98,6 +171,17 @@
 /* Begin PBXFileReference section */
 		E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingMessageDeletion.h; sourceTree = "<group>"; };
 		E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingMessageDeletion.m; sourceTree = "<group>"; };
+		E24F2883185BBED000957D43 /* ADNKitUtils-OSX.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "ADNKitUtils-OSX.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E24F2884185BBED000957D43 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		E24F2887185BBED000957D43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		E24F2888185BBED000957D43 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		E24F2889185BBED000957D43 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		E24F28FC185BC03A00957D43 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/lib/libsqlite3.0.dylib; sourceTree = DEVELOPER_DIR; };
+		E24F28FE185BC04500957D43 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
+		E24F2901185BC07400957D43 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
+		E24F2903185BC07E00957D43 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		E24F2905185BC08400957D43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		E24F2927185BC3BC00957D43 /* ADNKitUtils-OSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ADNKitUtils-OSX-Prefix.pch"; path = "ADNKitUtils-OSX/ADNKitUtils-OSX-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
 		E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
 		E287DA20184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKChannel+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
@@ -170,6 +254,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		E24F2880185BBED000957D43 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E24F2906185BC08400957D43 /* Foundation.framework in Frameworks */,
+				E24F2904185BC07E00957D43 /* SystemConfiguration.framework in Frameworks */,
+				E24F2902185BC07400957D43 /* CoreServices.framework in Frameworks */,
+				E24F2900185BC05900957D43 /* ADNKit.framework in Frameworks */,
+				E24F28FF185BC04500957D43 /* libsqlite3.dylib in Frameworks */,
+				E24F2885185BBED000957D43 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E2E5A6D31817FBF9009DECDB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -185,6 +282,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E24F2886185BBED000957D43 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E24F2887185BBED000957D43 /* Foundation.framework */,
+				E24F2888185BBED000957D43 /* CoreData.framework */,
+				E24F2889185BBED000957D43 /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
 		E287DA29184E42330035CE71 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
@@ -292,6 +399,7 @@
 			isa = PBXGroup;
 			children = (
 				E2E5A6D61817FBF9009DECDB /* libADNKitUtils.a */,
+				E24F2883185BBED000957D43 /* ADNKitUtils-OSX.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -299,6 +407,11 @@
 		E2E5A6D81817FBF9009DECDB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E24F2905185BC08400957D43 /* Foundation.framework */,
+				E24F2903185BC07E00957D43 /* SystemConfiguration.framework */,
+				E24F2901185BC07400957D43 /* CoreServices.framework */,
+				E24F28FE185BC04500957D43 /* libsqlite3.dylib */,
+				E24F28FC185BC03A00957D43 /* libsqlite3.0.dylib */,
 				E29A82F01821B8E10057245C /* libsqlite3.dylib */,
 				E2E5A72A18180190009DECDB /* SystemConfiguration.framework */,
 				E2E5A72718180058009DECDB /* CoreLocation.framework */,
@@ -307,6 +420,8 @@
 				E2E5A6D91817FBF9009DECDB /* Foundation.framework */,
 				E2E5A6E71817FBF9009DECDB /* XCTest.framework */,
 				E2E5A6EA1817FBF9009DECDB /* UIKit.framework */,
+				E24F2884185BBED000957D43 /* Cocoa.framework */,
+				E24F2886185BBED000957D43 /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -329,6 +444,7 @@
 			isa = PBXGroup;
 			children = (
 				E2E5A6DD1817FBF9009DECDB /* ADNKitUtils-Prefix.pch */,
+				E24F2927185BC3BC00957D43 /* ADNKitUtils-OSX-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -363,7 +479,65 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		E24F2881185BBED000957D43 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E24F2926185BC22900957D43 /* ADNKitUtils.h in Headers */,
+				E24F2930185CD97800957D43 /* NSOrderedDictionary.h in Headers */,
+				E24F2931185CD97800957D43 /* FMDatabase.h in Headers */,
+				E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */,
+				E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */,
+				E24F2934185CD97800957D43 /* FMDatabaseQueue.h in Headers */,
+				E24F2935185CD97800957D43 /* FMResultSet.h in Headers */,
+				E24F2936185CD97800957D43 /* AATTMessagePlus.h in Headers */,
+				E24F2937185CD97800957D43 /* AATTDisplayLocation.h in Headers */,
+				E24F2938185CD97800957D43 /* AATTGeolocation.h in Headers */,
+				E24F2939185CD97800957D43 /* AATTBaseMessageInstances.h in Headers */,
+				E24F293A185CD97800957D43 /* AATTDisplayLocationInstances.h in Headers */,
+				E24F293B185CD97800957D43 /* AATTHashtagInstances.h in Headers */,
+				E24F293C185CD97800957D43 /* AATTPendingFile.h in Headers */,
+				E24F293D185CD97800957D43 /* AATTPendingMessageDeletion.h in Headers */,
+				E24F293E185CD97800957D43 /* AATTADNDatabase.h in Headers */,
+				E24F293F185CD97800957D43 /* AATTOrderedMessageBatch.h in Headers */,
+				E24F2940185CD97800957D43 /* AATTActionMessageSpec.h in Headers */,
+				E24F2941185CD97800957D43 /* NSObject+AATTPersistence.h in Headers */,
+				E24F2942185CD97800957D43 /* AATTADNPersistence.h in Headers */,
+				E24F2943185CD97800957D43 /* AATTMessageManager.h in Headers */,
+				E24F2944185CD97800957D43 /* AATTMessageManagerConfiguration.h in Headers */,
+				E24F2945185CD97800957D43 /* AATTMinMaxPair.h in Headers */,
+				E24F2946185CD97800957D43 /* AATTActionMessageManager.h in Headers */,
+				E24F2947185CD97800957D43 /* AATTADNFileManager.h in Headers */,
+				E24F2948185CD97800957D43 /* ANKClient+PrivateChannel.h in Headers */,
+				E24F2949185CD97800957D43 /* ANKClient+AATTMessageManager.h in Headers */,
+				E24F294A185CD97800957D43 /* ANKMessage+AATTAnnotationHelper.h in Headers */,
+				E24F294B185CD97800957D43 /* ANKChannel+AATTAnnotationHelper.h in Headers */,
+				E24F294C185CD97800957D43 /* ANKAnnotatableResource+AATTAnnotationHelper.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		E24F2882185BBED000957D43 /* ADNKitUtils-OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E24F28A9185BBED100957D43 /* Build configuration list for PBXNativeTarget "ADNKitUtils-OSX" */;
+			buildPhases = (
+				E24F287F185BBED000957D43 /* Sources */,
+				E24F2880185BBED000957D43 /* Frameworks */,
+				E24F2881185BBED000957D43 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E24F28AC185BBEFD00957D43 /* PBXTargetDependency */,
+			);
+			name = "ADNKitUtils-OSX";
+			productName = "ADNKitUtils-OSX";
+			productReference = E24F2883185BBED000957D43 /* ADNKitUtils-OSX.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		E2E5A6D51817FBF9009DECDB /* ADNKitUtils */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E2E5A6F91817FBF9009DECDB /* Build configuration list for PBXNativeTarget "ADNKitUtils" */;
@@ -410,6 +584,7 @@
 			projectRoot = "";
 			targets = (
 				E2E5A6D51817FBF9009DECDB /* ADNKitUtils */,
+				E24F2882185BBED000957D43 /* ADNKitUtils-OSX */,
 			);
 		};
 /* End PBXProject section */
@@ -446,6 +621,43 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
+		E24F287F185BBED000957D43 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */,
+				E24F2908185BC13100957D43 /* FMDatabase.m in Sources */,
+				E24F2909185BC13100957D43 /* FMDatabaseAdditions.m in Sources */,
+				E24F290A185BC13100957D43 /* FMDatabasePool.m in Sources */,
+				E24F290B185BC13100957D43 /* FMDatabaseQueue.m in Sources */,
+				E24F290C185BC13100957D43 /* fmdb.m in Sources */,
+				E24F290D185BC13100957D43 /* FMResultSet.m in Sources */,
+				E24F290E185BC13100957D43 /* AATTMessagePlus.m in Sources */,
+				E24F290F185BC13100957D43 /* AATTDisplayLocation.m in Sources */,
+				E24F2910185BC13100957D43 /* AATTGeolocation.m in Sources */,
+				E24F2911185BC13100957D43 /* AATTBaseMessageInstances.m in Sources */,
+				E24F2912185BC13100957D43 /* AATTDisplayLocationInstances.m in Sources */,
+				E24F2913185BC13100957D43 /* AATTHashtagInstances.m in Sources */,
+				E24F2914185BC13100957D43 /* AATTPendingFile.m in Sources */,
+				E24F2915185BC13100957D43 /* AATTPendingMessageDeletion.m in Sources */,
+				E24F2916185BC13100957D43 /* AATTADNDatabase.m in Sources */,
+				E24F2917185BC13100957D43 /* AATTOrderedMessageBatch.m in Sources */,
+				E24F2918185BC13100957D43 /* AATTActionMessageSpec.m in Sources */,
+				E24F2919185BC13100957D43 /* NSObject+AATTPersistence.m in Sources */,
+				E24F291A185BC13100957D43 /* AATTADNPersistence.m in Sources */,
+				E24F291B185BC13100957D43 /* AATTMessageManager.m in Sources */,
+				E24F291C185BC13100957D43 /* AATTMessageManagerConfiguration.m in Sources */,
+				E24F291D185BC13100957D43 /* AATTMinMaxPair.m in Sources */,
+				E24F291E185BC13100957D43 /* AATTActionMessageManager.m in Sources */,
+				E24F291F185BC13100957D43 /* AATTADNFileManager.m in Sources */,
+				E24F2920185BC13100957D43 /* ANKClient+PrivateChannel.m in Sources */,
+				E24F2921185BC13100957D43 /* ANKClient+AATTMessageManager.m in Sources */,
+				E24F2922185BC13100957D43 /* ANKMessage+AATTAnnotationHelper.m in Sources */,
+				E24F2923185BC13100957D43 /* ANKChannel+AATTAnnotationHelper.m in Sources */,
+				E24F2924185BC13100957D43 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E2E5A6D21817FBF9009DECDB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -485,6 +697,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		E24F28AC185BBEFD00957D43 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ADNKit-OSX";
+			targetProxy = E24F28AB185BBEFD00957D43 /* PBXContainerItemProxy */;
+		};
 		E2E5A7211817FDE4009DECDB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "ADNKit-AFNetworking-iOS";
@@ -493,6 +710,63 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		E24F28A2185BBED100957D43 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ADNKitUtils-OSX/ADNKitUtils-OSX-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"${SRCROOT}/\"/**",
+				);
+				LD_DYLIB_INSTALL_NAME = "";
+				MACH_O_TYPE = mh_dylib;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E24F28A3185BBED100957D43 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ADNKitUtils-OSX/ADNKitUtils-OSX-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"${SRCROOT}/\"/**",
+				);
+				LD_DYLIB_INSTALL_NAME = "";
+				MACH_O_TYPE = mh_dylib;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		E2E5A6F71817FBF9009DECDB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -608,6 +882,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E24F28A9185BBED100957D43 /* Build configuration list for PBXNativeTarget "ADNKitUtils-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E24F28A2185BBED100957D43 /* Debug */,
+				E24F28A3185BBED100957D43 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		E2E5A6D11817FBF9009DECDB /* Build configuration list for PBXProject "ADNKitUtils" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

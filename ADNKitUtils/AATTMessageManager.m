@@ -700,6 +700,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 }
 
 - (void)reverseGeocode:(AATTMessagePlus *)messagePlus latitude:(double)latitude longitude:(double)longitude persistIfEnabled:(BOOL)persistIfEnabled {
+#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
@@ -720,6 +721,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
             NSLog(@"%@", error.description);
         }
     }];
+#endif
 }
 
 - (AATTGeolocation *)geolocationForPlacemarks:(NSArray *)placemarks latitude:(double)latitude longitude:(double)longitude {

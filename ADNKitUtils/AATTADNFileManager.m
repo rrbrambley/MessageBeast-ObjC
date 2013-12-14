@@ -6,7 +6,9 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <AssetsLibrary/AssetsLibrary.h>
+#endif
 
 #import "AATTADNDatabase.h"
 #import "AATTADNFileManager.h"
@@ -53,6 +55,8 @@
 - (void)uploadPendingFileWithID:(NSString *)pendingFileID completionBlock:(AATTFileManagerCompletionBlock)completionBlock {
     AATTPendingFile *pendingFile = [self pendingFileWithID:pendingFileID];
     ANKFile *file = pendingFile.file;
+    
+#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
     ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
     
     [assetslibrary assetForURL:pendingFile.URL resultBlock:^(ALAsset *asset) {
@@ -73,6 +77,8 @@
     } failureBlock:^(NSError *error) {
         completionBlock(nil, nil, error);
     }];
+#endif
+    
 }
 
 @end
