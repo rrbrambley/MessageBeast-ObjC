@@ -673,6 +673,16 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
                 return;
             }
         }
+        
+        if(messagePlus.pendingOEmbeds.count > 0) {
+            for(NSString *pendingFileID in messagePlus.pendingOEmbeds) {
+                [self deletePendingOEmbedForPendingFileWithID:pendingFileID messageID:message.messageID channelID:message.channelID];
+                
+                //TODO: can multiple message plus objects use the same pending file Id?
+                //if so, we shouldn't do this here - must make sure no other MPs need it.
+                [self deletePendingFileWithID:pendingFileID];
+            }
+        }
     }];
 }
 
