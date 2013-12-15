@@ -686,9 +686,13 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 }
 
 - (void)deletePendingFile:(AATTPendingFile *)pendingFile {
+    [self deletePendingFileWithID:pendingFile.ID];
+}
+
+- (void)deletePendingFileWithID:(NSString *)pendingFileID {
     static NSString *delete = @"DELETE FROM pending_files WHERE pending_file_id = ?";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        if(![db executeUpdate:delete, pendingFile.ID]) {
+        if(![db executeUpdate:delete, pendingFileID]) {
             *rollback = YES;
         }
     }];
