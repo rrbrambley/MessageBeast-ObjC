@@ -229,12 +229,18 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     [self.client fetchMessageWithID:messagePlus.message.messageID inChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:responseObject];
-            [self adjustDateAndInsertMessagePlus:messagePlus];
             
             NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:messagePlus.message.channelID];
             if(channelMessages) { //could be nil if the channel messages weren't loaded first, etc.
                 [channelMessages setObject:messagePlus forKey:messagePlus.message.messageID];
             }
+            
+            [self adjustDateAndInsertMessagePlus:messagePlus];
+            
+            if(self.configuration.isLocationLookupEnabled) {
+                [self lookupLocationForMessagePlusses:@[messagePlus] persistIfEnabled:YES];
+            }
+
             block(messagePlus, meta, error);
         }
     }];
