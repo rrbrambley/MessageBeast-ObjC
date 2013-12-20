@@ -19,7 +19,6 @@
 @interface AATTActionMessageManager ()
 @property AATTMessageManager *messageManager;
 @property NSMutableDictionary *actionChannels;
-@property NSMutableDictionary *actionedMessages;
 @property AATTADNDatabase *database;
 @end
 
@@ -40,7 +39,6 @@
     if(self) {
         self.messageManager = messageManager;
         self.actionChannels = [NSMutableDictionary dictionaryWithCapacity:1];
-        self.actionedMessages = [NSMutableDictionary dictionaryWithCapacity:1];
         self.database = [AATTADNDatabase sharedInstance];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendUnsentMessages:) name:AATTMessageManagerDidSendUnsentMessagesNotification object:nil];
@@ -100,18 +98,14 @@
 
 - (void)applyActionForActionChannelWithID:(NSString *)actionChannelID toTargetMessagePlus:(AATTMessagePlus *)messagePlus  {
     if(![self isActionedTargetMessageID:messagePlus.message.messageID inActionChannelWithID:actionChannelID]) {
-        NSMutableOrderedDictionary *actionedMessages = [self existingOrNewActionedMessagesMapForActionChannelWithID:actionChannelID];
         ANKMessage *message = messagePlus.message;
         NSString *targetMessageID = message.messageID;
-        if(![actionedMessages objectForKey:targetMessageID]) {
-            ANKMessage *m = [[ANKMessage alloc] init];
-            m.isMachineOnly = YES;
-            [m addTargetMessageAnnotationWithTargetMessageID:targetMessageID];
-            
-            AATTMessagePlus *unsentActionMessage = [self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:actionChannelID message:m];
-            [actionedMessages setObject:messagePlus forKey:targetMessageID];
-            [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageId:targetMessageID targetChannelId:message.channelID];
-        }
+        ANKMessage *m = [[ANKMessage alloc] init];
+        m.isMachineOnly = YES;
+        [m addTargetMessageAnnotationWithTargetMessageID:targetMessageID];
+        
+        AATTMessagePlus *unsentActionMessage = [self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:actionChannelID message:m];
+        [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageId:targetMessageID targetChannelId:message.channelID];
     }
 }
 
@@ -121,11 +115,6 @@
     
     if(actionMessageSpecs.count > 0) {
         [self.database deleteActionMessageSpecWithTargetMessageID:targetMessageID actionChannelID:actionChannelID];
-        NSMutableOrderedDictionary *actionedMessages = [self existingOrNewActionedMessagesMapForActionChannelWithID:actionChannelID];
-        if([actionedMessages objectForKey:targetMessageID]) {
-            [actionedMessages removeEntryWithKey:targetMessageID];
-        }
-        
         [self deleteActionMessageUsingSpecFromArray:actionMessageSpecs atIndex:0 completionBlock:^(void) {
             NSLog(@"deleted %lu actionMessages in channel %@", (unsigned long)actionMessageSpecs.count, actionChannelID);
         }];
@@ -168,11 +157,6 @@
     //this is not an action channel.
     //it might be a target channel of one of our action channels though.
     if(![self.actionChannels objectForKey:channelID]) {
-        //some messages were sent, instead of just removing the faked messages,
-        //just remove the whole channel's map. we will have to reload them later, but
-        //this way we can assure that they'll be all in the right order, etc.
-        [self.actionedMessages removeObjectForKey:channelID];
-        
         //remove all action messages that point to this now nonexistent target message id
         NSArray *sentTargetMessages = [self.database actionMessageSpecsForTargetMessagesWithIDs:messageIDs];
         for(AATTActionMessageSpec *spec in sentTargetMessages) {
@@ -201,15 +185,6 @@
 }
 
 #pragma mark - Private
-
-- (NSMutableOrderedDictionary *)existingOrNewActionedMessagesMapForActionChannelWithID:(NSString *)channelID {
-    NSMutableOrderedDictionary *channelDictionary = [self.actionedMessages objectForKey:channelID];
-    if(!channelDictionary) {
-        channelDictionary = [[NSMutableOrderedDictionary alloc] init];
-        [self.actionedMessages setObject:channelDictionary forKey:channelID];
-    }
-    return channelDictionary;
-}
 
 - (NSArray *)targetMessagePlussesForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId {
     NSSet *targetMessageIds = [self targetMessageIdsForMessagePlusses:actionMessages];
