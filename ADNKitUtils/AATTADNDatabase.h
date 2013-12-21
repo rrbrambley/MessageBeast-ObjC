@@ -88,6 +88,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 ///
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
 
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID searchQuery:(NSString *)query;
+
 /// Obtain a batch of persisted AATTMessagePlus objects in reverse chronological order.
 ///
 /// @param channelID the ID of the channel containing the messages.

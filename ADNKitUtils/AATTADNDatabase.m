@@ -309,6 +309,20 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
 }
 
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID searchQuery:(NSString *)query {
+    NSString *select = @"SELECT docid FROM messages_search WHERE message_channel_id = ? AND message_text MATCH ?";
+    NSMutableSet *messageIDs = [NSMutableSet set];
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, channelID, query];
+        while([resultSet next]) {
+            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
+            [messageIDs addObject:messageID];
+        }
+    }];
+    
+    return [self messagesInChannelWithID:channelID messageIDs:messageIDs];
+}
+
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
     __block NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] initWithCapacity:messageIDs.count];
     __block NSString *maxID = nil;
