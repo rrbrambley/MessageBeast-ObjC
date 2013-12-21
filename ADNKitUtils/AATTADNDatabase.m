@@ -39,7 +39,9 @@
 
 #pragma mark - Table creation
 
-static NSString *const kCreateMessagesTable = @"CREATE VIRTUAL TABLE IF NOT EXISTS messages USING fts3 (message_id TEXT PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL, message_text TEXT, message_unsent BOOLEAN, message_send_attempts INTEGER)";
+static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id INTEGER PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL, message_text TEXT, message_unsent BOOLEAN, message_send_attempts INTEGER)";
+
+static NSString *const kCreateMessagesSearchTable = @"CREATE VIRTUAL TABLE messages_search USING fts4(content=\"messages\", message_channel_id TEXT, message_text TEXT)";
 
 static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_short_name TEXT, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
 
@@ -79,6 +81,14 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             [db executeUpdate:kCreatePendingFilesTable];
             [db executeUpdate:kCreatePendingOEmbedsTable];
             [db executeUpdate:kCreateActionMessageSpecsTable];
+            
+            //"IF NOT EXISTS" not available for VIRTUAL / FTS tables.
+            static NSString *checkSearchExists = @"SELECT name FROM sqlite_master WHERE type='table' AND name='messages_search'";
+            FMResultSet *resultSet = [db executeQuery:checkSearchExists];
+            if(![resultSet next]) {
+                [db executeUpdate:kCreateMessagesSearchTable];
+            }
+            [resultSet close];
         }];
     }
     return self;
@@ -88,8 +98,15 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus {
     static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json, message_text, message_unsent, message_send_attempts) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    static NSNumberFormatter *formatter = nil;
+    if(!formatter) {
+        formatter = [[NSNumberFormatter alloc] init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    }
+
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
         ANKMessage *message = messagePlus.message;
+        NSNumber *messageID = [formatter numberFromString:message.messageID];
         NSString *messageText = message.text;
         
         message.text = nil;
@@ -98,7 +115,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         NSNumber *unsent = [NSNumber numberWithBool:messagePlus.isUnsent];
         NSNumber *sendAttempts = [NSNumber numberWithInteger:messagePlus.sendAttemptsCount];
         
-        if(![db executeUpdate:insertOrReplaceMessage, messagePlus.message.messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString, messageText, unsent, sendAttempts]) {
+        if(![db executeUpdate:insertOrReplaceMessage, messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString, messageText, unsent, sendAttempts]) {
             *rollBack = YES;
         }
         
@@ -108,8 +125,16 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             }
         }
         
+        [self insertSearchableMessageText:messageID channelID:message.channelID text:messageText withDB:db];
         message.text = messageText;
     }];
+}
+
+- (void)insertSearchableMessageText:(NSNumber *)messageID channelID:(NSString *)channelID text:(NSString *)text withDB:(FMDatabase *)db {
+    if(text) {
+        static NSString *insert = @"INSERT INTO messages_search (docid, message_channel_id, message_text) VALUES (?, ?, ?)";
+        [db executeUpdate:insert, messageID, channelID, text];
+    }
 }
 
 - (void)insertOrReplacePendingOEmbedForPendingFileID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID db:(FMDatabase *)db {
