@@ -19,6 +19,7 @@
 #import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
 #import "AATTHashtagInstances.h"
+#import "AATTOrderedMessageBatch.h"
 #import "AATTMessageManager.h"
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
