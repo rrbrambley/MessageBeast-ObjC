@@ -649,15 +649,19 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 #pragma mark - Deletion
 
 - (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus {
+    static NSString *deleteSearchableMessageText = @"DELETE FROM messages_search WHERE docid=?";
     static NSString *deleteMessage = @"DELETE FROM messages WHERE message_id = ?";
     static NSString *deleteHashtags = @"DELETE FROM hashtag_instances WHERE hashtag_name = ? AND hashtag_message_id = ?";
     static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_name = ? AND location_message_id = ? AND location_latitude = ? AND location_longitude = ?";
     static NSString *deleteOEmbeds = @"DELETE FROM oembed_instances WHERE oembed_type = ? AND oembed_message_id = ?";
     
     ANKMessage *message = messagePlus.message;
-
+    NSNumber *messageID = [self numberIDForStringMessageID:message.messageID];
+    
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        if(![db executeUpdate:deleteMessage, message.messageID]) {
+        [db executeUpdate:deleteSearchableMessageText, messageID];
+        
+        if(![db executeUpdate:deleteMessage, messageID]) {
             *rollback = YES;
             return;
         }
