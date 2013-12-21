@@ -277,7 +277,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         
         ANKMessage *m = nil;
         while([resultSet next]) {
-            NSString *messageID = [resultSet stringForColumnIndex:0];
+            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
             NSString *messageJSONString = [resultSet stringForColumnIndex:3];
             NSString *messageText = [resultSet stringForColumnIndex:4];
@@ -338,7 +338,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         
         ANKMessage *m = nil;
         while([resultSet next]) {
-            NSString *messageID = [resultSet stringForColumnIndex:0];
+            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
             NSString *messageJSONString = [resultSet stringForColumnIndex:2];
             NSString *messageText = [resultSet stringForColumnIndex:3];
@@ -389,7 +389,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, channelID, [NSNumber numberWithInt:1]];
         while([resultSet next]) {
-            NSString *messageID = [resultSet objectForColumnIndex:0];
+            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
             NSString *messageJSONString = [resultSet stringForColumnIndex:2];
             NSString *messageText = [resultSet stringForColumnIndex:3];
