@@ -98,15 +98,10 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus {
     static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json, message_text, message_unsent, message_send_attempts) VALUES(?, ?, ?, ?, ?, ?, ?)";
-    static NSNumberFormatter *formatter = nil;
-    if(!formatter) {
-        formatter = [[NSNumberFormatter alloc] init];
-        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    }
 
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
         ANKMessage *message = messagePlus.message;
-        NSNumber *messageID = [formatter numberFromString:message.messageID];
+        NSNumber *messageID = [self numberIDForStringMessageID:message.messageID];
         NSString *messageText = message.text;
         
         message.text = nil;
@@ -817,6 +812,15 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }
     formatter.maximumFractionDigits = decimalPlaces;
     return [formatter stringFromNumber:[NSNumber numberWithDouble:value]];
+}
+
+- (NSNumber *)numberIDForStringMessageID:(NSString *)messageID {
+    static NSNumberFormatter *formatter = nil;
+    if(!formatter) {
+        formatter = [[NSNumberFormatter alloc] init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    }
+    return [formatter numberFromString:messageID];
 }
 
 @end
