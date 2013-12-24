@@ -74,6 +74,7 @@
 		E24F294A185CD97800957D43 /* ANKMessage+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A83131822D15D0057245C /* ANKMessage+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F294B185CD97800957D43 /* ANKChannel+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA20184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F294C185CD97800957D43 /* ANKAnnotatableResource+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA23184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F29691869684000957D43 /* AATTChannelSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F29681869684000957D43 /* AATTChannelSpec.m */; };
 		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
 		E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */; };
 		E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
@@ -182,6 +183,8 @@
 		E24F2903185BC07E00957D43 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		E24F2905185BC08400957D43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E24F2927185BC3BC00957D43 /* ADNKitUtils-OSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ADNKitUtils-OSX-Prefix.pch"; path = "ADNKitUtils-OSX/ADNKitUtils-OSX-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		E24F29671869684000957D43 /* AATTChannelSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSpec.h; sourceTree = "<group>"; };
+		E24F29681869684000957D43 /* AATTChannelSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpec.m; sourceTree = "<group>"; };
 		E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
 		E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
 		E287DA20184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKChannel+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
@@ -354,6 +357,8 @@
 		E29A82FD1821C15D0057245C /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E24F29671869684000957D43 /* AATTChannelSpec.h */,
+				E24F29681869684000957D43 /* AATTChannelSpec.m */,
 				E29A82FE1821C17E0057245C /* AATTMessagePlus.h */,
 				E29A82FF1821C17E0057245C /* AATTMessagePlus.m */,
 				E29A83011822B42D0057245C /* AATTDisplayLocation.h */,
@@ -680,6 +685,7 @@
 				E287DA2F184E42A80035CE71 /* AATTADNPersistence.m in Sources */,
 				E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */,
 				E29A83061822B6650057245C /* AATTOrderedMessageBatch.m in Sources */,
+				E24F29691869684000957D43 /* AATTChannelSpec.m in Sources */,
 				E2D2F71E184FF26B00A72B8B /* AATTActionMessageSpec.m in Sources */,
 				E2BA21371825DE150023363A /* AATTBaseMessageInstances.m in Sources */,
 				E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */,
