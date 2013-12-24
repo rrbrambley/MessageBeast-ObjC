@@ -17,7 +17,7 @@
 #import "NSOrderedDictionary.h"
 
 @interface AATTActionMessageManager ()
-@property AATTMessageManager *messageManager;
+@property (nonatomic) AATTMessageManager *messageManager;
 @property NSMutableDictionary *actionChannels;
 @property AATTADNDatabase *database;
 @end
@@ -70,6 +70,12 @@
 
 - (BOOL)isActionedTargetMessageID:(NSString *)targetMessageID inActionChannelWithID:(NSString *)actionChannelID {
     return [self.database hasActionMessageSpecForActionChannelWithID:actionChannelID targetMessageID:targetMessageID];
+}
+
+#pragma mark - Other Getters
+
+- (AATTMessageManager *)messageManager {
+    return self.messageManager;
 }
 
 #pragma mark - Retrieval

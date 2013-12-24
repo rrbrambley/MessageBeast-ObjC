@@ -23,6 +23,10 @@ typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChann
 
 - (BOOL)isActionedTargetMessageID:(NSString *)targetMessageID inActionChannelWithID:(NSString *)actionChannelID;
 
+#pragma mark - Other Getters
+
+- (AATTMessageManager *)messageManager;
+
 #pragma mark - Retrieval
 
 - (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
