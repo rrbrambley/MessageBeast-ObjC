@@ -15,6 +15,7 @@
 #import "AATTADNFileManager.h"
 #import "AATTADNPersistence.h"
 #import "AATTBaseMessageInstances.h"
+#import "AATTChannelSpec.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
