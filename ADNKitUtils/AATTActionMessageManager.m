@@ -75,7 +75,7 @@
 #pragma mark - Other Getters
 
 - (AATTMessageManager *)messageManager {
-    return self.messageManager;
+    return _messageManager;
 }
 
 #pragma mark - Retrieval
