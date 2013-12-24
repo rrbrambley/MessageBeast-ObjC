@@ -77,7 +77,7 @@
 - (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
     [self.messageManager fetchAndPersistAllMessagesInChannelWithID:actionChannelId batchSyncBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
-            NSLog(@"synced batch of %d messages", messagePlusses.count);
+            NSLog(@"synced batch of %lu messages", (unsigned long)messagePlusses.count);
             for(AATTMessagePlus *messagePlus in messagePlusses) {
                 NSString *targetMessageId = [messagePlus.message targetMessageId];
                 [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageId:targetMessageId targetChannelId:targetChannelId];
@@ -119,7 +119,7 @@
             NSLog(@"deleted %lu actionMessages in channel %@", (unsigned long)actionMessageSpecs.count, actionChannelID);
         }];
     } else {
-        NSLog(@"Attempting to remove action channel %@ action; target message ID %@ yielded %d db results", actionChannelID, targetMessageID, actionMessageSpecs.count);
+        NSLog(@"Attempting to remove action channel %@ action; target message ID %@ yielded %lu db results", actionChannelID, targetMessageID, (unsigned long)actionMessageSpecs.count);
     }
 }
 
