@@ -13,4 +13,6 @@
 @property NSString *type;
 @property NSDictionary *queryParameters;
 
+- (id)initWithType:(NSString *)type queryParameters:(NSDictionary *)queryParameters;
+
 @end

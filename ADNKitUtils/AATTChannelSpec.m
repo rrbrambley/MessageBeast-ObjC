@@ -10,4 +10,13 @@
 
 @implementation AATTChannelSpec
 
+- (id)initWithType:(NSString *)type queryParameters:(NSDictionary *)queryParameters {
+    self = [super init];
+    if(self) {
+        self.type = type;
+        self.queryParameters = queryParameters;
+    }
+    return self;
+}
+
 @end
