@@ -74,6 +74,7 @@
 		E24F294A185CD97800957D43 /* ANKMessage+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A83131822D15D0057245C /* ANKMessage+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F294B185CD97800957D43 /* ANKChannel+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA20184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F294C185CD97800957D43 /* ANKAnnotatableResource+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA23184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2966186966E600957D43 /* AATTChannelSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2965186966E600957D43 /* AATTChannelSyncManager.m */; };
 		E24F29691869684000957D43 /* AATTChannelSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F29681869684000957D43 /* AATTChannelSpec.m */; };
 		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
 		E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */; };
@@ -183,6 +184,8 @@
 		E24F2903185BC07E00957D43 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		E24F2905185BC08400957D43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E24F2927185BC3BC00957D43 /* ADNKitUtils-OSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ADNKitUtils-OSX-Prefix.pch"; path = "ADNKitUtils-OSX/ADNKitUtils-OSX-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		E24F2964186966E600957D43 /* AATTChannelSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSyncManager.h; sourceTree = "<group>"; };
+		E24F2965186966E600957D43 /* AATTChannelSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSyncManager.m; sourceTree = "<group>"; };
 		E24F29671869684000957D43 /* AATTChannelSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSpec.h; sourceTree = "<group>"; };
 		E24F29681869684000957D43 /* AATTChannelSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpec.m; sourceTree = "<group>"; };
 		E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
@@ -319,6 +322,8 @@
 				E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */,
 				E2D2F72818521E7200A72B8B /* AATTADNFileManager.h */,
 				E2D2F72918521E7200A72B8B /* AATTADNFileManager.m */,
+				E24F2964186966E600957D43 /* AATTChannelSyncManager.h */,
+				E24F2965186966E600957D43 /* AATTChannelSyncManager.m */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -683,6 +688,7 @@
 				E29A82DC1821B1070057245C /* AATTADNDatabase.m in Sources */,
 				E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */,
 				E287DA2F184E42A80035CE71 /* AATTADNPersistence.m in Sources */,
+				E24F2966186966E600957D43 /* AATTChannelSyncManager.m in Sources */,
 				E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */,
 				E29A83061822B6650057245C /* AATTOrderedMessageBatch.m in Sources */,
 				E24F29691869684000957D43 /* AATTChannelSpec.m in Sources */,
