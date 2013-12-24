@@ -17,7 +17,19 @@
 
 typedef void (^AATTChannelSyncManagerChannelsInitializedBlock)(NSError *error);
 
+typedef void (^AATTChannelSyncManagerSyncCompletionBlock)(NSError *error);
+
 - (id)initWithActionMessageManager:(AATTActionMessageManager *)actionMessageManager targetChannelSpec:(AATTChannelSpec *)channelSpec actionChannelActionTypes:(NSArray *)actionTypes;
+
+#pragma mark - Full Sync
+
+- (void)checkFullSyncStatusWithStartBlock:(void (^)(void))startBlock completionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock;
+
+- (void)checkFullSyncStatusAndResumeSyncIfPreviouslyStarted:(BOOL)resumeSync syncStartBlock:(void (^)(void))syncStartBlock completionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock syncIncompleteBlock:(void (^)(void))syncIncompleteBlock;
+
+- (void)startFullSyncWithCompletionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock;
+
+#pragma mark - Initialize Channels
 
 - (void)initChannelsWithCompletionBlock:(AATTChannelSyncManagerChannelsInitializedBlock)block;
 

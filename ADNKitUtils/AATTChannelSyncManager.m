@@ -32,6 +32,8 @@
     return self;
 }
 
+#pragma mark - Initialize Channels
+
 - (void)initChannelsWithCompletionBlock:(AATTChannelSyncManagerChannelsInitializedBlock)block {
     [self initChannelWithSpec:self.targetChannelSpec completionBlock:^{
         if(self.targetChannel) {
@@ -39,6 +41,38 @@
         } else {
             //TODO
         }
+    }];
+}
+
+#pragma mark - Full Sync
+
+- (void)checkFullSyncStatusWithStartBlock:(void (^)(void))startBlock completionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock {
+    [self checkFullSyncStatusAndResumeSyncIfPreviouslyStarted:YES syncStartBlock:startBlock completionBlock:completionBlock syncIncompleteBlock:nil];
+}
+
+- (void)checkFullSyncStatusAndResumeSyncIfPreviouslyStarted:(BOOL)resumeSync syncStartBlock:(void (^)(void))syncStartBlock completionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock syncIncompleteBlock:(void (^)(void))syncIncompleteBlock {
+    AATTChannelFullSyncState state = [self.messageManager fullSyncStateForChannels:[self channelsArray]];
+    if(state == AATTChannelFullSyncStateComplete) {
+        completionBlock(nil);
+    } else if(state == AATTChannelFullSyncStateNotStarted) {
+        [self startFullSyncWithCompletionBlock:completionBlock];
+        syncStartBlock();
+    } else {
+        if(resumeSync) {
+            [self startFullSyncWithCompletionBlock:completionBlock];
+            syncStartBlock();
+        } else if(syncIncompleteBlock) {
+            syncIncompleteBlock();
+        }
+    }
+}
+
+- (void)startFullSyncWithCompletionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock {
+    [self.messageManager fetchAndPersistAllMessagesInChannels:[self channelsArray] completionBlock:^(BOOL success, NSError *error) {
+        if(error) {
+            NSLog(@"Could not finish sync; %@", error.description);
+        }
+        completionBlock(nil);
     }];
 }
 
@@ -85,5 +119,13 @@
     }];
 }
 
+- (NSArray *)channelsArray {
+    NSMutableArray *channels = [NSMutableArray arrayWithCapacity:(self.targetChannel ? 1 : 0) + self.actionChannels.count];
+    if(self.targetChannel) {
+        [channels addObject:self.targetChannel];
+    }
+    [channels addObjectsFromArray:[self.actionChannels allValues]];
+    return channels;
+}
 
 @end
