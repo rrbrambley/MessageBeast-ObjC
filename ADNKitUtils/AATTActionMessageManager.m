@@ -85,8 +85,8 @@
         if(!error) {
             NSLog(@"synced batch of %lu messages", (unsigned long)messagePlusses.count);
             for(AATTMessagePlus *messagePlus in messagePlusses) {
-                NSString *targetMessageId = [messagePlus.message targetMessageId];
-                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageId:targetMessageId targetChannelId:targetChannelID];
+                NSString *targetMessageId = [messagePlus.message targetMessageID];
+                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageId targetChannelID:targetChannelID];
             }
         } else {
             NSLog(@"Batch sync failed with error: %@", error.localizedDescription);
@@ -111,7 +111,7 @@
         [m addTargetMessageAnnotationWithTargetMessageID:targetMessageID];
         
         AATTMessagePlus *unsentActionMessage = [self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:actionChannelID message:m];
-        [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageId:targetMessageID targetChannelId:message.channelID];
+        [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageID:targetMessageID targetChannelID:message.channelID];
     }
 }
 
@@ -181,7 +181,7 @@
                     [self.database deleteActionMessageSpecForActionMessageWithID:sentMessageID];
                 }
                 for(AATTMessagePlus *messagePlus in messagePlusses) {
-                    [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageId:messagePlus.message.targetMessageId targetChannelId:targetChannelID];
+                    [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:messagePlus.message.targetMessageID targetChannelID:targetChannelID];
                 }
             } else {
                 NSLog(@"Could not fetch newest messages for action channel with ID %@; %@", channelID, error.localizedDescription);
@@ -201,7 +201,7 @@
 - (NSSet *)targetMessageIdsForMessagePlusses:(NSArray *)messagePlusses {
     NSMutableSet *targetMessageIds = [NSMutableSet setWithCapacity:messagePlusses.count];
     for(AATTMessagePlus *mp in messagePlusses) {
-        [targetMessageIds addObject:[mp.message targetMessageId]];
+        [targetMessageIds addObject:[mp.message targetMessageID]];
     }
     return targetMessageIds;
 }

@@ -31,7 +31,7 @@
     return nil;
 }
 
-- (NSString *)targetMessageId {
+- (NSString *)targetMessageID {
     ANKAnnotation *targetMessage = [self firstAnnotationOfType:kMessageAnnotationTargetMessage];
     return [targetMessage.value objectForKey:@"id"];
 }

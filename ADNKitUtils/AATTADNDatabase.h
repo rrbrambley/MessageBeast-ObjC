@@ -60,10 +60,10 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 /// Insert an action message spec.
 ///
 /// @param messagePlus the action message
-/// @param targetMessageId the ID of the target message
-/// @param targetChannelId the ID of the target message's channel.
+/// @param targetMessageID the ID of the target message
+/// @param targetChannelID the ID of the target message's channel.
 ///
-- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId;
+- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID;
 
 - (void)insertOrReplacePendingDeletionForMessagePlus:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles;
 

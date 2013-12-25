@@ -214,11 +214,11 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }
 }
 
-- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageId:(NSString *)targetMessageId targetChannelId:(NSString *)targetChannelId {
+- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID {
     static NSString *insertOrReplaceActionMessageSpec = @"INSERT OR REPLACE INTO action_messages (action_message_id, action_message_channel_id, action_message_target_message_id, action_message_target_channel_id) VALUES (?, ?, ?, ?)";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         ANKMessage *message = messagePlus.message;
-        if(![db executeUpdate:insertOrReplaceActionMessageSpec, message.messageID, message.channelID, targetMessageId, targetChannelId]) {
+        if(![db executeUpdate:insertOrReplaceActionMessageSpec, message.messageID, message.channelID, targetMessageID, targetChannelID]) {
             *rollback = YES;
             return;
         }
