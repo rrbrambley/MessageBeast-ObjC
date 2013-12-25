@@ -76,7 +76,42 @@
     }];
 }
 
+#pragma mark - Fetch Messages
+
+- (BOOL)fetchNewestMessagesWithCompletionBlock:(AATTMessageManagerCompletionBlock)block {
+    BOOL canFetch = [self.messageManager fetchNewestMessagesInChannelWithID:self.targetChannel.channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+        if(!error) {
+            [self fetchNewestActionChannelMessagesForChannelAtIndex:0 completionBlock:^{
+                block(messagePlusses, appended, meta, error);
+            }];
+        } else {
+            block(messagePlusses, appended, meta, error);
+        }
+    }];
+    return canFetch;
+}
+
 #pragma mark - Private
+
+- (void)fetchNewestActionChannelMessagesForChannelAtIndex:(NSUInteger)index completionBlock:(void (^)(void))block {
+    if(index >= self.actionChannelTypes.count) {
+        block();
+    } else {
+        ANKChannel *actionChannel = [self.actionChannels objectForKey:[self.actionChannelTypes objectAtIndex:index]];
+        BOOL canFetch = [self.actionMessageManager fetchNewestMessagesInActionChannelWithID:actionChannel.channelID targetChannelID:self.targetChannel.channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                [self fetchNewestActionChannelMessagesForChannelAtIndex:(index+1) completionBlock:block];
+            } else {
+                block();
+            }
+        }];
+        
+        //TODO: fix this? is this right?
+        if(!canFetch) {
+            [self.messageManager sendAllUnsentForChannelWithID:actionChannel.channelID];
+        }
+    }
+}
 
 - (void)initChannelWithSpec:(AATTChannelSpec *)channelSpec completionBlock:(void (^)(void))block {
     [self.messageManager.client getOrCreatePrivateChannelWithType:channelSpec.type completionBlock:^(ANKChannel *channel, NSError *error) {

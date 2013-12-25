@@ -33,4 +33,8 @@ typedef void (^AATTChannelSyncManagerSyncCompletionBlock)(NSError *error);
 
 - (void)initChannelsWithCompletionBlock:(AATTChannelSyncManagerChannelsInitializedBlock)block;
 
+#pragma mark - Fetch Messages
+
+- (BOOL)fetchNewestMessagesWithCompletionBlock:(AATTMessageManagerCompletionBlock)block;
+
 @end
