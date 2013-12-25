@@ -31,6 +31,8 @@ typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChann
 
 - (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
 
+- (BOOL)fetchNewestMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
+
 #pragma mark - Apply/Remove Actions
 
 - (void)applyActionForActionChannelWithID:(NSString *)actionChannelID toTargetMessagePlus:(AATTMessagePlus *)messagePlus;

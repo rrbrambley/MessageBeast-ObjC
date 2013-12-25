@@ -100,6 +100,24 @@
     }];
 }
 
+- (BOOL)fetchNewestMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
+    NSArray *messages = [self.messageManager loadedMessagesForChannelWithID:actionChannelID];
+    if(!messages || messages.count == 0) {
+        //we do this so that the max id is known.
+        [self.messageManager loadPersistedMesssageForChannelWithID:actionChannelID limit:1];
+    }
+    BOOL canFetch = [self.messageManager fetchNewestMessagesInChannelWithID:actionChannelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+        if(!error) {
+            for(AATTMessagePlus *messagePlus in messagePlusses) {
+                NSString *targetMessageID = messagePlus.message.targetMessageID;
+                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageID targetChannelID:targetChannelID];
+            }
+        }
+        completionBlock(messagePlusses, appended, meta, error);
+    }];
+    return canFetch;
+}
+
 #pragma mark - Apply/Remove Actions
 
 - (void)applyActionForActionChannelWithID:(NSString *)actionChannelID toTargetMessagePlus:(AATTMessagePlus *)messagePlus  {
