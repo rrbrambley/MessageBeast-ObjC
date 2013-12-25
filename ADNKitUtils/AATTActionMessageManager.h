@@ -29,7 +29,7 @@ typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChann
 
 #pragma mark - Retrieval
 
-- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
+- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
 
 #pragma mark - Apply/Remove Actions
 

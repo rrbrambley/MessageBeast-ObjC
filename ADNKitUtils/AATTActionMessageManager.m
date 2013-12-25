@@ -80,13 +80,13 @@
 
 #pragma mark - Retrieval
 
-- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
-    [self.messageManager fetchAndPersistAllMessagesInChannelWithID:actionChannelId batchSyncBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
+- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
+    [self.messageManager fetchAndPersistAllMessagesInChannelWithID:actionChannelID batchSyncBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             NSLog(@"synced batch of %lu messages", (unsigned long)messagePlusses.count);
             for(AATTMessagePlus *messagePlus in messagePlusses) {
                 NSString *targetMessageId = [messagePlus.message targetMessageId];
-                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageId:targetMessageId targetChannelId:targetChannelId];
+                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageId:targetMessageId targetChannelId:targetChannelID];
             }
         } else {
             NSLog(@"Batch sync failed with error: %@", error.localizedDescription);
