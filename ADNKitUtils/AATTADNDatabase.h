@@ -110,7 +110,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 
 /// Obtain an NSArray of AATTDisplayLocationInstances for a channel with the specified ID.
 /// Each AATTDisplayLocationInstances contains all message IDs with which its display location
-/// is associated.
+/// is associated. This method uses a precision of AATTLocationPrecisionTenThousandMeters (actually ~1.11 km)
+/// when determining if two locations with the same name are considered equal.
 ///
 /// @param channelID the ID of the channel containing the messages with which the returned
 ///        display location instances are associated.
