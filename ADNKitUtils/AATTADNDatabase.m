@@ -609,11 +609,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             NSString *tMessageID = [resultSet stringForColumnIndex:2];
             NSString *tChannelID = [resultSet stringForColumnIndex:3];
             
-            AATTActionMessageSpec *spec = [[AATTActionMessageSpec alloc] init];
-            spec.actionMessageID = aMessageID;
-            spec.actionChannelID = aChannelID;
-            spec.targetMessageID = tMessageID;
-            spec.targetChannelID = tChannelID;
+            AATTActionMessageSpec *spec = [[AATTActionMessageSpec alloc] initWithActionMessageID:aMessageID actionChannelID:aChannelID targetMessageID:tMessageID targetChannelID:tChannelID];
             [actionMessageSpecs addObject:spec];
         }
     }];
