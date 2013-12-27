@@ -10,4 +10,14 @@
 
 @implementation AATTActionMessageSpec
 
+- (id)initWithActionMessageID:(NSString *)actionMessageID actionChannelID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID {
+    self = [super init];
+    if(self) {
+        self.actionMessageID = actionMessageID;
+        self.actionChannelID = actionChannelID;
+        self.targetMessageID = targetMessageID;
+        self.targetChannelID = targetChannelID;
+    }
+    return self;
+}
 @end

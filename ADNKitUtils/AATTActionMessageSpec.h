@@ -15,4 +15,6 @@
 @property NSString *targetMessageID;
 @property NSString *targetChannelID;
 
+- (id)initWithActionMessageID:(NSString *)actionMessageID actionChannelID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID;
+
 @end
