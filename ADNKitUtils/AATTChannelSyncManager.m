@@ -120,11 +120,35 @@
             [self fetchNewestActionChannelMessagesForChannelAtIndex:0 refreshCompletionBlock:block refreshResultSet:resultSet];
         }
     } else {
-        //TODO
+        [self fetchNewestMessagesForChannelAtIndex:0 refreshCompletionBlock:block refreshResultSet:[[AATTChannelRefreshResultSet alloc] init]];
     }
 }
 
 #pragma mark - Private
+
+- (void)fetchNewestMessagesForChannelAtIndex:(NSUInteger)index refreshCompletionBlock:(AATTChannelSyncManagerChannelRefreshCompletionBlock)refreshCompletionBlock refreshResultSet:(AATTChannelRefreshResultSet *)refreshResultSet {
+    if(index >= self.channelSpecSet.count) {
+        refreshCompletionBlock(refreshResultSet);
+    } else {
+        ANKChannel *channel = [self.channels objectForKey:[self.channelSpecSet channelSpecAtIndex:index]];
+        BOOL canFetch = [self.messageManager fetchNewestMessagesInChannelWithID:channel.channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                AATTChannelRefreshResult *refreshResult = [[AATTChannelRefreshResult alloc] initWithChannel:channel messagePlusses:messagePlusses appended:appended];
+                [refreshResultSet addRefreshResult:refreshResult];
+                [self fetchNewestMessagesForChannelAtIndex:(index+1) refreshCompletionBlock:refreshCompletionBlock refreshResultSet:refreshResultSet];
+            } else {
+                AATTChannelRefreshResult *refreshResult = [[AATTChannelRefreshResult alloc] initWithChannel:channel error:error];
+                [refreshResultSet addRefreshResult:refreshResult];
+                [self fetchNewestMessagesForChannelAtIndex:(index+1) refreshCompletionBlock:refreshCompletionBlock refreshResultSet:refreshResultSet];
+            }
+        }];
+        
+        if(!canFetch) {
+            [refreshResultSet addRefreshResult:[[AATTChannelRefreshResult alloc] init]];
+            [self fetchNewestMessagesForChannelAtIndex:(index+1) refreshCompletionBlock:refreshCompletionBlock refreshResultSet:refreshResultSet];
+        }
+    }
+}
 
 - (void)fetchNewestActionChannelMessagesForChannelAtIndex:(NSUInteger)index refreshCompletionBlock:(AATTChannelSyncManagerChannelRefreshCompletionBlock)refreshCompletionBlock refreshResultSet:(AATTChannelRefreshResultSet *)refreshResultSet {
     if(index >= self.targetWithActionChannelsSpecSet.actionChannelCount) {
