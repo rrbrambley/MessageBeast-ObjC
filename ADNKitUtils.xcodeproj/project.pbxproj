@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E23FCAE51874F838009FFDFC /* AATTChannelSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */; };
 		E24F2515185A736700957D43 /* AATTPendingMessageDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */; };
 		E24F2885185BBED000957D43 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2884185BBED000957D43 /* Cocoa.framework */; };
 		E24F28FF185BC04500957D43 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F28FE185BC04500957D43 /* libsqlite3.dylib */; };
@@ -171,6 +172,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E23FCAE31874F838009FFDFC /* AATTChannelSpecSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSpecSet.h; sourceTree = "<group>"; };
+		E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpecSet.m; sourceTree = "<group>"; };
 		E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingMessageDeletion.h; sourceTree = "<group>"; };
 		E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingMessageDeletion.m; sourceTree = "<group>"; };
 		E24F2883185BBED000957D43 /* ADNKitUtils-OSX.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "ADNKitUtils-OSX.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -364,6 +367,8 @@
 			children = (
 				E24F29671869684000957D43 /* AATTChannelSpec.h */,
 				E24F29681869684000957D43 /* AATTChannelSpec.m */,
+				E23FCAE31874F838009FFDFC /* AATTChannelSpecSet.h */,
+				E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */,
 				E29A82FE1821C17E0057245C /* AATTMessagePlus.h */,
 				E29A82FF1821C17E0057245C /* AATTMessagePlus.m */,
 				E29A83011822B42D0057245C /* AATTDisplayLocation.h */,
@@ -681,6 +686,7 @@
 				E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */,
 				E287DA2C184E42670035CE71 /* NSObject+AATTPersistence.m in Sources */,
 				E2C751791825C2BF003BE00E /* AATTGeolocation.m in Sources */,
+				E23FCAE51874F838009FFDFC /* AATTChannelSpecSet.m in Sources */,
 				E2D2F72A18521E7200A72B8B /* AATTADNFileManager.m in Sources */,
 				E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */,
 				E2BA21521826CB5D0023363A /* AATTHashtagInstances.m in Sources */,
