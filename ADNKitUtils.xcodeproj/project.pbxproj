@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E23FCAE51874F838009FFDFC /* AATTChannelSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */; };
+		E23FCAEA18750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE918750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m */; };
 		E24F2515185A736700957D43 /* AATTPendingMessageDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */; };
 		E24F2885185BBED000957D43 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2884185BBED000957D43 /* Cocoa.framework */; };
 		E24F28FF185BC04500957D43 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F28FE185BC04500957D43 /* libsqlite3.dylib */; };
@@ -174,6 +175,8 @@
 /* Begin PBXFileReference section */
 		E23FCAE31874F838009FFDFC /* AATTChannelSpecSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSpecSet.h; sourceTree = "<group>"; };
 		E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpecSet.m; sourceTree = "<group>"; };
+		E23FCAE818750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTTargetWithActionChannelsSpecSet.h; sourceTree = "<group>"; };
+		E23FCAE918750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTTargetWithActionChannelsSpecSet.m; sourceTree = "<group>"; };
 		E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingMessageDeletion.h; sourceTree = "<group>"; };
 		E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingMessageDeletion.m; sourceTree = "<group>"; };
 		E24F2883185BBED000957D43 /* ADNKitUtils-OSX.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "ADNKitUtils-OSX.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -385,6 +388,8 @@
 				E2D2F72C185220B000A72B8B /* AATTPendingFile.m */,
 				E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */,
 				E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */,
+				E23FCAE818750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.h */,
+				E23FCAE918750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -683,6 +688,7 @@
 				E2BA213D1825DF6E0023363A /* AATTDisplayLocationInstances.m in Sources */,
 				E29A83031822B42D0057245C /* AATTDisplayLocation.m in Sources */,
 				E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */,
+				E23FCAEA18750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m in Sources */,
 				E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */,
 				E287DA2C184E42670035CE71 /* NSObject+AATTPersistence.m in Sources */,
 				E2C751791825C2BF003BE00E /* AATTGeolocation.m in Sources */,
