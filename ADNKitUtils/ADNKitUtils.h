@@ -27,6 +27,7 @@
 #import "AATTMessageManagerConfiguration.h"
 #import "AATTMessagePlus.h"
 #import "AATTPendingFile.h"
+#import "AATTTargetWithActionChannelsSpecSet.h"
 
 #import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKChannel+AATTAnnotationHelper.h"
