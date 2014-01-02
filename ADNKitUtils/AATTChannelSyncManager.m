@@ -8,26 +8,41 @@
 
 #import "AATTActionMessageManager.h"
 #import "AATTChannelSpec.h"
-#import "AATTMessageManager.h"
+#import "AATTChannelSpecSet.h"
 #import "AATTChannelSyncManager.h"
+#import "AATTChannelRefreshResult.h"
+#import "AATTChannelRefreshResultSet.h"
+#import "AATTMessageManager.h"
+#import "AATTTargetWithActionChannelsSpecSet.h"
 #import "ANKClient+PrivateChannel.h"
 
 @interface AATTChannelSyncManager ()
+
 @property AATTMessageManager *messageManager;
+@property AATTChannelSpecSet *channelSpecSet;
+
 @property AATTActionMessageManager *actionMessageManager;
-@property AATTChannelSpec *targetChannelSpec;
-@property NSArray *actionChannelTypes;
+@property AATTTargetWithActionChannelsSpecSet *targetWithActionChannelsSpecSet;
+
 @end
 
 @implementation AATTChannelSyncManager
 
-- (id)initWithActionMessageManager:(AATTActionMessageManager *)actionMessageManager targetChannelSpec:(AATTChannelSpec *)channelSpec actionChannelActionTypes:(NSArray *)actionTypes {
+- (id)initWithMessageManager:(AATTMessageManager *)messageManager channelSpecSet:(AATTChannelSpecSet *)channelSpecSet {
+    self = [super init];
+    if(self) {
+        self.messageManager = messageManager;
+        self.channelSpecSet = channelSpecSet;
+    }
+    return self;
+}
+
+- (id)initWithActionMessageManager:(AATTActionMessageManager *)actionMessageManager targetWithActionChannelsSpecSet:(AATTTargetWithActionChannelsSpecSet *)targetWithActionChannelsSpecSet {
     self = [super init];
     if(self) {
         self.actionMessageManager = actionMessageManager;
         self.messageManager = actionMessageManager.messageManager;
-        self.targetChannelSpec = channelSpec;
-        self.actionChannelTypes = actionTypes;
+        self.targetWithActionChannelsSpecSet = targetWithActionChannelsSpecSet;
     }
     return self;
 }
@@ -35,13 +50,20 @@
 #pragma mark - Initialize Channels
 
 - (void)initChannelsWithCompletionBlock:(AATTChannelSyncManagerChannelsInitializedBlock)block {
-    [self initChannelWithSpec:self.targetChannelSpec completionBlock:^{
-        if(self.targetChannel) {
-            [self initActionChannelAtIndex:0 actionChannels:[NSMutableDictionary dictionaryWithCapacity:self.actionChannelTypes.count] completionBlock:block];
-        } else {
-            //TODO
-        }
-    }];
+    if(self.targetWithActionChannelsSpecSet) {
+        NSMutableDictionary *actionChannels = [NSMutableDictionary dictionaryWithCapacity:self.targetWithActionChannelsSpecSet.actionChannelCount];
+        [self initChannelWithSpec:self.targetWithActionChannelsSpecSet.targetChannelSpec completionBlock:^(ANKChannel *channel, NSError *error) {
+            if(channel) {
+                self.targetChannel = channel;
+                [self initActionChannelAtIndex:0 actionChannels:actionChannels completionBlock:block];
+            } else {
+                block(error);
+            }
+        }];
+    } else {
+        self.channels = [NSMutableDictionary dictionaryWithCapacity:self.channelSpecSet.count];
+        //TODO
+    }
 }
 
 #pragma mark - Full Sync
@@ -78,61 +100,75 @@
 
 #pragma mark - Fetch Messages
 
-- (BOOL)fetchNewestMessagesWithCompletionBlock:(AATTMessageManagerCompletionBlock)block {
-    BOOL canFetch = [self.messageManager fetchNewestMessagesInChannelWithID:self.targetChannel.channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
-        if(!error) {
-            [self fetchNewestActionChannelMessagesForChannelAtIndex:0 completionBlock:^{
-                block(messagePlusses, appended, meta, error);
-            }];
-        } else {
-            block(messagePlusses, appended, meta, error);
+- (void)fetchNewestMessagesWithCompletionBlock:(AATTChannelSyncManagerChannelRefreshCompletionBlock)block {
+    if(self.targetWithActionChannelsSpecSet) {
+        AATTChannelRefreshResultSet *resultSet = [[AATTChannelRefreshResultSet alloc] init];
+        BOOL canFetch = [self.messageManager fetchNewestMessagesInChannelWithID:self.targetChannel.channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                AATTChannelRefreshResult *refreshResult = [[AATTChannelRefreshResult alloc] initWithChannel:self.targetChannel messagePlusses:messagePlusses appended:appended];
+                [resultSet addRefreshResult:refreshResult];
+                [self fetchNewestActionChannelMessagesForChannelAtIndex:0 refreshCompletionBlock:block refreshResultSet:resultSet];
+            } else {
+                AATTChannelRefreshResult *refreshResult = [[AATTChannelRefreshResult alloc] initWithChannel:self.targetChannel error:error];
+                [resultSet addRefreshResult:refreshResult];
+                [self fetchNewestActionChannelMessagesForChannelAtIndex:0 refreshCompletionBlock:block refreshResultSet:resultSet];
+            }
+        }];
+        
+        if(!canFetch) {
+            [resultSet addRefreshResult:[[AATTChannelRefreshResult alloc] initWithChannel:self.targetChannel]];
+            [self fetchNewestActionChannelMessagesForChannelAtIndex:0 refreshCompletionBlock:block refreshResultSet:resultSet];
         }
-    }];
-    return canFetch;
+    } else {
+        //TODO
+    }
 }
 
 #pragma mark - Private
 
-- (void)fetchNewestActionChannelMessagesForChannelAtIndex:(NSUInteger)index completionBlock:(void (^)(void))block {
-    if(index >= self.actionChannelTypes.count) {
-        block();
+- (void)fetchNewestActionChannelMessagesForChannelAtIndex:(NSUInteger)index refreshCompletionBlock:(AATTChannelSyncManagerChannelRefreshCompletionBlock)refreshCompletionBlock refreshResultSet:(AATTChannelRefreshResultSet *)refreshResultSet {
+    if(index >= self.targetWithActionChannelsSpecSet.actionChannelCount) {
+        refreshCompletionBlock(refreshResultSet);
     } else {
-        ANKChannel *actionChannel = [self.actionChannels objectForKey:[self.actionChannelTypes objectAtIndex:index]];
+        ANKChannel *actionChannel = [self.actionChannels objectForKey:[self.targetWithActionChannelsSpecSet actionChannelActionTypeAtIndex:index]];
         BOOL canFetch = [self.actionMessageManager fetchNewestMessagesInActionChannelWithID:actionChannel.channelID targetChannelID:self.targetChannel.channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
             if(!error) {
-                [self fetchNewestActionChannelMessagesForChannelAtIndex:(index+1) completionBlock:block];
+                AATTChannelRefreshResult *refreshResult = [[AATTChannelRefreshResult alloc] initWithChannel:actionChannel messagePlusses:messagePlusses appended:appended];
+                [refreshResultSet addRefreshResult:refreshResult];
+                [self fetchNewestActionChannelMessagesForChannelAtIndex:(index+1) refreshCompletionBlock:refreshCompletionBlock refreshResultSet:refreshResultSet];
             } else {
-                block();
+                AATTChannelRefreshResult *refreshResult = [[AATTChannelRefreshResult alloc] initWithChannel:actionChannel error:error];
+                [refreshResultSet addRefreshResult:refreshResult];
+                [self fetchNewestActionChannelMessagesForChannelAtIndex:(index+1) refreshCompletionBlock:refreshCompletionBlock refreshResultSet:refreshResultSet];
             }
         }];
         
-        //TODO: fix this? is this right?
         if(!canFetch) {
-            [self.messageManager sendAllUnsentForChannelWithID:actionChannel.channelID];
+            [refreshResultSet addRefreshResult:[[AATTChannelRefreshResult alloc] initWithChannel:actionChannel]];
+            [self fetchNewestActionChannelMessagesForChannelAtIndex:(index+1) refreshCompletionBlock:refreshCompletionBlock refreshResultSet:refreshResultSet];
         }
     }
 }
 
-- (void)initChannelWithSpec:(AATTChannelSpec *)channelSpec completionBlock:(void (^)(void))block {
+- (void)initChannelWithSpec:(AATTChannelSpec *)channelSpec completionBlock:(AATTChannelSyncManagerChannelInitializedBlock)block {
     [self.messageManager.client getOrCreatePrivateChannelWithType:channelSpec.type completionBlock:^(ANKChannel *channel, NSError *error) {
         if(channel && !error) {
             self.targetChannel = channel;
             [self.messageManager setQueryParametersForChannelWithID:channel.channelID parameters:channelSpec.queryParameters];
         } else {
             NSLog(@"Couldn't get or create channel with type %@", channelSpec.type);
-            block();
         }
-        block();
+        block(channel, error);
     }];
 }
 
 - (void)initActionChannelAtIndex:(NSUInteger)index actionChannels:(NSMutableDictionary *)actionChannels completionBlock:(AATTChannelSyncManagerChannelsInitializedBlock)block {
-    if(index >= self.actionChannelTypes.count) {
+    if(index >= self.targetWithActionChannelsSpecSet.actionChannelCount) {
         self.actionChannels = actionChannels;
         block(nil);
         //TODO send notification?
     } else {
-        NSString *actionType = [self.actionChannelTypes objectAtIndex:index];
+        NSString *actionType = [self.targetWithActionChannelsSpecSet actionChannelActionTypeAtIndex:index];
         [self initActionChannelWithActionType:actionType forTargetChannel:self.targetChannel actionChannels:actionChannels completionBlock:^(NSError *error) {
             if([actionChannels objectForKey:actionType]) {
                 [self initActionChannelAtIndex:(index+1) actionChannels:actionChannels completionBlock:block];

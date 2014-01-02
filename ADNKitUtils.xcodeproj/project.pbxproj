@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		E23FCAE51874F838009FFDFC /* AATTChannelSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */; };
 		E23FCAEA18750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE918750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m */; };
+		E23FCAED18751D97009FFDFC /* AATTChannelRefreshResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAEC18751D97009FFDFC /* AATTChannelRefreshResultSet.m */; };
+		E23FCAF018751E38009FFDFC /* AATTChannelRefreshResult.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAEF18751E38009FFDFC /* AATTChannelRefreshResult.m */; };
 		E24F2515185A736700957D43 /* AATTPendingMessageDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */; };
 		E24F2885185BBED000957D43 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2884185BBED000957D43 /* Cocoa.framework */; };
 		E24F28FF185BC04500957D43 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F28FE185BC04500957D43 /* libsqlite3.dylib */; };
@@ -177,6 +179,10 @@
 		E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpecSet.m; sourceTree = "<group>"; };
 		E23FCAE818750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTTargetWithActionChannelsSpecSet.h; sourceTree = "<group>"; };
 		E23FCAE918750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTTargetWithActionChannelsSpecSet.m; sourceTree = "<group>"; };
+		E23FCAEB18751D97009FFDFC /* AATTChannelRefreshResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelRefreshResultSet.h; sourceTree = "<group>"; };
+		E23FCAEC18751D97009FFDFC /* AATTChannelRefreshResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelRefreshResultSet.m; sourceTree = "<group>"; };
+		E23FCAEE18751E38009FFDFC /* AATTChannelRefreshResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelRefreshResult.h; sourceTree = "<group>"; };
+		E23FCAEF18751E38009FFDFC /* AATTChannelRefreshResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelRefreshResult.m; sourceTree = "<group>"; };
 		E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingMessageDeletion.h; sourceTree = "<group>"; };
 		E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingMessageDeletion.m; sourceTree = "<group>"; };
 		E24F2883185BBED000957D43 /* ADNKitUtils-OSX.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "ADNKitUtils-OSX.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -390,6 +396,10 @@
 				E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */,
 				E23FCAE818750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.h */,
 				E23FCAE918750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m */,
+				E23FCAEE18751E38009FFDFC /* AATTChannelRefreshResult.h */,
+				E23FCAEF18751E38009FFDFC /* AATTChannelRefreshResult.m */,
+				E23FCAEB18751D97009FFDFC /* AATTChannelRefreshResultSet.h */,
+				E23FCAEC18751D97009FFDFC /* AATTChannelRefreshResultSet.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -705,10 +715,12 @@
 				E29A83061822B6650057245C /* AATTOrderedMessageBatch.m in Sources */,
 				E24F29691869684000957D43 /* AATTChannelSpec.m in Sources */,
 				E2D2F71E184FF26B00A72B8B /* AATTActionMessageSpec.m in Sources */,
+				E23FCAED18751D97009FFDFC /* AATTChannelRefreshResultSet.m in Sources */,
 				E2BA21371825DE150023363A /* AATTBaseMessageInstances.m in Sources */,
 				E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */,
 				E29A82EC1821B8AA0057245C /* FMDatabasePool.m in Sources */,
 				E29A830F1822C49D0057245C /* ANKClient+AATTMessageManager.m in Sources */,
+				E23FCAF018751E38009FFDFC /* AATTChannelRefreshResult.m in Sources */,
 				E29A8324182301F00057245C /* AATTMinMaxPair.m in Sources */,
 				E2D2F72D185220B000A72B8B /* AATTPendingFile.m in Sources */,
 				E29A82CA1821AE770057245C /* AATTMessageManager.m in Sources */,

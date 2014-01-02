@@ -8,18 +8,23 @@
 
 #import <Foundation/Foundation.h>
 
-@class AATTChannelSpec;
+@class AATTChannelRefreshResultSet, AATTChannelSpec, AATTTargetWithActionChannelsSpecSet;
 
 @interface AATTChannelSyncManager : NSObject
 
 @property ANKChannel *targetChannel;
 @property NSDictionary *actionChannels;
 
+@property NSMutableDictionary *channels;
+
+typedef void (^AATTChannelSyncManagerChannelInitializedBlock)(ANKChannel *channel, NSError *error);
 typedef void (^AATTChannelSyncManagerChannelsInitializedBlock)(NSError *error);
-
 typedef void (^AATTChannelSyncManagerSyncCompletionBlock)(NSError *error);
+typedef void (^AATTChannelSyncManagerChannelRefreshCompletionBlock)(AATTChannelRefreshResultSet *resultSet);
 
-- (id)initWithActionMessageManager:(AATTActionMessageManager *)actionMessageManager targetChannelSpec:(AATTChannelSpec *)channelSpec actionChannelActionTypes:(NSArray *)actionTypes;
+- (id)initWithMessageManager:(AATTMessageManager *)messageManager channelSpecSet:(AATTChannelSpecSet *)channelSpecSet;
+
+- (id)initWithActionMessageManager:(AATTActionMessageManager *)actionMessageManager targetWithActionChannelsSpecSet:(AATTTargetWithActionChannelsSpecSet *)targetWithActionChannelsSpecSet;
 
 #pragma mark - Full Sync
 
@@ -35,6 +40,6 @@ typedef void (^AATTChannelSyncManagerSyncCompletionBlock)(NSError *error);
 
 #pragma mark - Fetch Messages
 
-- (BOOL)fetchNewestMessagesWithCompletionBlock:(AATTMessageManagerCompletionBlock)block;
+- (void)fetchNewestMessagesWithCompletionBlock:(AATTChannelSyncManagerChannelRefreshCompletionBlock)block;
 
 @end

@@ -15,6 +15,8 @@
 #import "AATTADNFileManager.h"
 #import "AATTADNPersistence.h"
 #import "AATTBaseMessageInstances.h"
+#import "AATTChannelRefreshResult.h"
+#import "AATTChannelRefreshResultSet.h"
 #import "AATTChannelSpec.h"
 #import "AATTChannelSpecSet.h"
 #import "AATTChannelSyncManager.h"
