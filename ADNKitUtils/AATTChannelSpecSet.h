@@ -13,7 +13,7 @@
 @interface AATTChannelSpecSet : NSObject
 
 @property NSArray *channelSpecs;
-@property (nonatomic) NSUInteger count;
+@property (readonly) NSUInteger count;
 
 - (id)initWithChannelSpecs:(NSArray *)channelSpecs;
 
