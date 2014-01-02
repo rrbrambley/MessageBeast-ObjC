@@ -62,7 +62,7 @@
         }];
     } else {
         self.channels = [NSMutableDictionary dictionaryWithCapacity:self.channelSpecSet.count];
-        //TODO
+        [self initChannelAtIndex:0 completionBlock:block];
     }
 }
 
@@ -160,6 +160,22 @@
         }
         block(channel, error);
     }];
+}
+
+- (void)initChannelAtIndex:(NSUInteger)index completionBlock:(AATTChannelSyncManagerChannelsInitializedBlock)block {
+    if(index >= self.channelSpecSet.count) {
+        block(nil);
+    } else {
+        AATTChannelSpec *spec = [self.channelSpecSet channelSpecAtIndex:index];
+        [self initChannelWithSpec:spec completionBlock:^(ANKChannel *channel, NSError *error) {
+            if(!error) {
+                [self.channels setObject:channel forKey:channel.channelID];
+                [self initChannelAtIndex:(index+1) completionBlock:block];
+            } else {
+                block(error);
+            }
+        }];
+    }
 }
 
 - (void)initActionChannelAtIndex:(NSUInteger)index actionChannels:(NSMutableDictionary *)actionChannels completionBlock:(AATTChannelSyncManagerChannelsInitializedBlock)block {
