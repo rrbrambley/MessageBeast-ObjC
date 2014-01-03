@@ -188,6 +188,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
 - (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileIDs:(NSSet *)pendingFileIDs;
 
+#pragma mark - Send Unsent
+
 - (void)sendAllUnsentForChannelWithID:(NSString *)channelID;
+
+- (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID;
 
 @end

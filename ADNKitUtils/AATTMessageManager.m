@@ -354,6 +354,8 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return unsentMessagePlus;
 }
 
+#pragma mark - Send Unsent
+
 - (void)sendAllUnsentForChannelWithID:(NSString *)channelID {
     [self sendUnsentMessagesInChannelWithID:channelID];
     [self sendPendingDeletionsInChannelWithID:channelID];
