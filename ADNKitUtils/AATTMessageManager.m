@@ -21,6 +21,7 @@
 #import "AATTMessagePlus.h"
 #import "AATTMinMaxPair.h"
 #import "AATTOrderedMessageBatch.h"
+#import "AATTPendingMessageDeletion.h"
 #import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKClient+AATTMessageManager.h"
 #import "ANKClient+PrivateChannel.h"
@@ -357,8 +358,9 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 #pragma mark - Send Unsent
 
 - (void)sendAllUnsentForChannelWithID:(NSString *)channelID {
-    [self sendUnsentMessagesInChannelWithID:channelID];
-    [self sendPendingDeletionsInChannelWithID:channelID];
+    [self sendPendingDeletionsInChannelWithID:channelID completionBlock:^(ANKAPIResponseMeta *meta, NSError *error) {
+        [self sendUnsentMessagesInChannelWithID:channelID];
+    }];
 }
 
 - (BOOL)sendUnsentMessagesInChannelWithID:(NSString *)channelID {
@@ -431,20 +433,38 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     }];
 }
 
-- (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID {
+- (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {
     NSDictionary *deletions = [self.database pendingMessageDeletionsInChannelWithID:channelID];
     if(deletions.count > 0) {
-        for(NSString *messageID in deletions.allKeys) {
-            [self.client deleteMessageWithID:messageID inChannelWithID:channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-                if(!error) {
-                    [self.database deletePendingMessageDeletionForMessageWithID:messageID];
-                }
-            }];
-        }
+        NSArray *pendingMessageDeletions = [deletions allValues];
+        [self sendPendingDeletionAtIndex:0 inPendingDeletionsArray:pendingMessageDeletions completionBlock:block lastMeta:nil];
+    } else if(block) {
+        block(nil, nil);
     }
 }
 
 #pragma mark - Private Stuff
+
+- (void)sendPendingDeletionAtIndex:(NSUInteger)index inPendingDeletionsArray:(NSArray *)pendingDeletions completionBlock:(AATTMessageManagerDeletionCompletionBlock)block lastMeta:(ANKAPIResponseMeta *)meta {
+    if(index >= pendingDeletions.count) {
+        if(block) {
+            block(meta, nil);
+        }
+    } else {
+        AATTPendingMessageDeletion *pendingMessageDeletion = [pendingDeletions objectAtIndex:index];
+        [self.client deleteMessageWithID:pendingMessageDeletion.messageID inChannelWithID:pendingMessageDeletion.channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                [self.database deletePendingMessageDeletionForMessageWithID:pendingMessageDeletion.messageID];
+                [self sendPendingDeletionAtIndex:(index+1) inPendingDeletionsArray:pendingDeletions completionBlock:block lastMeta:meta];
+            } else {
+                NSLog(@"Deleting of pending deletion failed; %@", error.localizedDescription);
+                if(block) {
+                    block(meta, error);
+                }
+            }
+        }];
+    }
+}
 
 - (NSMutableOrderedDictionary *)existingOrNewMessagesDictionaryforChannelWithID:(NSString *)channelID {
     NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:channelID];
