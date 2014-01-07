@@ -192,6 +192,6 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
 - (void)sendAllUnsentForChannelWithID:(NSString *)channelID;
 
-- (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID;
+- (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerDeletionCompletionBlock)block;
 
 @end
