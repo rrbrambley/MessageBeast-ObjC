@@ -80,7 +80,8 @@
 
 #pragma mark - Retrieval
 
-- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
+- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
+    NSString *targetChannelID = [self targetChannelIDForActionChannelWithID:actionChannelID];
     [self.messageManager fetchAndPersistAllMessagesInChannelWithID:actionChannelID batchSyncBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             NSLog(@"synced batch of %lu messages", (unsigned long)messagePlusses.count);
@@ -100,7 +101,8 @@
     }];
 }
 
-- (BOOL)fetchNewestMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
+- (BOOL)fetchNewestMessagesInActionChannelWithID:(NSString *)actionChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
+    NSString *targetChannelID = [self targetChannelIDForActionChannelWithID:actionChannelID];
     NSArray *messages = [self.messageManager loadedMessagesForChannelWithID:actionChannelID];
     if(!messages || messages.count == 0) {
         //we do this so that the max id is known.
@@ -222,6 +224,11 @@
         [targetMessageIDs addObject:[mp.message targetMessageID]];
     }
     return targetMessageIDs;
+}
+
+- (NSString *)targetChannelIDForActionChannelWithID:(NSString *)actionChannelID {
+    ANKChannel *actionChannel = [self.actionChannels objectForKey:actionChannelID];
+    return actionChannel.targetChannelID;
 }
 
 @end

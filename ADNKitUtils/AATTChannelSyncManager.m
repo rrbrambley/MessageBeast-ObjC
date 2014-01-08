@@ -155,7 +155,7 @@
         refreshCompletionBlock(refreshResultSet);
     } else {
         ANKChannel *actionChannel = [self.actionChannels objectForKey:[self.targetWithActionChannelsSpecSet actionChannelActionTypeAtIndex:index]];
-        BOOL canFetch = [self.actionMessageManager fetchNewestMessagesInActionChannelWithID:actionChannel.channelID targetChannelID:self.targetChannel.channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+        BOOL canFetch = [self.actionMessageManager fetchNewestMessagesInActionChannelWithID:actionChannel.channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
             if(!error) {
                 AATTChannelRefreshResult *refreshResult = [[AATTChannelRefreshResult alloc] initWithChannel:actionChannel messagePlusses:messagePlusses appended:appended];
                 [refreshResultSet addRefreshResult:refreshResult];

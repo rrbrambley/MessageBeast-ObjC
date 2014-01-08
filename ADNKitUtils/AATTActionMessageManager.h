@@ -74,21 +74,19 @@ typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChann
  for lookup at a later time.
  
  @param actionChannelID The id of the Action Channel for which Messages will be synced
- @param targetChannelID The id of the target Channel
  @param completionBlock AATTMessageManagerCompletionBlock
  */
-- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
+- (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
 
 /*
  Fetch the newest messages in an Action Channel.
  
  @param actionChannelID the id of the Action Channel for which Messages should be fetched
- @param targetChannelID the id of the target Channel associated with the Action Channel
  @param completionBlock the AATTMessageManagerCompletionBlock
  @return NO if unsent messages are preventing new messages from being fetched, YES otherwise. If NO is returned, you should
          use the MessageManager to send all unsent messages in the specified Action Channel.
  */
-- (BOOL)fetchNewestMessagesInActionChannelWithID:(NSString *)actionChannelID targetChannelID:(NSString *)targetChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
+- (BOOL)fetchNewestMessagesInActionChannelWithID:(NSString *)actionChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock;
 
 #pragma mark - Apply/Remove Actions
 

@@ -191,9 +191,8 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     ANKChannel *nextChannel = [channels objectAtIndex:currentChannelIndex];
     NSString *type = nextChannel.type;
     if([kChannelTypeAction isEqualToString:type]) {
-        NSString *targetChannelID = [nextChannel targetChannelID];
         AATTActionMessageManager *actionMessageManager = [AATTActionMessageManager sharedInstanceWithMessageManager:self];
-        [actionMessageManager fetchAndPersistAllMessagesInActionChannelWithID:nextChannel.channelID targetChannelID:targetChannelID completionBlock:currentChannelSyncBlock];
+        [actionMessageManager fetchAndPersistAllMessagesInActionChannelWithID:nextChannel.channelID completionBlock:currentChannelSyncBlock];
     } else {
         [self fetchAndPersistAllMessagesInChannelWithID:nextChannel.channelID batchSyncBlock:nil completionBlock:currentChannelSyncBlock];
     }
