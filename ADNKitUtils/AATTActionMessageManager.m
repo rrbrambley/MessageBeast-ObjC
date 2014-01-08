@@ -210,18 +210,18 @@
 
 #pragma mark - Private
 
-- (NSArray *)targetMessagePlussesForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId targetChannelId:(NSString *)targetChannelId {
-    NSSet *targetMessageIds = [self targetMessageIdsForMessagePlusses:actionMessages];
-    NSOrderedDictionary *targetMessages = [self.messageManager loadPersistedMessagesTemporarilyForChannelWithID:targetChannelId messageIDs:targetMessageIds];
+- (NSArray *)targetMessagePlussesForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId targetChannelID:(NSString *)targetChannelID {
+    NSSet *targetMessageIDs = [self targetMessageIDsForMessagePlusses:actionMessages];
+    NSOrderedDictionary *targetMessages = [self.messageManager loadPersistedMessagesTemporarilyForChannelWithID:targetChannelID messageIDs:targetMessageIDs];
     return [targetMessages allObjects];
 }
 
-- (NSSet *)targetMessageIdsForMessagePlusses:(NSArray *)messagePlusses {
-    NSMutableSet *targetMessageIds = [NSMutableSet setWithCapacity:messagePlusses.count];
+- (NSSet *)targetMessageIDsForMessagePlusses:(NSArray *)messagePlusses {
+    NSMutableSet *targetMessageIDs = [NSMutableSet setWithCapacity:messagePlusses.count];
     for(AATTMessagePlus *mp in messagePlusses) {
-        [targetMessageIds addObject:[mp.message targetMessageID]];
+        [targetMessageIDs addObject:[mp.message targetMessageID]];
     }
-    return targetMessageIds;
+    return targetMessageIDs;
 }
 
 @end
