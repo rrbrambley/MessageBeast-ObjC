@@ -589,11 +589,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         }
         
         NSArray *responseMessages = responseObject;
-        NSMutableOrderedDictionary *channelMessagePlusses = [self.messagesByChannelID objectForKey:channelID];
-        if(!channelMessagePlusses) {
-            channelMessagePlusses = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:[responseMessages count]];
-            [self.messagesByChannelID setObject:channelMessagePlusses forKey:channelID];
-        }
+        NSMutableOrderedDictionary *channelMessagePlusses = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
         
         NSMutableArray *newestMessages = [NSMutableArray arrayWithCapacity:[responseMessages count]];
         NSMutableOrderedDictionary *newChannelMessages = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:([channelMessagePlusses count] + [responseMessages count])];
