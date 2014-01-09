@@ -106,7 +106,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 #pragma mark Load Messages
 
-- (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit {
+- (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit {
     NSDate *beforeDate = nil;
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     if(minMaxPair.minID) {

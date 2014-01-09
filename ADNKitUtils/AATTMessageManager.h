@@ -99,7 +99,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit;
+- (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
 
 /**
  Load persisted messages that have the specified display location.
