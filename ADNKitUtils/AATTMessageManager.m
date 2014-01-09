@@ -210,17 +210,32 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 - (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    return [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID completionBlock:block];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID messageFilter:nil completionBlock:block filterBlock:nil];
+}
+
+- (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID messageFilter:(AATTMessageFilter)messageFilter completionBlock:(AATTMessageManagerCompletionWithFilterBlock)block {
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:minMaxPair.minID messageFilter:messageFilter completionBlock:nil filterBlock:block];
 }
 
 - (BOOL)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    return [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil completionBlock:block];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil messageFilter:nil completionBlock:block filterBlock:nil];
+}
+
+- (BOOL)fetchNewestMessagesInChannelWithID:(NSString *)channelID messageFilter:(AATTMessageFilter)messageFilter completionBlock:(AATTMessageManagerCompletionWithFilterBlock)block {
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:minMaxPair.maxID beforeID:nil messageFilter:messageFilter completionBlock:nil filterBlock:nil];
 }
 
 - (BOOL)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    return [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID completionBlock:block];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID messageFilter:nil completionBlock:block filterBlock:nil];
+}
+
+- (BOOL)fetchMoreMessagesInChannelWithID:(NSString *)channelID messageFilter:(AATTMessageFilter)messageFilter completionBlock:(AATTMessageManagerCompletionWithFilterBlock)block {
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    return [self fetchMessagesInChannelWithID:channelID sinceID:nil beforeID:minMaxPair.minID messageFilter:messageFilter completionBlock:nil filterBlock:block];
 }
 
 - (void)refreshMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerRefreshCompletionBlock)block {
@@ -507,7 +522,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     
     BOOL keepInMemory = messages.count == 0;
     
-    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:keepInMemory completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:keepInMemory messageFilter:nil completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             if(messages.count == 0) {
                 [messages addObjectsFromArray:messagePlusses];
@@ -535,10 +550,10 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         } else {
             block(messages, YES, meta, error);
         }
-    }];
+    } filterBlock:nil];
 }
 
-- (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID sinceID:(NSString *)sinceID beforeID:(NSString *)beforeID messageFilter:(AATTMessageFilter)messageFilter completionBlock:(AATTMessageManagerCompletionBlock)block filterBlock:(AATTMessageManagerCompletionWithFilterBlock)filterBlock {
     NSMutableDictionary *parameters = [[self.queryParametersByChannel objectForKey:channelID] mutableCopy];
     if(sinceID) {
         [parameters setObject:sinceID forKey:@"since_id"];
@@ -552,10 +567,10 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         [parameters removeObjectForKey:@"before_id"];
     }
     
-    return [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:YES completionBlock:block];
+    return [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:YES messageFilter:messageFilter completionBlock:block filterBlock:filterBlock];
 }
 
-- (BOOL)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID keepInMemory:(BOOL)keepInMemory completionBlock:(AATTMessageManagerCompletionBlock)block {
+- (BOOL)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID keepInMemory:(BOOL)keepInMemory messageFilter:(AATTMessageFilter)filter completionBlock:(AATTMessageManagerCompletionBlock)block filterBlock:(AATTMessageManagerCompletionWithFilterBlock)filterBlock {
     NSMutableOrderedDictionary *unsentMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
     if(unsentMessages.count > 0) {
         return NO;
@@ -588,10 +603,11 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
             minMaxPair.maxID = meta.maxID;
         }
         
+        NSOrderedDictionary *excludedResults = nil;
         NSArray *responseMessages = responseObject;
         NSMutableOrderedDictionary *channelMessagePlusses = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
         
-        NSMutableArray *newestMessages = [NSMutableArray arrayWithCapacity:[responseMessages count]];
+        NSMutableOrderedDictionary *newestMessagesDictionary = [[NSMutableOrderedDictionary alloc] initWithCapacity:responseMessages.count];
         NSMutableOrderedDictionary *newChannelMessages = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:([channelMessagePlusses count] + [responseMessages count])];
         
         if(appended) {
@@ -599,29 +615,45 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         }
         for(ANKMessage *m in responseMessages) {
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
-            [newestMessages addObject:messagePlus];
-            [self adjustDateAndInsertMessagePlus:messagePlus];
-            
+            [newestMessagesDictionary setObject:messagePlus forKey:m.messageID];
             [newChannelMessages setObject:messagePlus forKey:m.messageID];
         }
         if(!appended) {
             [newChannelMessages addEntriesFromOrderedDictionary:channelMessagePlusses];
         }
         
+        if(filter) {
+            excludedResults = filter(newestMessagesDictionary);
+            [self removeFilteredMessages:excludedResults fromDictionary:newestMessagesDictionary];
+        }
+        
+        for(AATTMessagePlus *messagePlus in [newestMessagesDictionary allObjects]) {
+            [self adjustDateAndInsertMessagePlus:messagePlus];
+        }
+        
         if(keepInMemory) {
             [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
         }
         
+        NSArray *newestMessages = [NSArray arrayWithArray:[newestMessagesDictionary allObjects]];
         if(self.configuration.isLocationLookupEnabled) {
             [self lookupLocationForMessagePlusses:newestMessages persistIfEnabled:YES];
         }
 
-        if(block) {
+        if(filterBlock) {
+            filterBlock(newestMessages, appended, excludedResults, meta, error);
+        } else if(block) {
             block(newestMessages, appended, meta, error);
         }
     }];
     
     return YES;
+}
+
+- (void)removeFilteredMessages:(NSOrderedDictionary *)filteredMessages fromDictionary:(NSMutableOrderedDictionary *)dictionary {
+    for(id entryKey in [filteredMessages allKeys]) {
+        [dictionary removeEntryWithKey:entryKey];
+    }
 }
 
 - (AATTMinMaxPair *)minMaxPairForChannelID:(NSString *)channelID {

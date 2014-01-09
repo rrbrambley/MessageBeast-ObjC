@@ -21,6 +21,7 @@ extern NSString *const AATTMessageManagerDidSendUnsentMessagesNotification;
 @interface AATTMessageManager : NSObject
 
 typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error);
+typedef void (^AATTMessageManagerCompletionWithFilterBlock)(NSArray *messagePlusses, BOOL appended, NSOrderedDictionary *excludedResults, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerMultiChannelSyncBlock)(BOOL success, NSError *error);
 typedef void (^AATTMessageManagerBatchSyncBlock)(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messagePlus, ANKAPIResponseMeta *meta, NSError *error);
@@ -143,6 +144,27 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 - (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
 /**
+ Fetch messages in a channel, using an AATTMessageFilter to exclude messages
+ in the response. Excluded messages will not be persisted and will be returned in a 
+ separate array in the completion block.
+ 
+ The since_id and before_id parameters are set by using the in-memory AATTMinMaxPair for
+ the associated channel, which contains the min and max message IDs that have been loaded
+ into memory thus far.
+ 
+ After messages are fetched, processing on the messages will occur in accordance
+ with this manager's configuration (e.g. database insertion).
+ 
+ This method can only succesfully execute if there are 0 unsent messages in the specified channel.
+ 
+ @param channelID the ID of the channel for which messages should be fetched.
+ @param messageFilter the AATTMessageFilter to be used when fetching messages.
+ @param completionBlock the AATTMessageManagerCompletionWithFilterBlock to which the results will be delivered.
+ @return NO if the fetch cannot be executed because unsent message must be sent first, or YES otherwise.
+ */
+- (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID messageFilter:(AATTMessageFilter)messageFilter completionBlock:(AATTMessageManagerCompletionWithFilterBlock)block;
+
+/**
  Fetch the newest messages in the channel with the specified ID.
 
  The since_id parameter is set by using the max message ID that has been loaded into memory
@@ -160,6 +182,26 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 - (BOOL)fetchNewestMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
 
 /**
+ Fetch the newest messages in a channel, using an AATTMessageFilter to exclude messages
+ in the response. Excluded messages will not be persisted and will be returned in a
+ separate array in the completion block.
+ 
+ The since_id parameter is set by using the max message ID that has been loaded into memory
+ thus far, while the before_id parameter is set to nil.
+ 
+ After messages are fetched, processing on the messages will occur in accordance
+ with this manager's configuration (e.g. database insertion).
+ 
+ This method can only succesfully execute if there are 0 unsent messages in the specified channel.
+ 
+ @param channelID the ID of the channel for which messages should be fetched.
+ @param messageFilter the AATTMessageFilter to be used when fetching messages.
+ @param completionBlock the AATTMessageManagerCompletionWithFilterBlock to which the results will be delivered.
+ @return NO if the fetch cannot be executed because unsent message must be sent first, or YES otherwise.
+ */
+- (BOOL)fetchNewestMessagesInChannelWithID:(NSString *)channelID messageFilter:(AATTMessageFilter)messageFilter completionBlock:(AATTMessageManagerCompletionWithFilterBlock)block;
+
+/**
  Fetch more messages in the channel with the specified ID.
 
  The before parameter is set by using the min message ID that has been loaded into memory
@@ -175,6 +217,26 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return NO if the fetch cannot be executed because unsent message must be sent first, or YES otherwise.
  */
 - (BOOL)fetchMoreMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block;
+
+/**
+ Fetch more in a channel, using an AATTMessageFilter to exclude messages
+ in the response. Excluded messages will not be persisted and will be returned in a
+ separate array in the completion block.
+ 
+ The before parameter is set by using the min message ID that has been loaded into memory
+ thus far, while the since_id parameter is set to nil.
+ 
+ After messages are fetched, processing on the messages will occur in accordance
+ with this manager's configuration (e.g. database insertion).
+ 
+ This method can only succesfully execute if there are 0 unsent messages in the specified channel.
+ 
+ @param channelID the ID of the channel for which messages should be fetched.
+ @param messageFilter the AATTMessageFilter to use when fetching messages.
+ @param completionBlock the AATTMessageManagerCompletionWithFilterBlock to which the results will be delivered.
+ @return NO if the fetch cannot be executed because unsent message must be sent first, or YES otherwise.
+ */
+- (BOOL)fetchMoreMessagesInChannelWithID:(NSString *)channelID messageFilter:(AATTMessageFilter)messageFilter completionBlock:(AATTMessageManagerCompletionWithFilterBlock)block;
 
 /**
  Fetch a new instance of the specified AATTMessagePlus' backing message.

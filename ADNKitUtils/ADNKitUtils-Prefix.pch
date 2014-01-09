@@ -5,8 +5,15 @@
 //
 
 #ifdef __OBJC__
+    #import "NSOrderedDictionary.h"
     #import <ADNKit.h>
     #import <Foundation/Foundation.h>
     #import <MobileCoreServices/MobileCoreServices.h>
     #import <SystemConfiguration/SystemConfiguration.h>
+
+    /**
+     Given a dictionary of <message id : AATTMessagePlus> pairs, return 
+     a NSOrderedDictionary containing those that should be excluded.
+     */
+    typedef NSOrderedDictionary* (^AATTMessageFilter)(NSOrderedDictionary *messages);
 #endif
