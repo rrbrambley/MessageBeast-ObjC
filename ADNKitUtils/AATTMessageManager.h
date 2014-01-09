@@ -39,12 +39,41 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
 #pragma mark Getters
 
+/**
+ Get the ANKClient used by this AATTMessageManager
+ 
+ @return the ANKClient used by this AATTMessageManager
+ */
 - (ANKClient *)client;
 
+/**
+ Get the full sync state for the channel with the specified id.
+
+ @param channelID the channel id
+ @return an AATTChannelFullSyncState corresponding to the sync state of the channel
+         with the specified id
+ */
 - (AATTChannelFullSyncState)fullSyncStateForChannelWithID:(NSString *)channelID;
 
+/**
+ Get an AATTChannelFullSyncState representing the sync state of multiple channels.
+ In some cases, we might need several channels to be synced, and one
+ or more of them may be in a AATTChannelFullSyncStateNotStarted or AATTChannelFullSyncStateStarted
+ state. Since we typically would not need to disclose granular details about the sync state of
+ many channels to a user, this method will return AATTChannelFullSyncStateStarted if *any* channel
+ in the provided array is in the AATTChannelFullSyncStateStarted state. Otherwise,
+ AATTChannelFullSyncStateNotStarted will be returned if any of the channels is not COMPLETE.
+
+ @param channels
+ @return an AATTChannelFullSyncState representing the sync state of the provided array of channels.
+ */
 - (AATTChannelFullSyncState)fullSyncStateForChannels:(NSArray *)channels;
 
+/**
+ Get an array of the currently loaded messages in the specified channel id.
+ 
+ @return an array of the currently loaded messages in the specified channel id.
+ */
 - (NSArray *)loadedMessagesForChannelWithID:(NSString *)channelID;
 
 #pragma mark Setters
@@ -257,20 +286,78 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
 #pragma mark - Delete Messages
 
+/*
+ Delete a message. If the provided message is unsent, it will simply be deleted form the local sqlite database and
+ no server request is required.
+ 
+ @param messagePlus the AATTMessagePlus associated with the message to be deleted.
+ @param block the AATTMessageManagerDeletionCompletionBlock to act as a callback upon deletion.
+ */
 - (void)deleteMessage:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerDeletionCompletionBlock)block;
 
 #pragma mark - Create Messages
 
+/**
+ Create a new message in the channel with the specified id.
+ 
+ This is not to be called if you have unsent messages.
+ 
+ @param channelID the id of the Channel in which the Message should be created
+ @param message the message to be created
+ @param block the completion block to use as a callback
+ */
 - (void)createMessageInChannelWithID:(NSString *)channelID message:(ANKMessage *)message completionBlock:(AATTMessageManagerCompletionBlock)block;
 
+/**
+ Create a new unsent message in the channel with the specified id and attempt to send.
+
+ If the message cannot be sent (e.g. no internet connection), it will still be stored in the
+ sqlite database as if the message exists in the channel, but with an unsent flag set on it.
+ Any number of unsent messages can exist, but no more messages can be retrieved until all
+ unsent messages have been successfully sent (or deleted).
+
+ Upon completion of the send request, a notification with the name AATTMessageManagerDidSendUnsentMessagesNotification
+ will be posted with an userInfo containing the keys channelID and messageIDs.
+
+ @param channelID the id of the channel in which the message should be created
+ @param message the message to be created
+ */
 - (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message;
 
+/**
+ Create a new unsent message that requires files to be uploaded prior to creation.
+ 
+ If the message cannot be sent (e.g. no internet connection), it will still be stored in the
+ sqlite database as if the message exists in the channel, but with an unsent flag set on it.
+ Any number of unsent messages can exist, but no more messages can be retrieved until all
+ unsent messages have been successfully sent (or deleted).
+ 
+ Upon completion of the send request, a notification with the name AATTMessageManagerDidSendUnsentMessagesNotification
+ will be posted with an userInfo containing the keys channelID and messageIDs.
+ 
+ @param channelId the id of the Channel in which the Message should be created
+ @param message The Message to be created
+ @param pendingFileIDs the ids of the pending files that need to be sent before this message can be sent to the server
+ */
 - (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileIDs:(NSSet *)pendingFileIDs;
 
 #pragma mark - Send Unsent
 
+/**
+ Send all pending deletions and unsent messages in a channel.
+
+ The pending deletions will be sent first.
+
+ @param channelID the channel id
+ */
 - (void)sendAllUnsentForChannelWithID:(NSString *)channelID;
 
+/**
+ Send all pending message deletions in a channel.
+
+ @param channelID the channel id
+ @param block AATTMessageManagerDeletionCompletionBlock
+ */
 - (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerDeletionCompletionBlock)block;
 
 @end
