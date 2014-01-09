@@ -624,7 +624,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         
         if(filter) {
             excludedResults = filter(newestMessagesDictionary);
-            [self removeFilteredMessages:excludedResults fromDictionary:newestMessagesDictionary];
+            [self removeExcludedMessages:excludedResults fromDictionary:newestMessagesDictionary];
         }
         
         for(AATTMessagePlus *messagePlus in [newestMessagesDictionary allObjects]) {
@@ -650,8 +650,8 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return YES;
 }
 
-- (void)removeFilteredMessages:(NSOrderedDictionary *)filteredMessages fromDictionary:(NSMutableOrderedDictionary *)dictionary {
-    for(id entryKey in [filteredMessages allKeys]) {
+- (void)removeExcludedMessages:(NSOrderedDictionary *)excludedMessages fromDictionary:(NSMutableOrderedDictionary *)dictionary {
+    for(id entryKey in [excludedMessages allKeys]) {
         [dictionary removeEntryWithKey:entryKey];
     }
 }
