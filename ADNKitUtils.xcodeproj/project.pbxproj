@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E20F697E187F04870014D5EE /* AATTFilteredMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E20F697D187F04870014D5EE /* AATTFilteredMessageBatch.m */; };
+		E20F6981187F07FA0014D5EE /* AATTFilteredMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E20F697D187F04870014D5EE /* AATTFilteredMessageBatch.m */; };
 		E23FCAE51874F838009FFDFC /* AATTChannelSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */; };
 		E23FCAEA18750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE918750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m */; };
 		E23FCAED18751D97009FFDFC /* AATTChannelRefreshResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAEC18751D97009FFDFC /* AATTChannelRefreshResultSet.m */; };
@@ -175,6 +177,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E20F697C187F04870014D5EE /* AATTFilteredMessageBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTFilteredMessageBatch.h; sourceTree = "<group>"; };
+		E20F697D187F04870014D5EE /* AATTFilteredMessageBatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTFilteredMessageBatch.m; sourceTree = "<group>"; };
 		E23FCAE31874F838009FFDFC /* AATTChannelSpecSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSpecSet.h; sourceTree = "<group>"; };
 		E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpecSet.m; sourceTree = "<group>"; };
 		E23FCAE818750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTTargetWithActionChannelsSpecSet.h; sourceTree = "<group>"; };
@@ -349,6 +353,8 @@
 				E29A83051822B6650057245C /* AATTOrderedMessageBatch.m */,
 				E2D2F71C184FF26B00A72B8B /* AATTActionMessageSpec.h */,
 				E2D2F71D184FF26B00A72B8B /* AATTActionMessageSpec.m */,
+				E20F697C187F04870014D5EE /* AATTFilteredMessageBatch.h */,
+				E20F697D187F04870014D5EE /* AATTFilteredMessageBatch.m */,
 			);
 			name = DB;
 			sourceTree = "<group>";
@@ -655,6 +661,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E20F6981187F07FA0014D5EE /* AATTFilteredMessageBatch.m in Sources */,
 				E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */,
 				E24F2908185BC13100957D43 /* FMDatabase.m in Sources */,
 				E24F2909185BC13100957D43 /* FMDatabaseAdditions.m in Sources */,
@@ -713,6 +720,7 @@
 				E24F2966186966E600957D43 /* AATTChannelSyncManager.m in Sources */,
 				E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */,
 				E29A83061822B6650057245C /* AATTOrderedMessageBatch.m in Sources */,
+				E20F697E187F04870014D5EE /* AATTFilteredMessageBatch.m in Sources */,
 				E24F29691869684000957D43 /* AATTChannelSpec.m in Sources */,
 				E2D2F71E184FF26B00A72B8B /* AATTActionMessageSpec.m in Sources */,
 				E23FCAED18751D97009FFDFC /* AATTChannelRefreshResultSet.m in Sources */,
