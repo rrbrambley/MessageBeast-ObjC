@@ -10,6 +10,21 @@
 
 @class AATTChannelRefreshResultSet, AATTChannelSpec, AATTTargetWithActionChannelsSpecSet;
 
+/**
+ AATTChannelSyncManager simplifies the syncing of several channels simultaneously.
+
+ This manager is especially useful when one or more Action Channels are being synced
+ for a "target" Channel. For example, a journaling app may choose to have a target Channel
+ for journal entries that are accompanied by "favorite entries" and "locked entries" Action Channels –
+ enabling users to mark entries as favorite entries, and locked entries, respectively. In this scenario,
+ pulling the newest Messages from the server requires performing three requests; this class
+ can be used to perform the three requests in one method call, with one callback.
+
+ AATTChannelSyncManager can also perform full syncs on multiple channels with one method call.
+
+ To use the functionality in ChannelSyncManager, it is important to first call
+ initChannelsWithCompletionBlock: after instantiating it with your channel specs.
+ */
 @interface AATTChannelSyncManager : NSObject
 
 @property ANKChannel *targetChannel;
