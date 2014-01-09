@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		E20F697E187F04870014D5EE /* AATTFilteredMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E20F697D187F04870014D5EE /* AATTFilteredMessageBatch.m */; };
 		E20F6981187F07FA0014D5EE /* AATTFilteredMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E20F697D187F04870014D5EE /* AATTFilteredMessageBatch.m */; };
+		E20F6982187F082A0014D5EE /* AATTChannelSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F29681869684000957D43 /* AATTChannelSpec.m */; };
+		E20F6983187F082A0014D5EE /* AATTChannelSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */; };
+		E20F6984187F082A0014D5EE /* AATTChannelRefreshResult.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAEF18751E38009FFDFC /* AATTChannelRefreshResult.m */; };
+		E20F6985187F082A0014D5EE /* AATTChannelRefreshResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAEC18751D97009FFDFC /* AATTChannelRefreshResultSet.m */; };
+		E20F6986187F082A0014D5EE /* AATTChannelSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2965186966E600957D43 /* AATTChannelSyncManager.m */; };
 		E23FCAE51874F838009FFDFC /* AATTChannelSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE41874F838009FFDFC /* AATTChannelSpecSet.m */; };
 		E23FCAEA18750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAE918750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m */; };
 		E23FCAED18751D97009FFDFC /* AATTChannelRefreshResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E23FCAEC18751D97009FFDFC /* AATTChannelRefreshResultSet.m */; };
@@ -661,6 +666,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E20F6982187F082A0014D5EE /* AATTChannelSpec.m in Sources */,
+				E20F6983187F082A0014D5EE /* AATTChannelSpecSet.m in Sources */,
+				E20F6984187F082A0014D5EE /* AATTChannelRefreshResult.m in Sources */,
+				E20F6985187F082A0014D5EE /* AATTChannelRefreshResultSet.m in Sources */,
+				E20F6986187F082A0014D5EE /* AATTChannelSyncManager.m in Sources */,
 				E20F6981187F07FA0014D5EE /* AATTFilteredMessageBatch.m in Sources */,
 				E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */,
 				E24F2908185BC13100957D43 /* FMDatabase.m in Sources */,
