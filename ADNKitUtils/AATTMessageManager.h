@@ -20,6 +20,12 @@ extern NSString *const AATTMessageManagerDidSendUnsentMessagesNotification;
 
 @interface AATTMessageManager : NSObject
 
+/**
+ Given a dictionary of <message id : AATTMessagePlus> pairs, return
+ a NSOrderedDictionary containing those that should be excluded.
+ */
+typedef NSOrderedDictionary* (^AATTMessageFilter)(NSOrderedDictionary *messages);
+
 typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerCompletionWithFilterBlock)(NSArray *messagePlusses, BOOL appended, NSOrderedDictionary *excludedResults, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerMultiChannelSyncBlock)(BOOL success, NSError *error);
