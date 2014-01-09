@@ -8,7 +8,7 @@
 
 #import "AATTADNDatabase.h"
 
-@class AATTDisplayLocation, AATTMessageManagerConfiguration, AATTMessagePlus, NSOrderedDictionary;
+@class AATTDisplayLocation, AATTFilteredMessageBatch, AATTMessageManagerConfiguration, AATTMessagePlus, NSOrderedDictionary;
 
 typedef NS_ENUM(NSUInteger, AATTChannelFullSyncState) {
 	AATTChannelFullSyncStateNotStarted = 0,
@@ -100,6 +100,18 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
          chronological order.
  */
 - (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
+
+/**
+ Load persisted messages that were previously stored in the sqlite database,
+ using a message filter to exclude a subset of the results.
+ 
+ @param channelID the id of the channel for which messages should be loaded
+ @param limit the maximum number of messages to load from the database
+ @param messageFilter the AATTMessageFilter to use
+ @return a AATTFilteredMessageBatch containing the messages after a filter was applied, and
+         additionally, a dictionary of messages containing the excluded messages.
+ */
+- (AATTFilteredMessageBatch *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit messageFilter:(AATTMessageFilter)messageFilter;
 
 /**
  Load persisted messages that have the specified display location.

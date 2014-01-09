@@ -14,6 +14,7 @@
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTADNFileManager.h"
+#import "AATTFilteredMessageBatch.h"
 #import "AATTGeolocation.h"
 #import "AATTHashtagInstances.h"
 #import "AATTMessageManager.h"
@@ -107,32 +108,24 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 #pragma mark Load Messages
 
 - (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit {
-    NSDate *beforeDate = nil;
-    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    if(minMaxPair.minID) {
-        NSMutableOrderedDictionary *messages = [self.messagesByChannelID objectForKey:channelID];
-        AATTMessagePlus *messagePlus = [messages objectForKey:minMaxPair.minID];
-        beforeDate = messagePlus.displayDate;
-    }
+    AATTOrderedMessageBatch *batch = [self loadPersistedMessageBatchForChannelWithID:channelID limit:limit performLookups:YES];
+    return batch.messagePlusses;
+}
+
+- (AATTFilteredMessageBatch *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit messageFilter:(AATTMessageFilter)messageFilter {
+    AATTOrderedMessageBatch *batch = [self loadPersistedMessageBatchForChannelWithID:channelID limit:limit performLookups:NO];
+    AATTFilteredMessageBatch *filteredBatch = [AATTFilteredMessageBatch filteredMessageBatchWithOrderedMessageBatch:batch messageFilter:messageFilter];
+    NSOrderedDictionary *excludedMessages = filteredBatch.excludedMessages;
     
-    AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesInChannelWithID:channelID beforeDate:beforeDate limit:limit];
-    NSOrderedDictionary *messagePlusses = orderedMessageBatch.messagePlusses;
-    AATTMinMaxPair *dbMinMaxPair = orderedMessageBatch.minMaxPair;
-    minMaxPair = [minMaxPair combineWith:dbMinMaxPair];
+    //remove the excluded messages from the main channel message dictionary.
+    NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:channelID];
+    [self removeExcludedMessages:excludedMessages fromDictionary:channelMessages];
     
-    NSMutableOrderedDictionary *channelMessages = [messagePlusses objectForKey:channelID];
-    if(channelMessages) {
-        [channelMessages addEntriesFromOrderedDictionary:messagePlusses];
-    } else {
-        [self.messagesByChannelID setObject:messagePlusses forKey:channelID];
-    }
+    //do this after we have successfully filtered out stuff,
+    //as to not perform lookups on things we didn't keep.
+    [self performLookupsOnMessagePlusses:filteredBatch.messagePlusses.allObjects persistIfEnabled:NO];
     
-    [self.minMaxPairs setObject:minMaxPair forKey:channelID];
-    
-    if(self.configuration.isLocationLookupEnabled) {
-        [self lookupLocationForMessagePlusses:[messagePlusses allObjects] persistIfEnabled:NO];
-    }
-    return messagePlusses;
+    return filteredBatch;
 }
 
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
@@ -650,6 +643,35 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return YES;
 }
 
+- (AATTOrderedMessageBatch *)loadPersistedMessageBatchForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit performLookups:(BOOL)performLookups {
+    NSDate *beforeDate = nil;
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    if(minMaxPair.minID) {
+        NSMutableOrderedDictionary *messages = [self.messagesByChannelID objectForKey:channelID];
+        AATTMessagePlus *messagePlus = [messages objectForKey:minMaxPair.minID];
+        beforeDate = messagePlus.displayDate;
+    }
+    
+    AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesInChannelWithID:channelID beforeDate:beforeDate limit:limit];
+    NSOrderedDictionary *messagePlusses = orderedMessageBatch.messagePlusses;
+    AATTMinMaxPair *dbMinMaxPair = orderedMessageBatch.minMaxPair;
+    minMaxPair = [minMaxPair combineWith:dbMinMaxPair];
+    
+    NSMutableOrderedDictionary *channelMessages = [messagePlusses objectForKey:channelID];
+    if(channelMessages) {
+        [channelMessages addEntriesFromOrderedDictionary:messagePlusses];
+    } else {
+        [self.messagesByChannelID setObject:messagePlusses forKey:channelID];
+    }
+    
+    [self.minMaxPairs setObject:minMaxPair forKey:channelID];
+    
+    if(performLookups) {
+        [self performLookupsOnMessagePlusses:[messagePlusses allObjects] persistIfEnabled:NO];
+    }
+    return orderedMessageBatch;
+}
+
 - (void)removeExcludedMessages:(NSOrderedDictionary *)excludedMessages fromDictionary:(NSMutableOrderedDictionary *)dictionary {
     for(id entryKey in [excludedMessages allKeys]) {
         [dictionary removeEntryWithKey:entryKey];
@@ -704,6 +726,12 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         return;
     } else {
         completionBlock(YES);
+    }
+}
+
+- (void)performLookupsOnMessagePlusses:(NSArray *)messagePlusses persistIfEnabled:(BOOL)persistIfEnabled {
+    if(self.configuration.isLocationLookupEnabled) {
+        [self lookupLocationForMessagePlusses:messagePlusses persistIfEnabled:persistIfEnabled];
     }
 }
 
