@@ -22,6 +22,7 @@
 #import "AATTChannelSyncManager.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
+#import "AATTFilteredMessageBatch.h"
 #import "AATTGeolocation.h"
 #import "AATTHashtagInstances.h"
 #import "AATTOrderedMessageBatch.h"
