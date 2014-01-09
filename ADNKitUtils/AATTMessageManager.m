@@ -141,11 +141,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
     AATTOrderedMessageBatch *messageBatch = [self.database messagesInChannelWithID:channelID messageIDs:messageIDs];
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
-    
-    if(self.configuration.isLocationLookupEnabled) {
-        [self lookupLocationForMessagePlusses:messagePlusses.allObjects persistIfEnabled:NO];
-    }
-    
+    [self performLookupsOnMessagePlusses:messagePlusses.allObjects persistIfEnabled:NO];
     return messagePlusses;
 }
 
@@ -244,10 +240,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
             }
             
             [self adjustDateAndInsertMessagePlus:messagePlus];
-            
-            if(self.configuration.isLocationLookupEnabled) {
-                [self lookupLocationForMessagePlusses:@[messagePlus] persistIfEnabled:YES];
-            }
+            [self performLookupsOnMessagePlusses:@[messagePlus] persistIfEnabled:YES];
 
             block(messagePlus, meta, error);
         }
@@ -629,9 +622,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         }
         
         NSArray *newestMessages = [NSArray arrayWithArray:[newestMessagesDictionary allObjects]];
-        if(self.configuration.isLocationLookupEnabled) {
-            [self lookupLocationForMessagePlusses:newestMessages persistIfEnabled:YES];
-        }
+        [self performLookupsOnMessagePlusses:newestMessages persistIfEnabled:YES];
 
         if(filterBlock) {
             filterBlock(newestMessages, appended, excludedResults, meta, error);
