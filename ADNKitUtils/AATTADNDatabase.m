@@ -43,7 +43,9 @@ static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messa
 
 static NSString *const kCreateMessagesSearchTable = @"CREATE VIRTUAL TABLE messages_search USING fts4(content=\"messages\", message_channel_id TEXT, message_text TEXT)";
 
-static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_name TEXT NOT NULL, location_short_name TEXT, location_message_id TEXT NOT NULL, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL, PRIMARY KEY (location_name, location_message_id, location_latitude, location_longitude))";
+static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_message_id INTEGER PRIMARY KEY, location_name TEXT NOT NULL, location_short_name TEXT, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL)";
+
+static NSString *const kCreateDisplayLocationInstancesSearchTable = @"CREATE VIRTUAL TABLE location_instances_search USING fts4(content=\"location_instances\", location_channel_id TEXT, location_name TEXT)";
 
 static NSString *const kCreateHashtagInstancesTable = @"CREATE TABLE IF NOT EXISTS hashtag_instances (hashtag_name TEXT NOT NULL, hashtag_message_id TEXT NOT NULL, hashtag_channel_id TEXT NOT NULL, hashtag_date INTEGER NOT NULL, PRIMARY KEY (hashtag_name, hashtag_message_id))";
 
@@ -82,11 +84,21 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             [db executeUpdate:kCreatePendingOEmbedsTable];
             [db executeUpdate:kCreateActionMessageSpecsTable];
             
+            //
             //"IF NOT EXISTS" not available for VIRTUAL / FTS tables.
+            //
+            
             static NSString *checkSearchExists = @"SELECT name FROM sqlite_master WHERE type='table' AND name='messages_search'";
             FMResultSet *resultSet = [db executeQuery:checkSearchExists];
             if(![resultSet next]) {
                 [db executeUpdate:kCreateMessagesSearchTable];
+            }
+            [resultSet close];
+            
+            static NSString *checkLocationSearchExists = @"SELECT name FROM sqlite_master WHERE type='table' AND name='location_instances_search'";
+            resultSet = [db executeQuery:checkLocationSearchExists];
+            if(![resultSet next]) {
+                [db executeUpdate:kCreateDisplayLocationInstancesSearchTable];
             }
             [resultSet close];
         }];
@@ -150,22 +162,31 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 
 - (void)insertOrReplaceDisplayLocationInstance:(AATTMessagePlus *)messagePlus {
     if(messagePlus.displayLocation) {
-        static NSString *insertOrReplaceDisplayLocationInstance = @"INSERT OR REPLACE INTO location_instances (location_name, location_short_name, location_message_id, location_channel_id, location_latitude, location_longitude, location_factual_id, location_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        static NSString *insertOrReplaceDisplayLocationInstance = @"INSERT OR REPLACE INTO location_instances (location_message_id, location_name, location_short_name, location_channel_id, location_latitude, location_longitude, location_factual_id, location_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
             AATTDisplayLocation *l = messagePlus.displayLocation;
+            NSNumber *messageID = [self numberIDForStringMessageID:messagePlus.message.messageID];
             NSString *name = l.name;
             NSString *shortName = l.shortName;
-            NSString *messageID = messagePlus.message.messageID;
             NSString *channelID = messagePlus.message.channelID;
             NSNumber *latitude = [NSNumber numberWithDouble:l.latitude];
             NSNumber *longitude = [NSNumber numberWithDouble:l.longitude];
             NSString *factualID = l.factualID;
             NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
             
-            if(![db executeUpdate:insertOrReplaceDisplayLocationInstance, name, shortName, messageID, channelID, latitude, longitude, factualID, date]) {
+            if(![db executeUpdate:insertOrReplaceDisplayLocationInstance, messageID, name, shortName, channelID, latitude, longitude, factualID, date]) {
                 *rollBack = YES;
             }
+            
+            [self insertSearchableDisplayLocationInstance:messageID channelID:channelID name:name withDB:db];
         }];
+    }
+}
+
+- (void)insertSearchableDisplayLocationInstance:(NSNumber *)messageID channelID:(NSString *)channelID name:(NSString *)name withDB:(FMDatabase *)db {
+    if(name) {
+        static NSString *insert = @"INSERT INTO location_instances_search (docid, location_channel_id, location_name) VALUES (?, ?, ?)";
+        [db executeUpdate:insert, messageID, channelID, name];
     }
 }
 
@@ -314,6 +335,20 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     NSMutableSet *messageIDs = [NSMutableSet set];
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, channelID, query];
+        while([resultSet next]) {
+            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
+            [messageIDs addObject:messageID];
+        }
+    }];
+    
+    return [self messagesInChannelWithID:channelID messageIDs:messageIDs];
+}
+
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID displayLocationSearchQuery:(NSString *)displayLocationSearchQuery {
+    NSString *select = @"SELECT docid FROM location_instances_search WHERE location_channel_id = ? AND location_name MATCH ?";
+    NSMutableSet *messageIDs = [NSMutableSet set];
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, channelID, displayLocationSearchQuery];
         while([resultSet next]) {
             NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
             [messageIDs addObject:messageID];
@@ -660,6 +695,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 
 - (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus {
     static NSString *deleteSearchableMessageText = @"DELETE FROM messages_search WHERE docid=?";
+    static NSString *deleteSearchableLocationInstance = @"DELETE FROM location_instances_search WHERE docid=?";
     static NSString *deleteMessage = @"DELETE FROM messages WHERE message_id = ?";
     static NSString *deleteHashtags = @"DELETE FROM hashtag_instances WHERE hashtag_name = ? AND hashtag_message_id = ?";
     static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_name = ? AND location_message_id = ? AND location_latitude = ? AND location_longitude = ?";
@@ -670,6 +706,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         [db executeUpdate:deleteSearchableMessageText, messageID];
+        [db executeUpdate:deleteSearchableLocationInstance, messageID];
         
         if(![db executeUpdate:deleteMessage, messageID]) {
             *rollback = YES;

@@ -118,6 +118,16 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID searchQuery:(NSString *)query;
 
 /**
+ Obtain a batch of persisted AATTMessagePlus objects whose display locations
+ have names that match or partially match the provided query
+ 
+ @param channelID the ID of the channel containing the messages.
+ @param displayLocationSearchQuery the query to use when searching.
+ @return An ordered batch of messages.
+ */
+- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID displayLocationSearchQuery:(NSString *)displayLocationSearchQuery;
+
+/**
  Obtain a batch of persisted AATTMessagePlus objects in reverse chronological order.
 
  @param channelID the ID of the channel containing the messages.
