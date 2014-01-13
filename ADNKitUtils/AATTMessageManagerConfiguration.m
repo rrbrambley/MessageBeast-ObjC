@@ -10,4 +10,11 @@
 
 @implementation AATTMessageManagerConfiguration
 
+- (void)addAnnotationExtractionForAnnotationOfType:(NSString *)annotationType {
+    if(!self.annotationExtractions) {
+        self.annotationExtractions = [NSMutableSet set];
+    }
+    [self.annotationExtractions addObject:annotationType];
+}
+
 @end

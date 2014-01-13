@@ -685,7 +685,12 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     if(self.configuration.isDatabaseInsertionEnabled) {
         [self.database insertOrReplaceMessage:messagePlus];
         [self.database insertOrReplaceHashtagInstances:messagePlus];
-        [self.database insertOrReplaceOEmbedInstances:messagePlus];
+        
+        if(self.configuration.annotationExtractions.count > 0) {
+            for(NSString *annotationType in self.configuration.annotationExtractions) {
+                [self.database insertOrReplaceAnnotationInstancesOfType:annotationType forTargetMessagePlus:messagePlus];
+            }
+        }
     }
 }
 

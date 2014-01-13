@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, AATTPendingFile, NSOrderedDictionary;
+@class AATTAnnotationInstances, AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, AATTPendingFile, NSOrderedDictionary;
 
 typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
     AATTLocationPrecisionOneHundredMeters = 0, //actually 111 m
@@ -55,12 +55,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (void)insertOrReplaceHashtagInstances:(AATTMessagePlus *)messagePlus;
 
 /**
- Insert a message's associated OEmbed instances.
- OEmbed instances are unique by (type + mesage id).
+ Insert instances of annotation of a specific type.
+ Annotation instances are unique by (type + mesage id).
 
- @param messagePlus the AATTMessagePlus whose OEmbed instances should be inserted.
+ @param annotationType the annotation type of interest
+ @param messagePlus the AATTMessagePlus whose OEmbed instances should be inserted
  */
-- (void)insertOrReplaceOEmbedInstances:(AATTMessagePlus *)messagePlus;
+- (void)insertOrReplaceAnnotationInstancesOfType:(NSString *)annotationType forTargetMessagePlus:(AATTMessagePlus *)messagePlus;
 
 /**
  Insert an action message spec.
@@ -155,6 +156,17 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  @return an NSOrderedDictionary with message ID keys mapped to AATTMessagePlus objects.
  */
 - (NSOrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID;
+
+/**
+ Obtain an AATTAnnotationInstances containing all message IDs with which the specified annotation type
+ is associated.
+ 
+ @param annotationType the type of annotation
+ @param channelID the ID of the channel containing the messages
+ @return an AATTAnnotationInstances object containing all message IDs with which the specified annotation type
+ is associated.
+ */
+- (AATTAnnotationInstances *)annotationInstancesOfType:(NSString *)annotationType inChannelWithID:(NSString *)channelID;
 
 /**
  Obtain an NSArray of AATTDisplayLocationInstances for a channel with the specified ID.

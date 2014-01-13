@@ -8,6 +8,7 @@
 
 #import "AATTActionMessageSpec.h"
 #import "AATTADNDatabase.h"
+#import "AATTAnnotationInstances.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
@@ -16,6 +17,7 @@
 #import "AATTOrderedMessageBatch.h"
 #import "AATTPendingFile.h"
 #import "AATTPendingMessageDeletion.h"
+#import "ANKMessage+AATTAnnotationHelper.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
 #import "NSOrderedDictionary.h"
@@ -49,7 +51,7 @@ static NSString *const kCreateDisplayLocationInstancesSearchTable = @"CREATE VIR
 
 static NSString *const kCreateHashtagInstancesTable = @"CREATE TABLE IF NOT EXISTS hashtag_instances (hashtag_name TEXT NOT NULL, hashtag_message_id TEXT NOT NULL, hashtag_channel_id TEXT NOT NULL, hashtag_date INTEGER NOT NULL, PRIMARY KEY (hashtag_name, hashtag_message_id))";
 
-static NSString *const kCreateOEmbedInstancesTable = @"CREATE TABLE IF NOT EXISTS oembed_instances (oembed_type TEXT NOT NULL, oembed_message_id TEXT NOT NULL, oembed_channel_id TEXT NOT NULL, oembed_count INTEGER NOT NULL, oembed_date INTEGER NOT NULL, PRIMARY KEY(oembed_type, oembed_message_id))";
+static NSString *const kCreateAnnotationInstancesTable = @"CREATE TABLE IF NOT EXISTS annotation_instances (annotation_type TEXT NOT NULL, annotation_message_id TEXT NOT NULL, annotation_channel_id TEXT NOT NULL, annotation_count INTEGER NOT NULL, annotation_date INTEGER NOT NULL, PRIMARY KEY(annotation_type, annotation_message_id))";
 
 static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS geolocations (geolocation_locality TEXT NOT NULL, geolocation_sublocality TEXT, geolocation_latitude REAL NOT NULL, geolocation_longitude REAL NOT NULL, PRIMARY KEY (geolocation_latitude, geolocation_longitude))";
 
@@ -77,7 +79,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             [db executeUpdate:kCreateMessagesTable];
             [db executeUpdate:kCreateDisplayLocationInstancesTable];
             [db executeUpdate:kCreateHashtagInstancesTable];
-            [db executeUpdate:kCreateOEmbedInstancesTable];
+            [db executeUpdate:kCreateAnnotationInstancesTable];
             [db executeUpdate:kCreateGeolocationsTable];
             [db executeUpdate:kCreatePendingMessageDeletionsTable];
             [db executeUpdate:kCreatePendingFilesTable];
@@ -197,23 +199,17 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }
 }
 
-- (void)insertOrReplaceOEmbedInstances:(AATTMessagePlus *)messagePlus {
-    [self insertOrReplaceOEmbedInstances:messagePlus OEmbedAnnotations:messagePlus.photoOEmbeds];
-    [self insertOrReplaceOEmbedInstances:messagePlus OEmbedAnnotations:messagePlus.html5VideoOEmbeds];
-}
-
-- (void)insertOrReplaceOEmbedInstances:(AATTMessagePlus *)messagePlus OEmbedAnnotations:(NSArray *)OEmbedAnnotations {
-    if(OEmbedAnnotations.count > 0) {
-        static NSString *insertOrReplaceOEmbedInstance = @"INSERT OR REPLACE INTO oembed_instances (oembed_type, oembed_message_id, oembed_channel_id, oembed_count, oembed_date) VALUES (?, ?, ?, ?, ?)";
+- (void)insertOrReplaceAnnotationInstancesOfType:(NSString *)annotationType forTargetMessagePlus:(AATTMessagePlus *)messagePlus {
+    NSArray *annotations = [messagePlus.message annotationsWithType:annotationType];
+    if(annotations.count > 0) {
+        static NSString *insertOrReplaceAnnotationInstance = @"INSERT OR REPLACE INTO annotation_instances (annotation_type, annotation_message_id, annotation_channel_id, annotation_count, annotation_date) VALUES (?, ?, ?, ?, ?)";
         [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
-            ANKAnnotation *annotation = [OEmbedAnnotations objectAtIndex:0];
-            NSString *type = [[annotation value] objectForKey:@"type"];
             NSString *messageID = messagePlus.message.messageID;
             NSString *channelID = messagePlus.message.channelID;
-            NSNumber *count = [NSNumber numberWithUnsignedInteger:OEmbedAnnotations.count];
+            NSNumber *count = [NSNumber numberWithUnsignedInteger:annotations.count];
             NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
             
-            if(![db executeUpdate:insertOrReplaceOEmbedInstance, type, messageID, channelID, count, date]) {
+            if(![db executeUpdate:insertOrReplaceAnnotationInstance, annotationType, messageID, channelID, count, date]) {
                 *rollBack = YES;
                 return;
             }
@@ -443,6 +439,20 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
     
     return messagePlusses;
+}
+
+- (AATTAnnotationInstances *)annotationInstancesOfType:(NSString *)annotationType inChannelWithID:(NSString *)channelID {
+    AATTAnnotationInstances *instances = [[AATTAnnotationInstances alloc] initWithAnnotationType:annotationType];
+    
+    static NSString *select = @"SELECT annotation_message_id FROM annotation_instances WHERE annotation_channel_id = ? AND annotation_type = ?";
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, channelID, annotationType];
+        while([resultSet next]) {
+            [instances addMessageID:[resultSet stringForColumnIndex:0]];
+        }
+    }];
+    return instances;
 }
 
 - (NSArray *)displayLocationInstancesInChannelWithID:(NSString *)channelID {
@@ -685,7 +695,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     static NSString *deleteMessage = @"DELETE FROM messages WHERE message_id = ?";
     static NSString *deleteHashtags = @"DELETE FROM hashtag_instances WHERE hashtag_name = ? AND hashtag_message_id = ?";
     static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_name = ? AND location_message_id = ? AND location_latitude = ? AND location_longitude = ?";
-    static NSString *deleteOEmbeds = @"DELETE FROM oembed_instances WHERE oembed_type = ? AND oembed_message_id = ?";
+    static NSString *deleteAnnotationInstances = @"DELETE FROM annotation_instances WHERE annotation_message_id = ?";
     
     ANKMessage *message = messagePlus.message;
     NSNumber *messageID = [self numberIDForStringMessageID:message.messageID];
@@ -693,6 +703,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         [db executeUpdate:deleteSearchableMessageText, messageID];
         [db executeUpdate:deleteSearchableLocationInstance, messageID];
+        [db executeUpdate:deleteAnnotationInstances, messageID];
         
         if(![db executeUpdate:deleteMessage, messageID]) {
             *rollback = YES;
@@ -712,20 +723,6 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             NSNumber *latitude = [NSNumber numberWithDouble:displayLocation.latitude];
             NSNumber *longitude = [NSNumber numberWithDouble:displayLocation.longitude];
             if(![db executeUpdate:deleteLocations, displayLocation.name, message.messageID, latitude, longitude]) {
-                *rollback = YES;
-                return;
-            }
-        }
-        
-        if(messagePlus.photoOEmbeds.count > 0) {
-            if(![db executeUpdate:deleteOEmbeds, @"photo", message.messageID]) {
-                *rollback = YES;
-                return;
-            }
-        }
-        
-        if(messagePlus.html5VideoOEmbeds.count > 0) {
-            if(![db executeUpdate:deleteOEmbeds, @"html5video", message.messageID]) {
                 *rollback = YES;
                 return;
             }
