@@ -137,13 +137,6 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
-- (void)insertSearchableMessageText:(NSNumber *)messageID channelID:(NSString *)channelID text:(NSString *)text withDB:(FMDatabase *)db {
-    if(text) {
-        static NSString *insert = @"INSERT INTO messages_search (docid, message_channel_id, message_text) VALUES (?, ?, ?)";
-        [db executeUpdate:insert, messageID, channelID, text];
-    }
-}
-
 - (void)insertOrReplacePendingOEmbedForPendingFileID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID db:(FMDatabase *)db {
     static NSString *insert = @"INSERT OR REPLACE INTO pending_oembeds (pending_oembed_pending_file_id, pending_oembed_message_id, pending_oembed_channel_id) VALUES (?, ?, ?)";
     [db executeUpdate:insert, pendingFileID, messageID, channelID];
@@ -180,13 +173,6 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             
             [self insertSearchableDisplayLocationInstance:messageID channelID:channelID name:name withDB:db];
         }];
-    }
-}
-
-- (void)insertSearchableDisplayLocationInstance:(NSNumber *)messageID channelID:(NSString *)channelID name:(NSString *)name withDB:(FMDatabase *)db {
-    if(name) {
-        static NSString *insert = @"INSERT INTO location_instances_search (docid, location_channel_id, location_name) VALUES (?, ?, ?)";
-        [db executeUpdate:insert, messageID, channelID, name];
     }
 }
 
@@ -827,6 +813,20 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 }
 
 #pragma mark - Private Stuff
+
+- (void)insertSearchableMessageText:(NSNumber *)messageID channelID:(NSString *)channelID text:(NSString *)text withDB:(FMDatabase *)db {
+    if(text) {
+        static NSString *insert = @"INSERT INTO messages_search (docid, message_channel_id, message_text) VALUES (?, ?, ?)";
+        [db executeUpdate:insert, messageID, channelID, text];
+    }
+}
+
+- (void)insertSearchableDisplayLocationInstance:(NSNumber *)messageID channelID:(NSString *)channelID name:(NSString *)name withDB:(FMDatabase *)db {
+    if(name) {
+        static NSString *insert = @"INSERT INTO location_instances_search (docid, location_channel_id, location_name) VALUES (?, ?, ?)";
+        [db executeUpdate:insert, messageID, channelID, name];
+    }
+}
 
 - (NSString *)JSONStringWithMessage:(ANKMessage *)message {
     NSError *error;
