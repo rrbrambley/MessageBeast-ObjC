@@ -87,6 +87,9 @@
 		E24F294C185CD97800957D43 /* ANKAnnotatableResource+AATTAnnotationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E287DA23184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F2966186966E600957D43 /* AATTChannelSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F2965186966E600957D43 /* AATTChannelSyncManager.m */; };
 		E24F29691869684000957D43 /* AATTChannelSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E24F29681869684000957D43 /* AATTChannelSpec.m */; };
+		E25DA2F71884635A001C09E1 /* AATTAnnotationInstances.h in Headers */ = {isa = PBXBuildFile; fileRef = E25DA2F51884635A001C09E1 /* AATTAnnotationInstances.h */; };
+		E25DA2F81884635A001C09E1 /* AATTAnnotationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E25DA2F61884635A001C09E1 /* AATTAnnotationInstances.m */; };
+		E25DA2F91884635A001C09E1 /* AATTAnnotationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E25DA2F61884635A001C09E1 /* AATTAnnotationInstances.m */; };
 		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
 		E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */; };
 		E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
@@ -209,6 +212,8 @@
 		E24F2965186966E600957D43 /* AATTChannelSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSyncManager.m; sourceTree = "<group>"; };
 		E24F29671869684000957D43 /* AATTChannelSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSpec.h; sourceTree = "<group>"; };
 		E24F29681869684000957D43 /* AATTChannelSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpec.m; sourceTree = "<group>"; };
+		E25DA2F51884635A001C09E1 /* AATTAnnotationInstances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTAnnotationInstances.h; sourceTree = "<group>"; };
+		E25DA2F61884635A001C09E1 /* AATTAnnotationInstances.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTAnnotationInstances.m; sourceTree = "<group>"; };
 		E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
 		E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
 		E287DA20184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKChannel+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
@@ -411,6 +416,8 @@
 				E23FCAEF18751E38009FFDFC /* AATTChannelRefreshResult.m */,
 				E23FCAEB18751D97009FFDFC /* AATTChannelRefreshResultSet.h */,
 				E23FCAEC18751D97009FFDFC /* AATTChannelRefreshResultSet.m */,
+				E25DA2F51884635A001C09E1 /* AATTAnnotationInstances.h */,
+				E25DA2F61884635A001C09E1 /* AATTAnnotationInstances.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -526,6 +533,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E24F2926185BC22900957D43 /* ADNKitUtils.h in Headers */,
+				E25DA2F71884635A001C09E1 /* AATTAnnotationInstances.h in Headers */,
 				E24F2930185CD97800957D43 /* NSOrderedDictionary.h in Headers */,
 				E24F2931185CD97800957D43 /* FMDatabase.h in Headers */,
 				E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */,
@@ -670,6 +678,7 @@
 				E20F6983187F082A0014D5EE /* AATTChannelSpecSet.m in Sources */,
 				E20F6984187F082A0014D5EE /* AATTChannelRefreshResult.m in Sources */,
 				E20F6985187F082A0014D5EE /* AATTChannelRefreshResultSet.m in Sources */,
+				E25DA2F91884635A001C09E1 /* AATTAnnotationInstances.m in Sources */,
 				E20F6986187F082A0014D5EE /* AATTChannelSyncManager.m in Sources */,
 				E20F6981187F07FA0014D5EE /* AATTFilteredMessageBatch.m in Sources */,
 				E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */,
@@ -713,6 +722,7 @@
 				E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */,
 				E29A82ED1821B8AA0057245C /* FMDatabaseQueue.m in Sources */,
 				E2BA213D1825DF6E0023363A /* AATTDisplayLocationInstances.m in Sources */,
+				E25DA2F81884635A001C09E1 /* AATTAnnotationInstances.m in Sources */,
 				E29A83031822B42D0057245C /* AATTDisplayLocation.m in Sources */,
 				E2E5A739181805E6009DECDB /* ANKClient+PrivateChannel.m in Sources */,
 				E23FCAEA18750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.m in Sources */,

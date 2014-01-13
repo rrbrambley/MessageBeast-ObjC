@@ -14,6 +14,7 @@
 #import "AATTADNDatabase.h"
 #import "AATTADNFileManager.h"
 #import "AATTADNPersistence.h"
+#import "AATTAnnotationInstances.h"
 #import "AATTBaseMessageInstances.h"
 #import "AATTChannelRefreshResult.h"
 #import "AATTChannelRefreshResultSet.h"
