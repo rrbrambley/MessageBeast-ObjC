@@ -7,11 +7,12 @@
 //
 
 #import "AATTMessagePlus.h"
+#import "AATTPendingFileAttachment.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 
 @implementation AATTMessagePlus
 
-+ (instancetype)unsentMessagePlusForChannelWithID:(NSString *)channelID messageID:(NSString *)messageID message:(ANKMessage *)message pendingFileIDsForOEmbeds:(NSSet *)pendingFileIDsForOEmbeds {
++ (instancetype)unsentMessagePlusForChannelWithID:(NSString *)channelID messageID:(NSString *)messageID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments {
 
     NSDate *date = [NSDate date];
     
@@ -22,7 +23,13 @@
     AATTMessagePlus *unsentMessagePlus = [[AATTMessagePlus alloc] initWithMessage:message];
     unsentMessagePlus.isUnsent = YES;
     unsentMessagePlus.displayDate = date;
-    unsentMessagePlus.pendingOEmbeds = [NSMutableSet setWithSet:pendingFileIDsForOEmbeds];
+    
+    NSMutableDictionary *pendingFileAttachmentsDictionary = [NSMutableDictionary dictionaryWithCapacity:pendingFileAttachments.count];
+    for(AATTPendingFileAttachment *attachment in pendingFileAttachments) {
+        [pendingFileAttachmentsDictionary setObject:attachment forKey:attachment.pendingFileID];
+    }
+    
+    unsentMessagePlus.pendingFileAttachments = pendingFileAttachmentsDictionary;
     
     return unsentMessagePlus;
 }
@@ -104,17 +111,22 @@
     self.sendAttemptsCount++;
 }
 
-- (void)replacePendingOEmbedWithOEmbedAnnotationForPendingFileWithID:(NSString *)pendingFileID file:(ANKFile *)file {
-    if([self.pendingOEmbeds containsObject:pendingFileID]) {
-        [self.pendingOEmbeds removeObject:pendingFileID];
-        
-        ANKAnnotation *annotation = [ANKAnnotation oembedAnnotationForFile:file];
-        NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:(self.message.annotations.count + 1)];
-        if(self.message.annotations) {
-            [annotations addObjectsFromArray:annotations];
+- (void)replacePendingFileAttachmentWithAnnotationForPendingFileWithID:(NSString *)pendingFileID file:(ANKFile *)file {
+    AATTPendingFileAttachment *pendingFileAttachment = [self.pendingFileAttachments objectForKey:pendingFileID];
+    if(pendingFileAttachment) {
+        if(pendingFileAttachment.isOEmbed) {
+            ANKAnnotation *annotation = [ANKAnnotation oembedAnnotationForFile:file];
+            NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:(self.message.annotations.count + 1)];
+            if(self.message.annotations) {
+                [annotations addObjectsFromArray:annotations];
+            }
+            [annotations addObject:annotation];
+            self.message.annotations = annotations;
+        } else {
+            [self.message appendToAttachments:file];
         }
-        [annotations addObject:annotation];
-        self.message.annotations = annotations;
+        
+        [(NSMutableDictionary *)self.pendingFileAttachments removeObjectForKey:pendingFileID];
     }
 }
 

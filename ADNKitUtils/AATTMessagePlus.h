@@ -17,15 +17,15 @@
 @property NSInteger sendAttemptsCount;
 @property (nonatomic) NSArray *photoOEmbeds;
 @property (nonatomic) NSArray *html5VideoOEmbeds;
-@property NSMutableSet *pendingOEmbeds;
+@property NSDictionary *pendingFileAttachments;
 
-+ (instancetype)unsentMessagePlusForChannelWithID:(NSString *)channelID messageID:(NSString *)messageID message:(ANKMessage *)message pendingFileIDsForOEmbeds:(NSSet *)pendingFileIDsForOEmbeds;
++ (instancetype)unsentMessagePlusForChannelWithID:(NSString *)channelID messageID:(NSString *)messageID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments;
 
 - (id)initWithMessage:(ANKMessage *)message;
 - (ANKAnnotation *)firstPhotoOEmbedAnnotation;
 - (ANKAnnotation *)firstHTML5VideoOEmbedAnnotation;
 - (NSURL *)firstHTML5VideoOEmbedSourceURL;
 - (void)incrementSendAttemptsCount;
-- (void)replacePendingOEmbedWithOEmbedAnnotationForPendingFileWithID:(NSString *)pendingFileID file:(ANKFile *)file;
+- (void)replacePendingFileAttachmentWithAnnotationForPendingFileWithID:(NSString *)pendingFileID file:(ANKFile *)file;
 
 @end

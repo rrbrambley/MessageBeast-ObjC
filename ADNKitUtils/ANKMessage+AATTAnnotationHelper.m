@@ -52,4 +52,40 @@
     self.annotations = annotations;
 }
 
+- (void)appendToAttachments:(ANKFile *)file {
+    //if there's an existing attachments annotation (file list), append to it
+    NSArray *annotations = self.annotations;
+    NSInteger index = -1;
+    for(NSUInteger i = 0; i < annotations.count; i++) {
+        ANKAnnotation *annotation = [annotations objectAtIndex:i];
+        if([kANKCoreAnnotationEmbeddedMedia isEqualToString:annotation.type]) {
+            index = i;
+            break;
+        }
+    }
+    NSDictionary *fileDictionary = @{@"file_token" : file.fileToken, @"format" : @"metadata", @"file_id" : file.fileID};
+    
+    if(index != -1) {
+        ANKAnnotation *attachmentsAnnotation = [annotations objectAtIndex:index];
+        
+        //append the new file to the file list
+        NSMutableArray *newFileArray = [NSMutableArray arrayWithArray:[attachmentsAnnotation.value objectForKey:@"+net.app.core.file_list"]];
+        [newFileArray addObject:fileDictionary];
+
+        //create a new 'value' for the annotation, containing the new file list
+        NSMutableDictionary *newValue = [NSMutableDictionary dictionaryWithDictionary:attachmentsAnnotation.value];
+        [newValue setObject:newFileArray forKey:@"+net.app.core.file_list"];
+        attachmentsAnnotation.value = newValue;
+    } else {
+        NSMutableArray *newAnnotations = [NSMutableArray arrayWithArray:self.annotations];
+        
+        NSMutableDictionary *value = [NSMutableDictionary dictionaryWithCapacity:1];
+        [value setObject:@[fileDictionary] forKey:@"+net.app.core.file_list"];
+        
+        ANKAnnotation *attachments = [ANKAnnotation annotationWithType:kANKCoreAnnotationAttachments value:value];
+        [newAnnotations addObject:attachments];
+        self.annotations = newAnnotations;
+    }
+}
+
 @end

@@ -349,9 +349,9 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  
  @param channelId the id of the Channel in which the Message should be created
  @param message The Message to be created
- @param pendingFileIDs the ids of the pending files that need to be sent before this message can be sent to the server
+ @param pendingFileAttachments an array of AATTPendingFileAttachments corresponding to pending files that need to be sent before this message can be sent to the server
  */
-- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileIDs:(NSSet *)pendingFileIDs;
+- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments;
 
 #pragma mark - Send Unsent
 

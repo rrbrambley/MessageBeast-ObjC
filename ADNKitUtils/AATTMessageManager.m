@@ -316,10 +316,10 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 }
 
 - (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message {
-    return [self createUnsentMessageAndAttemptSendInChannelWithID:channelID message:message pendingFileIDs:[NSSet set]];
+    return [self createUnsentMessageAndAttemptSendInChannelWithID:channelID message:message pendingFileAttachments:[NSArray array]];
 }
 
-- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileIDs:(NSSet *)pendingFileIDs {
+- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments {
     
     //An unsent message id is always set to the max id + 1.
     //
@@ -339,7 +339,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     NSInteger newMessageID = maxNumber ? [maxNumber integerValue] + 1 : 1;
     NSString *newMessageIDString = [NSString stringWithFormat:@"%d", newMessageID];
     
-    AATTMessagePlus *unsentMessagePlus = [AATTMessagePlus unsentMessagePlusForChannelWithID:channelID messageID:newMessageIDString message:message pendingFileIDsForOEmbeds:pendingFileIDs];
+    AATTMessagePlus *unsentMessagePlus = [AATTMessagePlus unsentMessagePlusForChannelWithID:channelID messageID:newMessageIDString message:message pendingFileAttachments:pendingFileAttachments];
     [self.database insertOrReplaceMessage:unsentMessagePlus];
     
     //TODO: handle display location
@@ -383,7 +383,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 - (void)sendUnsentMessages:(NSMutableOrderedDictionary *)unsentMessages sentMessageIDs:(NSMutableArray *)sentMessageIDs {
     AATTMessagePlus *messagePlus = unsentMessages.objectEnumerator.nextObject;
-    [self uploadPendingOEmbedsForMessagePlus:messagePlus completionBlock:^(BOOL success) {
+    [self uploadPendingFileAttachmentsForMessagePlus:messagePlus completionBlock:^(BOOL success) {
         if(success) {
             ANKMessage *message = messagePlus.message.copy;
             
@@ -702,10 +702,9 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return self.configuration.dateAdapter ? self.configuration.dateAdapter(message) : message.createdAt;
 }
 
-
-- (void)uploadPendingOEmbedsForMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(void (^)(BOOL success))completionBlock {
-    if(messagePlus.pendingOEmbeds.count > 0) {
-        NSString *pendingFileID = messagePlus.pendingOEmbeds.objectEnumerator.nextObject;
+- (void)uploadPendingFileAttachmentsForMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(void (^)(BOOL success))completionBlock {
+    if(messagePlus.pendingFileAttachments.count > 0) {
+        NSString *pendingFileID = messagePlus.pendingFileAttachments.allKeys.objectEnumerator.nextObject;
         NSMutableArray *messagesNeedingPendingFile = [self existingOrNewMessagesNeedingPendingFileArrayForFileWithID:pendingFileID];
         [messagesNeedingPendingFile addObject:messagePlus];
         //TODO: this should somehow be prepopulated?
@@ -714,11 +713,11 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
             if(!error) {
                 NSMutableArray *messagePlusses = [self existingOrNewMessagesNeedingPendingFileArrayForFileWithID:pendingFileID];
                 for(AATTMessagePlus *messagePlus in messagePlusses) {
-                    [messagePlus replacePendingOEmbedWithOEmbedAnnotationForPendingFileWithID:pendingFileID file:file];
+                    [messagePlus replacePendingFileAttachmentWithAnnotationForPendingFileWithID:pendingFileID file:file];
                     [self.database insertOrReplaceMessage:messagePlus];
-                    [self.database deletePendingOEmbedForPendingFileWithID:pendingFileID messageID:messagePlus.message.messageID channelID:messagePlus.message.channelID];
+                    [self.database deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:messagePlus.message.messageID channelID:messagePlus.message.channelID];
                 }
-                [self uploadPendingOEmbedsForMessagePlus:messagePlus completionBlock:completionBlock];
+                [self uploadPendingFileAttachmentsForMessagePlus:messagePlus completionBlock:completionBlock];
             } else {
                 completionBlock(NO);
             }

@@ -16,6 +16,7 @@
 #import "AATTMessagePlus.h"
 #import "AATTOrderedMessageBatch.h"
 #import "AATTPendingFile.h"
+#import "AATTPendingFileAttachment.h"
 #import "AATTPendingMessageDeletion.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 #import "FMDatabase.h"
@@ -59,7 +60,7 @@ static NSString *const kCreatePendingMessageDeletionsTable = @"CREATE TABLE IF N
 
 static NSString *const kCreatePendingFilesTable = @"CREATE TABLE IF NOT EXISTS pending_files (pending_file_id TEXT PRIMARY KEY, pending_file_url TEXT NOT NULL, pending_file_type TEXT NOT NULL, pending_file_name TEXT NOT NULL, pending_file_mimetype TEXT NOT NULL, pending_file_kind TEXT, pending_file_public BOOLEAN, pending_file_send_attempts INTEGER)";
 
-static NSString *const kCreatePendingOEmbedsTable = @"CREATE TABLE IF NOT EXISTS pending_oembeds (pending_oembed_pending_file_id TEXT NOT NULL, pending_oembed_message_id TEXT NOT NULL, pending_oembed_channel_id TEXT NOT NULL, PRIMARY KEY (pending_oembed_pending_file_id, pending_oembed_message_id, pending_oembed_channel_id))";
+static NSString *const kCreatePendingFileAttachmentsTable = @"CREATE TABLE IF NOT EXISTS pending_file_attachments (pending_file_attachment_file_id TEXT NOT NULL, pending_file_attachment_message_id TEXT NOT NULL, pending_file_attachment_channel_id TEXT NOT NULL, pending_file_attachment_is_oembed INTEGER NOT NULL, PRIMARY KEY (pending_file_attachment_file_id, pending_file_attachment_message_id))";
 
 static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EXISTS action_messages (action_message_id TEXT PRIMARY KEY, action_message_channel_id TEXT NOT NULL, action_message_target_message_id TEXT NOT NULL, action_message_target_channel_id TEXT NOT NULL)";
 
@@ -83,7 +84,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             [db executeUpdate:kCreateGeolocationsTable];
             [db executeUpdate:kCreatePendingMessageDeletionsTable];
             [db executeUpdate:kCreatePendingFilesTable];
-            [db executeUpdate:kCreatePendingOEmbedsTable];
+            [db executeUpdate:kCreatePendingFileAttachmentsTable];
             [db executeUpdate:kCreateActionMessageSpecsTable];
             
             //
@@ -128,9 +129,10 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             *rollBack = YES;
         }
         
-        if(messagePlus.pendingOEmbeds.count > 0) {
-            for(NSString *pendingOEmbed in messagePlus.pendingOEmbeds) {
-                [self insertOrReplacePendingOEmbedForPendingFileID:pendingOEmbed messageID:message.messageID channelID:message.channelID db:db];
+        if(messagePlus.pendingFileAttachments.count > 0) {
+            for(NSString *pendingFileID in [messagePlus.pendingFileAttachments allKeys]) {
+                AATTPendingFileAttachment *attachment = [messagePlus.pendingFileAttachments objectForKey:pendingFileID];
+                [self insertOrReplacePendingFileAttachmentWithPendingFileID:pendingFileID messageID:message.messageID channelID:message.channelID isOEmbed:attachment.isOEmbed db:db];
             }
         }
         
@@ -139,9 +141,9 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
-- (void)insertOrReplacePendingOEmbedForPendingFileID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID db:(FMDatabase *)db {
-    static NSString *insert = @"INSERT OR REPLACE INTO pending_oembeds (pending_oembed_pending_file_id, pending_oembed_message_id, pending_oembed_channel_id) VALUES (?, ?, ?)";
-    [db executeUpdate:insert, pendingFileID, messageID, channelID];
+- (void)insertOrReplacePendingFileAttachmentWithPendingFileID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID isOEmbed:(BOOL)isOEmbed db:(FMDatabase *)db {
+    static NSString *insert = @"INSERT OR REPLACE INTO pending_file_attachments (pending_file_attachment_file_id, pending_file_attachment_message_id, pending_file_attachment_channel_id, pending_file_attachment_is_oembed) VALUES (?, ?, ?, ?)";
+    [db executeUpdate:insert, pendingFileID, messageID, channelID, [NSNumber numberWithBool:isOEmbed]];
 }
 
 - (void)insertOrReplaceGeolocation:(AATTGeolocation *)geolocation {
@@ -671,6 +673,20 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     return pendingFile;
 }
 
+- (NSArray *)pendingFileAttachmentsForMessageWithID:(NSString *)messageID {
+    static NSString *select = @"SELECT * FROM pending_file_attachments WHERE pending_file_attachment_message_id = ?";
+    NSMutableArray *pendingAttachments = [NSMutableArray array];
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, messageID];
+        while([resultSet next]) {
+            NSString *pendingFileID = [resultSet stringForColumnIndex:0];
+            BOOL isOEmbed = [resultSet boolForColumnIndex:1];
+            [pendingAttachments addObject:[[AATTPendingFileAttachment alloc] initWithPendingFileID:pendingFileID isOEmbed:isOEmbed]];
+        }
+    }];
+    return pendingAttachments;
+}
+
 - (NSDictionary *)pendingMessageDeletionsInChannelWithID:(NSString *)channelID {
     static NSString *select = @"SELECT pending_message_deletion_message_id, pending_message_deletion_delete_associated_files FROM pending_message_deletions WHERE pending_message_deletion_channel_id = ?";
     NSMutableDictionary *deletions = [[NSMutableDictionary alloc] init];
@@ -728,9 +744,9 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             }
         }
         
-        if(messagePlus.pendingOEmbeds.count > 0) {
-            for(NSString *pendingFileID in messagePlus.pendingOEmbeds) {
-                [self deletePendingOEmbedForPendingFileWithID:pendingFileID messageID:message.messageID channelID:message.channelID];
+        if(messagePlus.pendingFileAttachments.count > 0) {
+            for(NSString *pendingFileID in [messagePlus.pendingFileAttachments allKeys]) {
+                [self deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:message.messageID channelID:message.channelID];
                 
                 //TODO: can multiple message plus objects use the same pending file Id?
                 //if so, we shouldn't do this here - must make sure no other MPs need it.
@@ -762,7 +778,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
-- (void)deletePendingOEmbedForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID {
+- (void)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID {
     static NSString *delete = @"DELETE FROM pending_oembeds WHERE pending_oembed_pending_file_id = ? AND pending_oembed_message_id = ? AND pending_oembed_channel_id = ?";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         if(![db executeUpdate:delete, pendingFileID, messageID, channelID]) {

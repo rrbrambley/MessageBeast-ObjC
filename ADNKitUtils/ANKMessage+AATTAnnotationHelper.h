@@ -16,4 +16,16 @@ static NSString *const kMessageAnnotationTargetMessage = @"com.alwaysallthetime.
 - (void)addDisplayDateAnnotationWithDate:(NSDate *)date;
 - (void)addTargetMessageAnnotationWithTargetMessageID:(NSString *)targetMessageID;
 
+/*
+ Add the file to the first-found attachments annotation, or create
+ a new one if none exist.
+ 
+ This looks the replacement value +net.app.core.file_list. A
+ complete file list (i.e. net.app.core.file_list without the +) is
+ ineligible (annotations are immutable).
+ 
+ @param file the file to add to a file list in an attachments annotation.
+ */
+- (void)appendToAttachments:(ANKFile *)file;
+
 @end

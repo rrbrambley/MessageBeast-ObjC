@@ -298,6 +298,14 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID;
 
 /**
+ Obtain an array of AATTPendingFileAttachment objects associated with
+ a message.
+ 
+ @param messageID the id of the Message
+ */
+- (NSArray *)pendingFileAttachmentsForMessageWithID:(NSString *)messageID;
+
+/**
  Obtain a dictionary of AATTPendingMessageDeletion objects for messages in a specific channel.
  
  @param channelID the id of the channel from which pending message deletions should be obtained.
@@ -336,13 +344,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (void)deletePendingFileWithID:(NSString *)pendingFileID;
 
 /**
- Delete a pending OEmbed.
+ Delete a pending file attachment.
  
- @param pendingFileID the pending file associated with this OEmbed.
- @param messageID the id of the message to which the OEmbed was attached.
+ @param pendingFileID the pending file associated with this attachment.
+ @param messageID the id of the message to which the file was attached.
  @param channelID the id of the channel associated with the message
  */
-- (void)deletePendingOEmbedForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID;
+- (void)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID;
 
 /**
  Delete an action message spec.
