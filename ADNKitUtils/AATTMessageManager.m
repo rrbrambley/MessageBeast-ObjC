@@ -715,7 +715,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
                 for(AATTMessagePlus *messagePlus in messagePlusses) {
                     [messagePlus replacePendingFileAttachmentWithAnnotationForPendingFileWithID:pendingFileID file:file];
                     [self.database insertOrReplaceMessage:messagePlus];
-                    [self.database deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:messagePlus.message.messageID channelID:messagePlus.message.channelID];
+                    [self.database deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:messagePlus.message.messageID];
                 }
                 [self uploadPendingFileAttachmentsForMessagePlus:messagePlus completionBlock:completionBlock];
             } else {

@@ -746,7 +746,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         
         if(messagePlus.pendingFileAttachments.count > 0) {
             for(NSString *pendingFileID in [messagePlus.pendingFileAttachments allKeys]) {
-                [self deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:message.messageID channelID:message.channelID];
+                [self deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:message.messageID];
                 
                 //TODO: can multiple message plus objects use the same pending file Id?
                 //if so, we shouldn't do this here - must make sure no other MPs need it.
@@ -778,10 +778,10 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }];
 }
 
-- (void)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID {
-    static NSString *delete = @"DELETE FROM pending_oembeds WHERE pending_oembed_pending_file_id = ? AND pending_oembed_message_id = ? AND pending_oembed_channel_id = ?";
+- (void)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID {
+    static NSString *delete = @"DELETE FROM pending_file_attachments WHERE pending_file_attachment_file_id = ? AND pending_file_attachment_message_id = ?";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        if(![db executeUpdate:delete, pendingFileID, messageID, channelID]) {
+        if(![db executeUpdate:delete, pendingFileID, messageID]) {
             *rollback = YES;
         }
     }];

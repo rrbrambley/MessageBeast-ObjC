@@ -350,7 +350,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  @param messageID the id of the message to which the file was attached.
  @param channelID the id of the channel associated with the message
  */
-- (void)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID;
+- (void)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID;
 
 /**
  Delete an action message spec.
