@@ -90,6 +90,9 @@
 		E25DA2F71884635A001C09E1 /* AATTAnnotationInstances.h in Headers */ = {isa = PBXBuildFile; fileRef = E25DA2F51884635A001C09E1 /* AATTAnnotationInstances.h */; };
 		E25DA2F81884635A001C09E1 /* AATTAnnotationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E25DA2F61884635A001C09E1 /* AATTAnnotationInstances.m */; };
 		E25DA2F91884635A001C09E1 /* AATTAnnotationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E25DA2F61884635A001C09E1 /* AATTAnnotationInstances.m */; };
+		E25DA2FE1885D44F001C09E1 /* AATTPendingFileAttachment.h in Headers */ = {isa = PBXBuildFile; fileRef = E25DA2FC1885D44F001C09E1 /* AATTPendingFileAttachment.h */; };
+		E25DA2FF1885D44F001C09E1 /* AATTPendingFileAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = E25DA2FD1885D44F001C09E1 /* AATTPendingFileAttachment.m */; };
+		E25DA3001885D44F001C09E1 /* AATTPendingFileAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = E25DA2FD1885D44F001C09E1 /* AATTPendingFileAttachment.m */; };
 		E287DA1C184BB8D50035CE71 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */; };
 		E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA21184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m */; };
 		E287DA25184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E287DA24184CE9CA0035CE71 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
@@ -214,6 +217,8 @@
 		E24F29681869684000957D43 /* AATTChannelSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpec.m; sourceTree = "<group>"; };
 		E25DA2F51884635A001C09E1 /* AATTAnnotationInstances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTAnnotationInstances.h; sourceTree = "<group>"; };
 		E25DA2F61884635A001C09E1 /* AATTAnnotationInstances.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTAnnotationInstances.m; sourceTree = "<group>"; };
+		E25DA2FC1885D44F001C09E1 /* AATTPendingFileAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingFileAttachment.h; sourceTree = "<group>"; };
+		E25DA2FD1885D44F001C09E1 /* AATTPendingFileAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingFileAttachment.m; sourceTree = "<group>"; };
 		E287DA1A184BB8D50035CE71 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
 		E287DA1B184BB8D50035CE71 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
 		E287DA20184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKChannel+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
@@ -408,6 +413,8 @@
 				E2BA21511826CB5D0023363A /* AATTHashtagInstances.m */,
 				E2D2F72B185220B000A72B8B /* AATTPendingFile.h */,
 				E2D2F72C185220B000A72B8B /* AATTPendingFile.m */,
+				E25DA2FC1885D44F001C09E1 /* AATTPendingFileAttachment.h */,
+				E25DA2FD1885D44F001C09E1 /* AATTPendingFileAttachment.m */,
 				E24F2513185A736700957D43 /* AATTPendingMessageDeletion.h */,
 				E24F2514185A736700957D43 /* AATTPendingMessageDeletion.m */,
 				E23FCAE818750315009FFDFC /* AATTTargetWithActionChannelsSpecSet.h */,
@@ -541,6 +548,7 @@
 				E24F2934185CD97800957D43 /* FMDatabaseQueue.h in Headers */,
 				E24F2935185CD97800957D43 /* FMResultSet.h in Headers */,
 				E24F2936185CD97800957D43 /* AATTMessagePlus.h in Headers */,
+				E25DA2FE1885D44F001C09E1 /* AATTPendingFileAttachment.h in Headers */,
 				E24F2937185CD97800957D43 /* AATTDisplayLocation.h in Headers */,
 				E24F2938185CD97800957D43 /* AATTGeolocation.h in Headers */,
 				E24F2939185CD97800957D43 /* AATTBaseMessageInstances.h in Headers */,
@@ -674,6 +682,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E25DA3001885D44F001C09E1 /* AATTPendingFileAttachment.m in Sources */,
 				E20F6982187F082A0014D5EE /* AATTChannelSpec.m in Sources */,
 				E20F6983187F082A0014D5EE /* AATTChannelSpecSet.m in Sources */,
 				E20F6984187F082A0014D5EE /* AATTChannelRefreshResult.m in Sources */,
@@ -718,6 +727,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E25DA2FF1885D44F001C09E1 /* AATTPendingFileAttachment.m in Sources */,
 				E29A82CD1821AEBC0057245C /* AATTMessageManagerConfiguration.m in Sources */,
 				E287DA22184CE92F0035CE71 /* ANKChannel+AATTAnnotationHelper.m in Sources */,
 				E29A82ED1821B8AA0057245C /* FMDatabaseQueue.m in Sources */,
