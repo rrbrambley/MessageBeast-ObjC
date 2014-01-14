@@ -256,7 +256,11 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         NSString *channelID = message.channelID;
         
         [self.database deleteMessagePlus:messagePlus];
-        [[self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID] removeEntryWithKey:messageID];
+        
+        NSMutableOrderedDictionary *unsentChannelMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
+        if([unsentChannelMessages objectForKey:messageID]) {
+            [unsentChannelMessages removeEntryWithKey:messageID];
+        }
         
         [self didDeleteMessageWithID:messageID inChannelWithID:channelID];
         block(nil, nil);
