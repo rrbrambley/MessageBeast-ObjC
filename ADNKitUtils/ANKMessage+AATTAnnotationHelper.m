@@ -58,7 +58,7 @@
     NSInteger index = -1;
     for(NSUInteger i = 0; i < annotations.count; i++) {
         ANKAnnotation *annotation = [annotations objectAtIndex:i];
-        if([kANKCoreAnnotationEmbeddedMedia isEqualToString:annotation.type]) {
+        if([kANKCoreAnnotationAttachments isEqualToString:annotation.type]) {
             index = i;
             break;
         }
