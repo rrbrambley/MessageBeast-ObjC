@@ -147,6 +147,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (AATTMessagePlus *)messagePlusForMessageInChannelWithID:(NSString *)channelID messageID:(NSString *)messageID;
 
 /**
+ Obtain a set of message IDs corresponding to messages that are dependent a pending file.
+ 
+ @param pendingFileID
+ */
+- (NSSet *)messageIDsDependentOnPendingFileWithID:(NSString *)pendingFileID;
+
+/**
  Obtain all unsent AATTMessagePlus objects in the specified channel.
 
  Unlike the other message getters, this returns messages in chronological order

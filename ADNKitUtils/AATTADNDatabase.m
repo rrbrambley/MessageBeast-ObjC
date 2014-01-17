@@ -414,6 +414,19 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     return nil;
 }
 
+- (NSSet *)messageIDsDependentOnPendingFileWithID:(NSString *)pendingFileID {
+    static NSString *select = @"SELECT pending_file_attachment_message_id FROM pending_file_attachments WHERE pending_file_attachment_file_id = ?";
+    NSMutableSet *messageIDs = [NSMutableSet set];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, pendingFileID];
+        while([resultSet next]) {
+            [messageIDs addObject:[resultSet stringForColumnIndex:0]];
+        }
+    }];
+    return messageIDs;
+}
+
 - (NSOrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID {
     NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] init];
     
