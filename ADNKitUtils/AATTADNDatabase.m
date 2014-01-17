@@ -262,56 +262,16 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 }
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelId beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
-    
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:2];
     [args addObject:channelId];
     NSString *select = @"SELECT * FROM messages WHERE message_channel_id = ?";
     if(beforeDate) {
-        select = [NSString stringWithFormat:@"%@ %@", select, @" AND message_date < ?"];
+        select = [NSString stringWithFormat:@"%@ %@", select, @" AND CAST(message_date AS INTEGER) < ?"];
         [args addObject:[NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
     }
     
     select = [NSString stringWithFormat:@"%@ ORDER BY message_date DESC LIMIT %d", select, limit];
-    
-    __block NSMutableOrderedDictionary *messagePlusses = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:limit];
-    __block NSString *maxID = nil;
-    __block NSString *minID = nil;
-    
-    [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
-        
-        ANKMessage *m = nil;
-        while([resultSet next]) {
-            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
-            NSString *messageJSONString = [resultSet stringForColumnIndex:3];
-            NSString *messageText = [resultSet stringForColumnIndex:4];
-            BOOL isUnsent = [resultSet boolForColumnIndex:5];
-            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:6];
-            
-            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageJSONString];
-            m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
-            m.text = messageText;
-
-            AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
-            messagePlus.isUnsent = isUnsent;
-            messagePlus.sendAttemptsCount = sendAttemptsCount;
-            messagePlus.displayDate = date;
-            [messagePlusses setObject:messagePlus forKey:messageID];
-            
-            if(!maxID) {
-                maxID = messageID;
-            }
-        }
-        if(m) {
-            minID = m.messageID;
-        }
-    }];
-    
-    AATTMinMaxPair *minMaxPair = [[AATTMinMaxPair alloc] init];
-    minMaxPair.minID = minID;
-    minMaxPair.maxID = maxID;
-    return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
+    return [self messagesWithSelectStatement:select arguments:args];
 }
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID searchQuery:(NSString *)query {
@@ -343,10 +303,6 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 }
 
 - (AATTOrderedMessageBatch *)messagesWithIDs:(NSSet *)messageIDs {
-    __block NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] initWithCapacity:messageIDs.count];
-    __block NSString *maxID = nil;
-    __block NSString *minID = nil;
-    
     NSString *select = @"SELECT message_id, message_date, message_json, message_text, message_unsent, message_send_attempts FROM messages WHERE message_id IN (";
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:messageIDs.count];
     
@@ -365,41 +321,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     }
     select = [NSString stringWithFormat:@"%@ ) ORDER BY message_date DESC", select];
 
-    [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
-        
-        ANKMessage *m = nil;
-        while([resultSet next]) {
-            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
-            NSString *messageJSONString = [resultSet stringForColumnIndex:2];
-            NSString *messageText = [resultSet stringForColumnIndex:3];
-            BOOL isUnsent = [resultSet boolForColumnIndex:4];
-            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:5];
-            
-            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageJSONString];
-            m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
-            m.text = messageText;
-            
-            AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
-            messagePlus.isUnsent = isUnsent;
-            messagePlus.sendAttemptsCount = sendAttemptsCount;
-            messagePlus.displayDate = date;
-            [messagePlusses setObject:messagePlus forKey:messageID];
-            
-            if(!maxID) {
-                maxID = messageID;
-            }
-        }
-        if(m) {
-            minID = m.messageID;
-        }
-    }];
-    
-    AATTMinMaxPair *minMaxPair = [[AATTMinMaxPair alloc] init];
-    minMaxPair.minID = minID;
-    minMaxPair.maxID = maxID;
-    return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
+    return [self messagesWithSelectStatement:select arguments:args];
 }
 
 - (AATTMessagePlus *)messagePlusForMessageID:(NSString *)messageID {
@@ -451,6 +373,8 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             [messagePlusses setObject:messagePlus forKey:messageID];
         }
     }];
+    
+    [self populatePendingFileAttachmentsForMessagePlusses:messagePlusses.allObjects];
     
     return messagePlusses;
 }
@@ -842,6 +766,69 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 }
 
 #pragma mark - Private Stuff
+
+- (AATTOrderedMessageBatch *)messagesWithSelectStatement:(NSString *)selectStatement arguments:(NSArray *)arguments {
+    NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] init];
+    NSMutableArray *unsentMessagePlusses = [NSMutableArray array];
+    __block NSString *maxID = nil;
+    __block NSString *minID = nil;
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:selectStatement withArgumentsInArray:arguments];
+        
+        ANKMessage *m = nil;
+        while([resultSet next]) {
+            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
+            NSString *messageJSONString = [resultSet stringForColumnIndex:3];
+            NSString *messageText = [resultSet stringForColumnIndex:4];
+            BOOL isUnsent = [resultSet boolForColumnIndex:5];
+            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:6];
+            
+            NSDictionary *messageJSON = [self JSONDictionaryWithString:messageJSONString];
+            m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
+            m.text = messageText;
+            
+            AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
+            messagePlus.isUnsent = isUnsent;
+            messagePlus.sendAttemptsCount = sendAttemptsCount;
+            messagePlus.displayDate = date;
+            [messagePlusses setObject:messagePlus forKey:messageID];
+            
+            if(!maxID) {
+                maxID = messageID;
+            }
+            
+            //this is just for efficiency
+            //if it is already sent, then we don't need to try to populate pending
+            //file attachments.
+            if(isUnsent) {
+                [unsentMessagePlusses addObject:messagePlus];
+            }
+        }
+        if(m) {
+            minID = m.messageID;
+        }
+    }];
+    
+    [self populatePendingFileAttachmentsForMessagePlusses:unsentMessagePlusses];
+    
+    AATTMinMaxPair *minMaxPair = [[AATTMinMaxPair alloc] init];
+    minMaxPair.minID = minID;
+    minMaxPair.maxID = maxID;
+    return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
+}
+
+- (void)populatePendingFileAttachmentsForMessagePlusses:(NSArray *)messagePlusses {
+    for(AATTMessagePlus *messagePlus in messagePlusses) {
+        NSArray *pendingAttachments = [self pendingFileAttachmentsForMessageWithID:messagePlus.message.messageID];
+        NSMutableDictionary *pendingAttachmentsDictionary = [NSMutableDictionary dictionaryWithCapacity:pendingAttachments.count];
+        for(AATTPendingFileAttachment *attachment in pendingAttachments) {
+            [pendingAttachmentsDictionary setObject:attachment forKey:attachment.pendingFileID];
+        }
+        messagePlus.pendingFileAttachments = pendingAttachmentsDictionary;
+    }
+}
 
 - (BOOL)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID db:(FMDatabase *)db {
     static NSString *delete = @"DELETE FROM pending_file_attachments WHERE pending_file_attachment_file_id = ? AND pending_file_attachment_message_id = ?";
