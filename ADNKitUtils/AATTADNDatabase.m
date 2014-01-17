@@ -311,7 +311,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         [args addObject:messageID];
         
         NSString *append;
-        if(index > 1) {
+        if(index > 0) {
             append = @", ?";
         } else {
             append = @" ?";
