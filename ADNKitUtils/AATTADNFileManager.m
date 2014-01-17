@@ -17,6 +17,7 @@
 @interface AATTADNFileManager ()
 @property AATTADNDatabase *database;
 @property ANKClient *client;
+@property NSMutableSet *filesInProgress;
 @end
 
 @implementation AATTADNFileManager
@@ -26,6 +27,7 @@
     if(self) {
         self.client = client;
         self.database = [AATTADNDatabase sharedInstance];
+        self.filesInProgress = [NSMutableSet set];
     }
     return self;
 }
@@ -53,32 +55,40 @@
 }
 
 - (void)uploadPendingFileWithID:(NSString *)pendingFileID completionBlock:(AATTFileManagerCompletionBlock)completionBlock {
-    AATTPendingFile *pendingFile = [self pendingFileWithID:pendingFileID];
-    ANKFile *file = pendingFile.file;
-    
-#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
-    ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
-    
-    [assetslibrary assetForURL:pendingFile.URL resultBlock:^(ALAsset *asset) {
-        ALAssetRepresentation *representation = [asset defaultRepresentation];
-        CGImageRef ref = [representation fullResolutionImage];
-        NSData *data = UIImageJPEGRepresentation([UIImage imageWithCGImage:ref], 1);
+    if(![self.filesInProgress containsObject:pendingFileID]) {
+        [self.filesInProgress addObject:pendingFileID];
         
-        [self.client createFile:file withData:data completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-            if(!error) {
-                [self.database deletePendingFile:pendingFile];
-                completionBlock(responseObject, meta, error);
-            } else {
-                [pendingFile incrementSendAttemptsCount];
-                [self.database insertOrReplacePendingFile:pendingFile];
-                completionBlock(nil, meta, error);
-            }
+        AATTPendingFile *pendingFile = [self pendingFileWithID:pendingFileID];
+        ANKFile *file = pendingFile.file;
+        
+#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
+        ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
+        
+        [assetslibrary assetForURL:pendingFile.URL resultBlock:^(ALAsset *asset) {
+            ALAssetRepresentation *representation = [asset defaultRepresentation];
+            CGImageRef ref = [representation fullResolutionImage];
+            NSData *data = UIImageJPEGRepresentation([UIImage imageWithCGImage:ref], 1);
+            
+            [self.client createFile:file withData:data completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+                [self.filesInProgress removeObject:pendingFileID];
+                if(!error) {
+                    [self.database deletePendingFile:pendingFile];
+                    completionBlock(responseObject, meta, error);
+                } else {
+                    [pendingFile incrementSendAttemptsCount];
+                    [self.database insertOrReplacePendingFile:pendingFile];
+                    completionBlock(nil, meta, error);
+                }
+            }];
+        } failureBlock:^(NSError *error) {
+            [self.filesInProgress removeObject:pendingFileID];
+            completionBlock(nil, nil, error);
         }];
-    } failureBlock:^(NSError *error) {
-        completionBlock(nil, nil, error);
-    }];
 #endif
-    
+        
+//TODO: handle OS X
+        
+    }
 }
 
 @end
