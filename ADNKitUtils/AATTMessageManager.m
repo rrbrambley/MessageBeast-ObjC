@@ -387,7 +387,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         NSString *pendingFileID = messagePlus.pendingFileAttachments.allKeys.objectEnumerator.nextObject;
         NSMutableSet *messagesNeedingPendingFile = [self existingOrNewMessageIDsNeedingPendingFileSetForFileWithID:pendingFileID];
         [messagesNeedingPendingFile addObject:messagePlus.message.messageID];
-        [self uploadPendingFileAttachmentWithPendingFileID:pendingFileID];
+        [self uploadPendingFileAttachmentWithPendingFileID:pendingFileID forMessageInChannelWithID:messagePlus.message.channelID];
         return;
     } else {
         ANKMessage *message = messagePlus.message.copy;
@@ -712,7 +712,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
  dependent on the pending files will be candidates to be sent upon file upload. All candidates
  that are left with 0 pending file attachments will be sent via sendUnsentMessagesInChannelWithID:
  */
-- (void)uploadPendingFileAttachmentWithPendingFileID:(NSString *)pendingFileID {
+- (void)uploadPendingFileAttachmentWithPendingFileID:(NSString *)pendingFileID forMessageInChannelWithID:(NSString *)channelID {
     [self.fileManager uploadPendingFileWithID:pendingFileID completionBlock:^(ANKFile *file, ANKAPIResponseMeta *meta, NSError *error) {
         if(error || !file) {
             return;
@@ -721,7 +721,10 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesWithIDs:messageIDs];
         NSOrderedDictionary *messagesNeedingFile = orderedMessageBatch.messagePlusses;
         
-        NSMutableSet *otherChannelIDsWithMessagesToSend = [NSMutableSet set];
+        //always add the provided channel ID so that we can finish the
+        //sending of the unsent message in that channel.
+        NSMutableSet *channelIDsWithMessagesToSend = [NSMutableSet set];
+        [channelIDsWithMessagesToSend addObject:channelID];
         
         for(AATTMessagePlus *messagePlusNeedingFile in messagesNeedingFile.allObjects) {
             NSAssert(messagePlusNeedingFile.pendingFileAttachments, @"AATTMessagePlus is missing pending file attachments");
@@ -743,13 +746,13 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
             [self.database deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:messageID];
             
             if(messagePlusNeedingFile.pendingFileAttachments.count == 0) {
-                [otherChannelIDsWithMessagesToSend addObject:channelID];
+                [channelIDsWithMessagesToSend addObject:channelID];
             }
         }
         
         [self.messageIDsNeedingPendingFiles removeObjectForKey:pendingFileID];
         
-        for(NSString *channelID in otherChannelIDsWithMessagesToSend) {
+        for(NSString *channelID in channelIDsWithMessagesToSend) {
             [self sendUnsentMessagesInChannelWithID:channelID];
         }
     }];
