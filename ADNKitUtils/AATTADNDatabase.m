@@ -729,6 +729,12 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     NSNumber *messageID = [self numberIDForStringMessageID:message.messageID];
     
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        //
+        //IMPORTANT:
+        //when adding stuff to be deleted, make sure you don't call
+        //other methods that attempt to get inTransaction
+        //this will cause a deadlock
+        //
         [db executeUpdate:deleteSearchableMessageText, messageID];
         [db executeUpdate:deleteSearchableLocationInstance, messageID];
         [db executeUpdate:deleteAnnotationInstances, messageID];
@@ -758,11 +764,11 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         
         if(messagePlus.pendingFileAttachments.count > 0) {
             for(NSString *pendingFileID in [messagePlus.pendingFileAttachments allKeys]) {
-                [self deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:message.messageID];
+                [self deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:message.messageID db:db];
                 
                 //TODO: can multiple message plus objects use the same pending file Id?
                 //if so, we shouldn't do this here - must make sure no other MPs need it.
-                [self deletePendingFileWithID:pendingFileID];
+                [self deletePendingFileWithID:pendingFileID db:db];
             }
         }
     }];
@@ -782,18 +788,16 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 }
 
 - (void)deletePendingFileWithID:(NSString *)pendingFileID {
-    static NSString *delete = @"DELETE FROM pending_files WHERE pending_file_id = ?";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        if(![db executeUpdate:delete, pendingFileID]) {
+        if(![self deletePendingFileWithID:pendingFileID db:db]) {
             *rollback = YES;
         }
     }];
 }
 
 - (void)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID {
-    static NSString *delete = @"DELETE FROM pending_file_attachments WHERE pending_file_attachment_file_id = ? AND pending_file_attachment_message_id = ?";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        if(![db executeUpdate:delete, pendingFileID, messageID]) {
+        if(![self deletePendingFileAttachmentForPendingFileWithID:pendingFileID messageID:messageID db:db]) {
             *rollback = YES;
         }
     }];
@@ -838,6 +842,16 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 }
 
 #pragma mark - Private Stuff
+
+- (BOOL)deletePendingFileAttachmentForPendingFileWithID:(NSString *)pendingFileID messageID:(NSString *)messageID db:(FMDatabase *)db {
+    static NSString *delete = @"DELETE FROM pending_file_attachments WHERE pending_file_attachment_file_id = ? AND pending_file_attachment_message_id = ?";
+    return [db executeUpdate:delete, pendingFileID, messageID];
+}
+
+- (BOOL)deletePendingFileWithID:(NSString *)pendingFileID db:(FMDatabase *)db {
+    static NSString *delete = @"DELETE FROM pending_files WHERE pending_file_id = ?";
+    return [db executeUpdate:delete, pendingFileID];
+}
 
 - (void)insertSearchableMessageText:(NSNumber *)messageID channelID:(NSString *)channelID text:(NSString *)text withDB:(FMDatabase *)db {
     if(text) {
