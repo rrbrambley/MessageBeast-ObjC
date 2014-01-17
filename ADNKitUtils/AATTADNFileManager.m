@@ -59,6 +59,8 @@
         [self.filesInProgress addObject:pendingFileID];
         
         AATTPendingFile *pendingFile = [self pendingFileWithID:pendingFileID];
+        NSAssert(pendingFile, @"pending file with id %@ doesn't exist in database", pendingFileID);
+        
         ANKFile *file = pendingFile.file;
         
 #ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
