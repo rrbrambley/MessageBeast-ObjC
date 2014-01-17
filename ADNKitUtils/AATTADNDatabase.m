@@ -303,7 +303,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 }
 
 - (AATTOrderedMessageBatch *)messagesWithIDs:(NSSet *)messageIDs {
-    NSString *select = @"SELECT message_id, message_date, message_json, message_text, message_unsent, message_send_attempts FROM messages WHERE message_id IN (";
+    NSString *select = @"SELECT * FROM messages WHERE message_id IN (";
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:messageIDs.count];
     
     NSUInteger index = 0;
@@ -779,6 +779,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         ANKMessage *m = nil;
         while([resultSet next]) {
             NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
+            //1 is channel; will come from json
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
             NSString *messageJSONString = [resultSet stringForColumnIndex:3];
             NSString *messageText = [resultSet stringForColumnIndex:4];
