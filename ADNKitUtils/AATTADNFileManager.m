@@ -88,6 +88,8 @@
         
 //TODO: handle OS X
         
+    } else {
+        completionBlock(nil, nil, nil);
     }
 }
 
