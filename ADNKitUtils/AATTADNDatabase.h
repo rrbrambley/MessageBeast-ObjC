@@ -131,20 +131,18 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 /**
  Obtain a batch of persisted AATTMessagePlus objects in reverse chronological order.
 
- @param channelID the ID of the channel containing the messages.
  @param messageIDs the IDs of the messages that should be retrieved.
  @return An ordered batch of messages
  */
-- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
+- (AATTOrderedMessageBatch *)messagesWithIDs:(NSSet *)messageIDs;
 
 /**
  Obtain an AATTMessagePlus object
  
- @param channelID the ID of the channel containing the message.
  @param messageID the ID of the message that should be retrieved.
  @return An AATTMessagePlus
  */
-- (AATTMessagePlus *)messagePlusForMessageInChannelWithID:(NSString *)channelID messageID:(NSString *)messageID;
+- (AATTMessagePlus *)messagePlusForMessageID:(NSString *)messageID;
 
 /**
  Obtain a set of message IDs corresponding to messages that are dependent a pending file.

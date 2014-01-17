@@ -139,7 +139,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 }
 
 - (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
-    AATTOrderedMessageBatch *messageBatch = [self.database messagesInChannelWithID:channelID messageIDs:messageIDs];
+    AATTOrderedMessageBatch *messageBatch = [self.database messagesWithIDs:messageIDs];
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
     [self performLookupsOnMessagePlusses:messagePlusses.allObjects persistIfEnabled:NO];
     return messagePlusses;

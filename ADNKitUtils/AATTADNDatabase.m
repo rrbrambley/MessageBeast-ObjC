@@ -325,7 +325,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         }
     }];
     
-    return [self messagesInChannelWithID:channelID messageIDs:messageIDs];
+    return [self messagesWithIDs:messageIDs];
 }
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID displayLocationSearchQuery:(NSString *)displayLocationSearchQuery {
@@ -339,19 +339,18 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         }
     }];
     
-    return [self messagesInChannelWithID:channelID messageIDs:messageIDs];
+    return [self messagesWithIDs:messageIDs];
 }
 
-- (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
+- (AATTOrderedMessageBatch *)messagesWithIDs:(NSSet *)messageIDs {
     __block NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] initWithCapacity:messageIDs.count];
     __block NSString *maxID = nil;
     __block NSString *minID = nil;
     
-    NSString *select = @"SELECT message_id, message_date, message_json, message_text, message_unsent, message_send_attempts FROM messages WHERE message_channel_id = ? AND message_id IN (";
-    NSMutableArray *args = [NSMutableArray arrayWithCapacity:(messageIDs.count + 1)];
-    [args addObject:channelID];
+    NSString *select = @"SELECT message_id, message_date, message_json, message_text, message_unsent, message_send_attempts FROM messages WHERE message_id IN (";
+    NSMutableArray *args = [NSMutableArray arrayWithCapacity:messageIDs.count];
     
-    NSUInteger index = 1;
+    NSUInteger index = 0;
     for(NSString *messageID in messageIDs) {
         [args addObject:messageID];
         
@@ -403,10 +402,10 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
 }
 
-- (AATTMessagePlus *)messagePlusForMessageInChannelWithID:(NSString *)channelID messageID:(NSString *)messageID {
+- (AATTMessagePlus *)messagePlusForMessageID:(NSString *)messageID {
     NSMutableSet *messageIDs = [NSMutableSet setWithCapacity:1];
     [messageIDs addObject:messageID];
-    AATTOrderedMessageBatch *messageBatch = [self messagesInChannelWithID:channelID messageIDs:messageIDs];
+    AATTOrderedMessageBatch *messageBatch = [self messagesWithIDs:messageIDs];
     NSOrderedDictionary *orderedMessages = messageBatch.messagePlusses;
     if(orderedMessages.count == 1) {
         return [orderedMessages lastObject];

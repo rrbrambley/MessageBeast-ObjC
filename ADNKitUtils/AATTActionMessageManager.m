@@ -155,8 +155,7 @@
 //
 - (void)deleteActionMessageUsingSpecFromArray:(NSArray *)actionMessageSpecs atIndex:(NSUInteger)currentIndex completionBlock:(void (^)(void))completionBlock {
     AATTActionMessageSpec *spec = [actionMessageSpecs objectAtIndex:currentIndex];
-    NSString *actionChannelID = spec.actionChannelID;
-    AATTMessagePlus *actionMessagePlus = [self.database messagePlusForMessageInChannelWithID:actionChannelID messageID:spec.actionMessageID];
+    AATTMessagePlus *actionMessagePlus = [self.database messagePlusForMessageID:spec.actionMessageID];
     
     [self.messageManager deleteMessage:actionMessagePlus completionBlock:^(ANKAPIResponseMeta *meta, NSError *error) {
         if(error) {
