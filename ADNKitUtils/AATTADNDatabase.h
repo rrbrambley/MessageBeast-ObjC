@@ -155,6 +155,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  Obtain a set of message IDs corresponding to messages that are dependent a pending file.
  
  @param pendingFileID
+ @return a set of message IDs corresponding to messages that are dependent a pending file.
  */
 - (NSSet *)messageIDsDependentOnPendingFileWithID:(NSString *)pendingFileID;
 
@@ -291,6 +292,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  Obtain an array of AATTActionMessageSpec objects.
  
  @param targetMessageIDs the target message ids of the action message specs to be obtained.
+ @return an array of AATTActionMessageSpec objects corresponding to the provided targetMessageIDs
  */
 - (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs;
 
@@ -299,6 +301,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  
  @param targetMessageIDs the target message ids of the action message specs to be obtained.
  @param actionChannelID the id of the action channel associated with the action message specs of interest
+ @return an array of AATTActionMessageSpec objects.
  */
 - (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs inActionChannelWithID:(NSString *)actionChannelID;
 
@@ -306,6 +309,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  Obtain a pending file.
  
  @param pendingFileID the id of the pending file
+ @return an AATTPendingFile corresponding to the file with the provided id that has yet to be uploaded
  */
 - (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID;
 
@@ -314,6 +318,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  a message.
  
  @param messageID the id of the Message
+ @return an array of AATTPendingFileAttachment objects associated with
+ the message with the provided id.
  */
 - (NSArray *)pendingFileAttachmentsForMessageWithID:(NSString *)messageID;
 
