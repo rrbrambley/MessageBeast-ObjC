@@ -773,6 +773,15 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
     }];
 }
 
+- (void)deletePendingFileDeletionForFileWithID:(NSString *)fileID {
+    static NSString *delete = @"DELETE FROM pending_file_deletions WHERE pending_file_deletion_file_id = ?";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if(![db executeUpdate:delete, fileID]) {
+            *rollback = YES;
+        }
+    }];
+}
+
 #pragma mark - Other
 
 - (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID {

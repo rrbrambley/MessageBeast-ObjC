@@ -393,6 +393,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  */
 - (void)deleteActionMessageSpecWithTargetMessageID:(NSString *)targetMessageID actionChannelID:(NSString *)actionChannelID;
 
+/**
+ Delete a pending file deletion.
+ 
+ @param fileID the id of the file that was pending deletion.
+ */
+- (void)deletePendingFileDeletionForFileWithID:(NSString *)fileID;
+
 #pragma mark - Other
 
 /**
