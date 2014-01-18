@@ -118,7 +118,7 @@
             ANKAnnotation *annotation = [ANKAnnotation oembedAnnotationForFile:file];
             NSMutableArray *annotations = [NSMutableArray arrayWithCapacity:(self.message.annotations.count + 1)];
             if(self.message.annotations) {
-                [annotations addObjectsFromArray:annotations];
+                [annotations addObjectsFromArray:self.message.annotations];
             }
             [annotations addObject:annotation];
             self.message.annotations = annotations;
