@@ -30,6 +30,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus;
 
 /**
+ Insert an ANKPlace into the database.
+ 
+ @param place the ANKPlace to insert
+ */
+- (void)insertOrReplacePlace:(ANKPlace *)place;
+
+/**
  Use the AATTDisplayLocation associated with a message to store a display location instance.
  Display location instances are unique combinations of (name + message id + latitude + longitude).
 
@@ -289,6 +296,27 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude;
 
 /**
+ Obtain the persisted ANKPlace with the provided factual ID.
+ 
+ @param factualID the ID of the ANKPlace
+ @return the ANKPlace with the provided factualID, or nil of none exists.
+ */
+- (ANKPlace *)placeForFactualID:(NSString *)factualID;
+
+/**
+ Obtain an array of places whose geocoordinates match the provided coordinates to a certain precision.
+ 
+ ANKPlace latitude and longitude are stored by rounding to three decimal places. By providing a less
+ precise AATTLocationPrecision, you can lookup by locations that match, e.g. 2 or 1 decimal places.
+ 
+ @param latitude the latitude to match
+ @param longitude the longitude to match
+ @return an array of ANKPlace objects whose latitude and longitude match when the provided AATTLocationPrecision
+ is applied.
+ */
+- (NSArray *)placesForLatitude:(double)latitude longitude:(double)longitude locationPrecision:(AATTLocationPrecision)locationPrecision;
+
+/**
  Obtain an array of AATTActionMessageSpec objects.
  
  @param targetMessageIDs the target message ids of the action message specs to be obtained.
@@ -399,6 +427,18 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  @param fileID the id of the file that was pending deletion.
  */
 - (void)deletePendingFileDeletionForFileWithID:(NSString *)fileID;
+
+/**
+ Delete a place.
+ 
+ @param the factual ID of the place to delete
+ */
+- (void)deletePlaceWithFactualID:(NSString *)factualID;
+
+/**
+ Delete all persisted places.
+ */
+- (void)deletePlaces;
 
 #pragma mark - Other
 

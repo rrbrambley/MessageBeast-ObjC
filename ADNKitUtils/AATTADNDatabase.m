@@ -66,6 +66,8 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 
 static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT EXISTS pending_file_deletions (pending_file_deletion_file_id TEXT PRIMARY KEY)";
 
+static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places (place_factual_id TEXT PRIMARY KEY, place_name TEXT NOT NULL, place_rounded_latitude REAL NOT NULL, place_rounded_longitude REAL NOT NULL, place_json TEXT NOT NULL)";
+
 #pragma mark - Initializer
 
 - (id)init {
@@ -89,6 +91,7 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
             [db executeUpdate:kCreatePendingFileAttachmentsTable];
             [db executeUpdate:kCreateActionMessageSpecsTable];
             [db executeUpdate:kCreatePendingFileDeletionsTable];
+            [db executeUpdate:kCreatePlacesTable];
             
             //
             //"IF NOT EXISTS" not available for VIRTUAL / FTS tables.
@@ -124,7 +127,7 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
         
         message.text = nil;
         
-        NSString *jsonString = [self JSONStringWithMessage:message];
+        NSString *jsonString = [self JSONStringWithANKResource:message];
         NSNumber *unsent = [NSNumber numberWithBool:messagePlus.isUnsent];
         NSNumber *sendAttempts = [NSNumber numberWithInteger:messagePlus.sendAttemptsCount];
         
@@ -156,6 +159,18 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
         double longitude = [self roundValue:geolocation.longitude decimalPlaces:3];
         if(![db executeUpdate:insertOrReplaceGeolocation, geolocation.locality, geolocation.subLocality, [NSNumber numberWithDouble:latitude], [NSNumber numberWithDouble:longitude]]) {
             *rollBack = YES;
+        }
+    }];
+}
+
+- (void)insertOrReplacePlace:(ANKPlace *)place {
+    static NSString *insert = @"INSERT OR REPLACE INTO places (place_factual_id, place_name, place_rounded_latitude, place_rounded_longitude, place_json) VALUES(?, ?, ?, ?, ?)";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        NSNumber *latitude = [NSNumber numberWithDouble:[self roundValue:place.latitude decimalPlaces:3]];
+        NSNumber *longitude = [NSNumber numberWithDouble:[self roundValue:place.longitude decimalPlaces:3]];
+        NSString *placeJSONString = [self JSONStringWithANKResource:place];
+        if(![db executeUpdate:insert, place.factualID, place.name, latitude, longitude, placeJSONString]) {
+            *rollback = YES;
         }
     }];
 }
@@ -445,12 +460,7 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
     static NSString *select = @"SELECT location_message_id FROM location_instances WHERE location_channel_id = ? AND location_name = ? AND location_latitude LIKE ? AND location_longitude LIKE ? ORDER BY location_date DESC";
     
     AATTDisplayLocationInstances *instances = [[AATTDisplayLocationInstances alloc] initWithDisplayLocation:displayLocation];
-    NSUInteger precisionDigits = 3;
-    if(locationPrecision == AATTLocationPrecisionOneThousandMeters) {
-        precisionDigits = 2;
-    } else if(locationPrecision == AATTLocationPrecisionTenThousandMeters) {
-        precisionDigits = 1;
-    }
+    NSUInteger precisionDigits = [self precisionDigitsForLocationPrecision:locationPrecision];
     
     NSString *latArg = [NSString stringWithFormat:@"%@%%", [self roundedValueAsString:displayLocation.latitude decimalPlaces:precisionDigits]];
     NSString *longArg = [NSString stringWithFormat:@"%@%%", [self roundedValueAsString:displayLocation.longitude decimalPlaces:precisionDigits]];
@@ -545,6 +555,42 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
         }
     }];
     return geolocation;
+}
+
+- (ANKPlace *)placeForFactualID:(NSString *)factualID {
+    static NSString *select = @"SELECT place_json FROM places WHERE place_factual_id = ? LIMIT 1";
+    __block ANKPlace *place = nil;
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, factualID];
+        if([resultSet next]) {
+            NSString *json = [resultSet stringForColumnIndex:0];
+            NSDictionary *placeJSON = [self JSONDictionaryWithString:json];
+            place = [[ANKPlace alloc] initWithJSONDictionary:placeJSON];
+            [resultSet close];
+        }
+    }];
+    return place;
+}
+
+- (NSArray *)placesForLatitude:(double)latitude longitude:(double)longitude locationPrecision:(AATTLocationPrecision)locationPrecision {
+    static NSString *select = @"SELECT place_json FROM places WHERE place_rounded_latitude LIKE ? AND place_rounded_longitude LIKE ?";
+    NSMutableArray *places = [NSMutableArray array];
+    
+    NSUInteger precisionDigits = [self precisionDigitsForLocationPrecision:locationPrecision];
+    
+    NSString *latArg = [NSString stringWithFormat:@"%@%%", [self roundedValueAsString:latitude decimalPlaces:precisionDigits]];
+    NSString *longArg = [NSString stringWithFormat:@"%@%%", [self roundedValueAsString:longitude decimalPlaces:precisionDigits]];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select, latArg, longArg];
+        while([resultSet next]) {
+            NSString *json = [resultSet stringForColumnIndex:0];
+            NSDictionary *placeJSON = [self JSONDictionaryWithString:json];
+            [places addObject:[[ANKPlace alloc] initWithJSONDictionary:placeJSON]];
+        }
+    }];
+    
+    return places;
 }
 
 - (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs {
@@ -782,6 +828,24 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
     }];
 }
 
+- (void)deletePlaceWithFactualID:(NSString *)factualID {
+    static NSString *delete = @"DELETE FROM places WHERE place_factual_id = ?";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if(![db executeUpdate:delete, factualID]) {
+            *rollback = YES;
+        }
+    }];
+}
+
+- (void)deletePlaces {
+    static NSString *delete = @"DELETE FROM places";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if(![db executeUpdate:delete]) {
+            *rollback = YES;
+        }
+    }];
+}
+
 #pragma mark - Other
 
 - (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID {
@@ -892,9 +956,9 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
     }
 }
 
-- (NSString *)JSONStringWithMessage:(ANKMessage *)message {
+- (NSString *)JSONStringWithANKResource:(ANKResource *)resource {
     NSError *error;
-    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:message.JSONDictionary options:0 error:&error];
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:resource.JSONDictionary options:0 error:&error];
     if(!JSONData) {
         NSLog(@"Got an error: %@", error);
         return nil;
@@ -936,6 +1000,16 @@ static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT 
         [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     }
     return [formatter numberFromString:messageID];
+}
+
+- (NSUInteger)precisionDigitsForLocationPrecision:(AATTLocationPrecision)locationPrecision {
+    NSUInteger precisionDigits = 3;
+    if(locationPrecision == AATTLocationPrecisionOneThousandMeters) {
+        precisionDigits = 2;
+    } else if(locationPrecision == AATTLocationPrecisionTenThousandMeters) {
+        precisionDigits = 1;
+    }
+    return precisionDigits;
 }
 
 @end
