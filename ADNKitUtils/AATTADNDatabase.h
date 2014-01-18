@@ -87,6 +87,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  */
 - (void)insertOrReplacePendingFile:(AATTPendingFile *)pendingFile;
 
+/**
+ Insert a pending file deletion.
+ 
+ @param fileID the id of the file to be deleted at a later time.
+ */
+- (void)insertOrReplacePendingFileDeletion:(NSString *)fileID;
+
 #pragma mark - Retrieval
 
 /**
@@ -314,8 +321,16 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  Obtain a dictionary of AATTPendingMessageDeletion objects for messages in a specific channel.
  
  @param channelID the id of the channel from which pending message deletions should be obtained.
+ @return a dictionary of AATTPendingMessageDeletion objects for messages in a specific channel.
  */
 - (NSDictionary *)pendingMessageDeletionsInChannelWithID:(NSString *)channelID;
+
+/**
+ Get the ids of all files that are pending deletion.
+ 
+ @return an NSSet containing the ids of all files that are pending deletion.
+ */
+- (NSSet *)pendingFileDeletions;
 
 #pragma mark - Deletion
 

@@ -64,6 +64,8 @@ static NSString *const kCreatePendingFileAttachmentsTable = @"CREATE TABLE IF NO
 
 static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EXISTS action_messages (action_message_id TEXT PRIMARY KEY, action_message_channel_id TEXT NOT NULL, action_message_target_message_id TEXT NOT NULL, action_message_target_channel_id TEXT NOT NULL)";
 
+static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT EXISTS pending_file_deletions (pending_file_deletion_file_id TEXT PRIMARY KEY)";
+
 #pragma mark - Initializer
 
 - (id)init {
@@ -86,6 +88,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
             [db executeUpdate:kCreatePendingFilesTable];
             [db executeUpdate:kCreatePendingFileAttachmentsTable];
             [db executeUpdate:kCreateActionMessageSpecsTable];
+            [db executeUpdate:kCreatePendingFileDeletionsTable];
             
             //
             //"IF NOT EXISTS" not available for VIRTUAL / FTS tables.
@@ -249,6 +252,16 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         NSNumber *public = [NSNumber numberWithBool:pendingFile.isPublic];
         NSNumber *sendAttempts = [NSNumber numberWithInteger:pendingFile.sendAttemptsCount];
         if(![db executeUpdate:insert, pendingFile.ID, pendingFile.URL.description, pendingFile.type, pendingFile.name, pendingFile.mimeType, pendingFile.kind, public, sendAttempts]) {
+            *rollback = YES;
+            return;
+        }
+    }];
+}
+
+- (void)insertOrReplacePendingFileDeletion:(NSString *)fileID {
+    static NSString *insert = @"INSERT OR REPLACE INTO pending_file_deletions (pending_file_deletion_file_id) VALUES (?)";
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if(![db executeUpdate:insert, fileID]) {
             *rollback = YES;
             return;
         }
@@ -637,6 +650,21 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
         }
     }];
     return deletions;
+}
+
+- (NSSet *)pendingFileDeletions {
+    static NSString *select = @"SELECT * FROM pending_file_deletions";
+    NSMutableSet *pendingFileDeletions = [NSMutableSet set];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select];
+        while([resultSet next]) {
+            NSString *fileID = [resultSet stringForColumnIndex:0];
+            [pendingFileDeletions addObject:fileID];
+        }
+    }];
+    
+    return pendingFileDeletions;
 }
 
 #pragma mark - Deletion
