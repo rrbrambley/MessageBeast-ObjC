@@ -250,6 +250,10 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 #pragma mark - Delete Messages
 
 - (void)deleteMessage:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {
+    [self deleteMessage:messagePlus deleteAssociatedFiles:NO completionBlock:block];
+}
+
+- (void)deleteMessage:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {
     if(messagePlus.isUnsent) {
         ANKMessage *message = messagePlus.message;
         NSString *messageID = message.messageID;
@@ -265,22 +269,34 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         [self didDeleteMessageWithID:messageID inChannelWithID:channelID];
         block(nil, nil);
     } else {
-        void (^delete)(void) = ^void(void) {
+        void (^finishDelete)(void) = ^void(void) {
             [self.database deleteMessagePlus:messagePlus];
             [self didDeleteMessageWithID:messagePlus.message.messageID inChannelWithID:messagePlus.message.channelID];
         };
         
-        [self.client deleteMessage:messagePlus.message completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-            if(!error) {
-                delete();
-                [self.database deletePendingMessageDeletionForMessageWithID:messagePlus.message.messageID];
-                block(meta, error);
-            } else {
-                delete();
-                [self.database insertOrReplacePendingDeletionForMessagePlus:messagePlus deleteAssociatedFiles:NO];
-                block(meta, error);
-            }
-        }];
+        void (^deleteMessage)(void) = ^void(void) {
+            [self.client deleteMessage:messagePlus.message completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+                if(!error) {
+                    finishDelete();
+                    [self.database deletePendingMessageDeletionForMessageWithID:messagePlus.message.messageID];
+                    block(meta, error);
+                } else {
+                    finishDelete();
+                    [self.database insertOrReplacePendingDeletionForMessagePlus:messagePlus deleteAssociatedFiles:NO];
+                    block(meta, error);
+                }
+            }];
+        };
+        
+        if(deleteAssociatedFiles) {
+            NSArray *OEmbedAnnotations = [messagePlus.message annotationsWithType:kANKCoreAnnotationEmbeddedMedia];
+            [self deleteOEmbedAtIndex:0 OEmbedAnnoations:OEmbedAnnotations completionBlock:^{
+                NSArray *attachmentAnnotations = [messagePlus.message annotationsWithType:kANKCoreAnnotationAttachments];
+                [self deleteAttachmentsListAtIndex:0 attachmentsAnnotations:attachmentAnnotations completionBlock:deleteMessage];
+            }];
+        } else {
+            deleteMessage();
+        }
     }
 }
 
@@ -562,6 +578,62 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     }
     
     return [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:YES messageFilter:messageFilter completionBlock:block filterBlock:filterBlock];
+}
+
+- (void)deleteOEmbedAtIndex:(NSUInteger)index OEmbedAnnoations:(NSArray *)OEmbedAnnotations completionBlock:(void (^)(void))block {
+    if(index >= OEmbedAnnotations.count) {
+        block();
+    } else {
+        ANKAnnotation *OEmbed = [OEmbedAnnotations objectAtIndex:index];
+        NSString *fileID = [OEmbed.value objectForKey:@"file_id"];
+        if(fileID) {
+            [self.client deleteFileWithID:fileID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+                if(!error) {
+                    [self deleteOEmbedAtIndex:index+1 OEmbedAnnoations:OEmbedAnnotations completionBlock:block];
+                } else {
+                    NSLog(@"error deleting file from OEmbed; %@", error);
+                    if(meta.statusCode != ANKHTTPStatusForbidden) {
+                        [self.database insertOrReplacePendingFileDeletion:fileID];
+                    }
+                    [self deleteOEmbedAtIndex:index+1 OEmbedAnnoations:OEmbedAnnotations completionBlock:block];
+                }
+            }];
+        } else {
+            [self deleteOEmbedAtIndex:index+1 OEmbedAnnoations:OEmbedAnnotations completionBlock:block];
+        }
+    }
+}
+
+- (void)deleteAttachmentsListAtIndex:(NSUInteger)index attachmentsAnnotations:(NSArray *)attachmentsAnnotations completionBlock:(void (^)(void))block {
+    if(index >= attachmentsAnnotations.count) {
+        block();
+    } else {
+        ANKAnnotation *attachment = [attachmentsAnnotations objectAtIndex:index];
+        NSArray *fileList = [attachment.value objectForKey:@"net.app.core.file_list"];
+        [self deleteFromAttachmentsAnnotationFileAtIndex:0 fileList:fileList completionBlock:^{
+            [self deleteAttachmentsListAtIndex:index+1 attachmentsAnnotations:attachmentsAnnotations completionBlock:block];
+        }];
+    }
+}
+
+- (void)deleteFromAttachmentsAnnotationFileAtIndex:(NSUInteger)index fileList:(NSArray *)fileList completionBlock:(void (^)(void))block {
+    if(index >= fileList.count) {
+        block();
+    } else {
+        NSDictionary *file = [fileList objectAtIndex:index];
+        NSString *fileID = [file objectForKey:@"file_id"];
+        [self.client deleteFileWithID:fileID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                [self deleteFromAttachmentsAnnotationFileAtIndex:index+1 fileList:fileList completionBlock:block];
+            } else {
+                NSLog(@"error deleting file from attachments list; %@", error);
+                if(meta.statusCode != ANKHTTPStatusForbidden) {
+                    [self.database insertOrReplacePendingFileDeletion:fileID];
+                }
+                [self deleteFromAttachmentsAnnotationFileAtIndex:index+1 fileList:fileList completionBlock:block];
+            }
+        }];
+    }
 }
 
 - (BOOL)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID keepInMemory:(BOOL)keepInMemory messageFilter:(AATTMessageFilter)filter completionBlock:(AATTMessageManagerCompletionBlock)block filterBlock:(AATTMessageManagerCompletionWithFilterBlock)filterBlock {

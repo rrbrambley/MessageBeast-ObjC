@@ -298,14 +298,29 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
 #pragma mark - Delete Messages
 
-/*
+/**
  Delete a message. If the provided message is unsent, it will simply be deleted form the local sqlite database and
  no server request is required.
+ 
+ If the message has attached files or OEmbeds, they will not be deleted.
  
  @param messagePlus the AATTMessagePlus associated with the message to be deleted.
  @param block the AATTMessageManagerDeletionCompletionBlock to act as a callback upon deletion.
  */
 - (void)deleteMessage:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerDeletionCompletionBlock)block;
+
+/**
+ Delete a message. If the provided message is unsent, it will simply be deleted form the local sqlite database and
+ no server request is required.
+ 
+ Associated files, namely file attachments and OEmbeds (that are backed by App.net File objects) can be deleted by
+ passing YES for the value of deleteAssociatedFiles.
+ 
+ @param messagePlus the AATTMessagePlus associated with the message to be deleted.
+ @param deleteAssociatedFiles YES if file attachments and OEmbed files should be deleted, NO otherwise.
+ @param block the AATTMessageManagerDeletionCompletionBlock to act as a callback upon deletion.
+ */
+- (void)deleteMessage:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles completionBlock:(AATTMessageManagerDeletionCompletionBlock)block;
 
 #pragma mark - Create Messages
 
