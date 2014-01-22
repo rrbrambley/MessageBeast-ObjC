@@ -66,7 +66,7 @@
     NSDictionary *parameters = @{@"include_channel_annotations" : @"1"};
     [self fetchCurrentUserSubscribedChannelsWithTypes:@[kChannelTypeAction] parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
-            ANKChannel *theChannel = [self newestActionChannelInArray:responseObject actionType:actionType targetChannelID:targetChannelID];
+            ANKChannel *theChannel = [self oldestActionChannelInArray:responseObject actionType:actionType targetChannelID:targetChannelID];
             if(theChannel) {
                 [AATTADNPersistence saveActionChannel:theChannel actionType:actionType targetChannelID:targetChannelID];
             }
@@ -138,12 +138,12 @@
     }];
 }
 
-- (ANKChannel *)newestActionChannelInArray:(NSArray *)channels actionType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID {
-    ANKChannel *newest = nil;
+- (ANKChannel *)oldestActionChannelInArray:(NSArray *)channels actionType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID {
+    ANKChannel *oldest = nil;
     if(channels.count == 1) {
         ANKChannel *candidate = [channels objectAtIndex:0];
         if([self isMatchingActionChannel:candidate actionType:actionType targetChannelID:targetChannelID]) {
-            newest = candidate;
+            oldest = candidate;
         }
     } else if(channels.count > 1) {
         for(ANKChannel *channel in channels) {
@@ -153,15 +153,15 @@
                    channel.writers.canCurrentUser &&
                    !channel.writers.canAnyUser &&
                    !channel.readers.isImmutable) {
-                    if(!newest ||
-                       channel.channelID.integerValue < newest.channelID.integerValue) {
-                        newest = channel;
+                    if(!oldest ||
+                       channel.channelID.integerValue < oldest.channelID.integerValue) {
+                        oldest = channel;
                     }
                 }
             }
         }
     }
-    return newest;
+    return oldest;
 }
 
 - (BOOL)isMatchingActionChannel:(ANKChannel *)actionChannel actionType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID {
