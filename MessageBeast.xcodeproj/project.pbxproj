@@ -1,0 +1,865 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E218EF961890936B00ADC609 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF551890936B00ADC609 /* AATTActionMessageManager.m */; };
+		E218EF971890936B00ADC609 /* AATTActionMessageSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF571890936B00ADC609 /* AATTActionMessageSpec.m */; };
+		E218EF981890936B00ADC609 /* AATTADNDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF591890936B00ADC609 /* AATTADNDatabase.m */; };
+		E218EF991890936B00ADC609 /* AATTADNFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF5B1890936B00ADC609 /* AATTADNFileManager.m */; };
+		E218EF9A1890936B00ADC609 /* AATTADNPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF5D1890936B00ADC609 /* AATTADNPersistence.m */; };
+		E218EF9B1890936B00ADC609 /* AATTAnnotationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF5F1890936B00ADC609 /* AATTAnnotationInstances.m */; };
+		E218EF9C1890936B00ADC609 /* AATTBaseMessageInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF611890936B00ADC609 /* AATTBaseMessageInstances.m */; };
+		E218EF9D1890936B00ADC609 /* AATTChannelRefreshResult.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF631890936B00ADC609 /* AATTChannelRefreshResult.m */; };
+		E218EF9E1890936B00ADC609 /* AATTChannelRefreshResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF651890936B00ADC609 /* AATTChannelRefreshResultSet.m */; };
+		E218EF9F1890936B00ADC609 /* AATTChannelSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF671890936B00ADC609 /* AATTChannelSpec.m */; };
+		E218EFA01890936B00ADC609 /* AATTChannelSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF691890936B00ADC609 /* AATTChannelSpecSet.m */; };
+		E218EFA11890936B00ADC609 /* AATTChannelSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF6B1890936B00ADC609 /* AATTChannelSyncManager.m */; };
+		E218EFA21890936B00ADC609 /* AATTDisplayLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF6D1890936B00ADC609 /* AATTDisplayLocation.m */; };
+		E218EFA31890936B00ADC609 /* AATTDisplayLocationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF6F1890936B00ADC609 /* AATTDisplayLocationInstances.m */; };
+		E218EFA41890936B00ADC609 /* AATTFilteredMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF711890936B00ADC609 /* AATTFilteredMessageBatch.m */; };
+		E218EFA51890936B00ADC609 /* AATTGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF731890936B00ADC609 /* AATTGeolocation.m */; };
+		E218EFA61890936B00ADC609 /* AATTHashtagInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF751890936B00ADC609 /* AATTHashtagInstances.m */; };
+		E218EFA71890936B00ADC609 /* AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF771890936B00ADC609 /* AATTMessageManager.m */; };
+		E218EFA81890936B00ADC609 /* AATTMessageManagerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF791890936B00ADC609 /* AATTMessageManagerConfiguration.m */; };
+		E218EFA91890936B00ADC609 /* AATTMessagePlus.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF7B1890936B00ADC609 /* AATTMessagePlus.m */; };
+		E218EFAA1890936B00ADC609 /* AATTMinMaxPair.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF7D1890936B00ADC609 /* AATTMinMaxPair.m */; };
+		E218EFAB1890936B00ADC609 /* AATTOrderedMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF7F1890936B00ADC609 /* AATTOrderedMessageBatch.m */; };
+		E218EFAC1890936B00ADC609 /* AATTPendingFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF811890936B00ADC609 /* AATTPendingFile.m */; };
+		E218EFAD1890936B00ADC609 /* AATTPendingFileAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF831890936B00ADC609 /* AATTPendingFileAttachment.m */; };
+		E218EFAE1890936B00ADC609 /* AATTPendingMessageDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF851890936B00ADC609 /* AATTPendingMessageDeletion.m */; };
+		E218EFAF1890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF871890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.m */; };
+		E218EFB01890936B00ADC609 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF8A1890936B00ADC609 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
+		E218EFB11890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF8C1890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.m */; };
+		E218EFB21890936B00ADC609 /* ANKClient+AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF8E1890936B00ADC609 /* ANKClient+AATTMessageManager.m */; };
+		E218EFB31890936B00ADC609 /* ANKClient+PrivateChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF901890936B00ADC609 /* ANKClient+PrivateChannel.m */; };
+		E218EFB41890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF921890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.m */; };
+		E218EFB51890936B00ADC609 /* NSObject+AATTPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF951890936B00ADC609 /* NSObject+AATTPersistence.m */; };
+		E218EFB61890944100ADC609 /* MessageBeast.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = E218EF881890936B00ADC609 /* MessageBeast.h */; };
+		E24F2885185BBED000957D43 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2884185BBED000957D43 /* Cocoa.framework */; };
+		E24F28FF185BC04500957D43 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F28FE185BC04500957D43 /* libsqlite3.dylib */; };
+		E24F2900185BC05900957D43 /* ADNKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71D1817FDC3009DECDB /* ADNKit.framework */; };
+		E24F2902185BC07400957D43 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2901185BC07400957D43 /* CoreServices.framework */; };
+		E24F2904185BC07E00957D43 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2903185BC07E00957D43 /* SystemConfiguration.framework */; };
+		E24F2906185BC08400957D43 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2905185BC08400957D43 /* Foundation.framework */; };
+		E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83201822FF090057245C /* NSOrderedDictionary.m */; };
+		E24F2908185BC13100957D43 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E01821B8AA0057245C /* FMDatabase.m */; };
+		E24F2909185BC13100957D43 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */; };
+		E24F290A185BC13100957D43 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E41821B8AA0057245C /* FMDatabasePool.m */; };
+		E24F290B185BC13100957D43 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */; };
+		E24F290C185BC13100957D43 /* fmdb.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E71821B8AA0057245C /* fmdb.m */; };
+		E24F290D185BC13100957D43 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E91821B8AA0057245C /* FMResultSet.m */; };
+		E24F2930185CD97800957D43 /* NSOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A831F1822FF090057245C /* NSOrderedDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2931185CD97800957D43 /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82DF1821B8AA0057245C /* FMDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E11821B8AA0057245C /* FMDatabaseAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E31821B8AA0057245C /* FMDatabasePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2934185CD97800957D43 /* FMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E51821B8AA0057245C /* FMDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E24F2935185CD97800957D43 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E81821B8AA0057245C /* FMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E01821B8AA0057245C /* FMDatabase.m */; };
+		E29A82EB1821B8AA0057245C /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */; };
+		E29A82EC1821B8AA0057245C /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E41821B8AA0057245C /* FMDatabasePool.m */; };
+		E29A82ED1821B8AA0057245C /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */; };
+		E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E91821B8AA0057245C /* FMResultSet.m */; };
+		E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E29A82F01821B8E10057245C /* libsqlite3.dylib */; };
+		E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83201822FF090057245C /* NSOrderedDictionary.m */; };
+		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
+		E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
+		E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A72A18180190009DECDB /* SystemConfiguration.framework */; };
+		E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A7231818004A009DECDB /* MobileCoreServices.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E24F28AB185BBEFD00957D43 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5DC3710716E0808C00190862;
+			remoteInfo = "ADNKit-OSX";
+		};
+		E2E5A7181817FDC3009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5DC370D916E0805E00190862;
+			remoteInfo = "ADNKit-iOS";
+		};
+		E2E5A71A1817FDC3009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2592B80916FF8410004573FF;
+			remoteInfo = "ADNKit-AFNetworking-iOS";
+		};
+		E2E5A71C1817FDC3009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5DC3710816E0808C00190862;
+			remoteInfo = "ADNKit-OSX";
+		};
+		E2E5A71E1817FDC3009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2592B7A016FCED64004573FF;
+			remoteInfo = ADNKitTests;
+		};
+		E2E5A7201817FDE4009DECDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2592B7C416FF8410004573FF;
+			remoteInfo = "ADNKit-AFNetworking-iOS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E2E5A6D41817FBF9009DECDB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				E218EFB61890944100ADC609 /* MessageBeast.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		E218EF541890936B00ADC609 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
+		E218EF551890936B00ADC609 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
+		E218EF561890936B00ADC609 /* AATTActionMessageSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageSpec.h; sourceTree = "<group>"; };
+		E218EF571890936B00ADC609 /* AATTActionMessageSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageSpec.m; sourceTree = "<group>"; };
+		E218EF581890936B00ADC609 /* AATTADNDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTADNDatabase.h; sourceTree = "<group>"; };
+		E218EF591890936B00ADC609 /* AATTADNDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTADNDatabase.m; sourceTree = "<group>"; };
+		E218EF5A1890936B00ADC609 /* AATTADNFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTADNFileManager.h; sourceTree = "<group>"; };
+		E218EF5B1890936B00ADC609 /* AATTADNFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTADNFileManager.m; sourceTree = "<group>"; };
+		E218EF5C1890936B00ADC609 /* AATTADNPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTADNPersistence.h; sourceTree = "<group>"; };
+		E218EF5D1890936B00ADC609 /* AATTADNPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTADNPersistence.m; sourceTree = "<group>"; };
+		E218EF5E1890936B00ADC609 /* AATTAnnotationInstances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTAnnotationInstances.h; sourceTree = "<group>"; };
+		E218EF5F1890936B00ADC609 /* AATTAnnotationInstances.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTAnnotationInstances.m; sourceTree = "<group>"; };
+		E218EF601890936B00ADC609 /* AATTBaseMessageInstances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTBaseMessageInstances.h; sourceTree = "<group>"; };
+		E218EF611890936B00ADC609 /* AATTBaseMessageInstances.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTBaseMessageInstances.m; sourceTree = "<group>"; };
+		E218EF621890936B00ADC609 /* AATTChannelRefreshResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelRefreshResult.h; sourceTree = "<group>"; };
+		E218EF631890936B00ADC609 /* AATTChannelRefreshResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelRefreshResult.m; sourceTree = "<group>"; };
+		E218EF641890936B00ADC609 /* AATTChannelRefreshResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelRefreshResultSet.h; sourceTree = "<group>"; };
+		E218EF651890936B00ADC609 /* AATTChannelRefreshResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelRefreshResultSet.m; sourceTree = "<group>"; };
+		E218EF661890936B00ADC609 /* AATTChannelSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSpec.h; sourceTree = "<group>"; };
+		E218EF671890936B00ADC609 /* AATTChannelSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpec.m; sourceTree = "<group>"; };
+		E218EF681890936B00ADC609 /* AATTChannelSpecSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSpecSet.h; sourceTree = "<group>"; };
+		E218EF691890936B00ADC609 /* AATTChannelSpecSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSpecSet.m; sourceTree = "<group>"; };
+		E218EF6A1890936B00ADC609 /* AATTChannelSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTChannelSyncManager.h; sourceTree = "<group>"; };
+		E218EF6B1890936B00ADC609 /* AATTChannelSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTChannelSyncManager.m; sourceTree = "<group>"; };
+		E218EF6C1890936B00ADC609 /* AATTDisplayLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTDisplayLocation.h; sourceTree = "<group>"; };
+		E218EF6D1890936B00ADC609 /* AATTDisplayLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTDisplayLocation.m; sourceTree = "<group>"; };
+		E218EF6E1890936B00ADC609 /* AATTDisplayLocationInstances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTDisplayLocationInstances.h; sourceTree = "<group>"; };
+		E218EF6F1890936B00ADC609 /* AATTDisplayLocationInstances.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTDisplayLocationInstances.m; sourceTree = "<group>"; };
+		E218EF701890936B00ADC609 /* AATTFilteredMessageBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTFilteredMessageBatch.h; sourceTree = "<group>"; };
+		E218EF711890936B00ADC609 /* AATTFilteredMessageBatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTFilteredMessageBatch.m; sourceTree = "<group>"; };
+		E218EF721890936B00ADC609 /* AATTGeolocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTGeolocation.h; sourceTree = "<group>"; };
+		E218EF731890936B00ADC609 /* AATTGeolocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTGeolocation.m; sourceTree = "<group>"; };
+		E218EF741890936B00ADC609 /* AATTHashtagInstances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTHashtagInstances.h; sourceTree = "<group>"; };
+		E218EF751890936B00ADC609 /* AATTHashtagInstances.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTHashtagInstances.m; sourceTree = "<group>"; };
+		E218EF761890936B00ADC609 /* AATTMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManager.h; sourceTree = "<group>"; };
+		E218EF771890936B00ADC609 /* AATTMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManager.m; sourceTree = "<group>"; };
+		E218EF781890936B00ADC609 /* AATTMessageManagerConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessageManagerConfiguration.h; sourceTree = "<group>"; };
+		E218EF791890936B00ADC609 /* AATTMessageManagerConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessageManagerConfiguration.m; sourceTree = "<group>"; };
+		E218EF7A1890936B00ADC609 /* AATTMessagePlus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMessagePlus.h; sourceTree = "<group>"; };
+		E218EF7B1890936B00ADC609 /* AATTMessagePlus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMessagePlus.m; sourceTree = "<group>"; };
+		E218EF7C1890936B00ADC609 /* AATTMinMaxPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTMinMaxPair.h; sourceTree = "<group>"; };
+		E218EF7D1890936B00ADC609 /* AATTMinMaxPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTMinMaxPair.m; sourceTree = "<group>"; };
+		E218EF7E1890936B00ADC609 /* AATTOrderedMessageBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTOrderedMessageBatch.h; sourceTree = "<group>"; };
+		E218EF7F1890936B00ADC609 /* AATTOrderedMessageBatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTOrderedMessageBatch.m; sourceTree = "<group>"; };
+		E218EF801890936B00ADC609 /* AATTPendingFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingFile.h; sourceTree = "<group>"; };
+		E218EF811890936B00ADC609 /* AATTPendingFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingFile.m; sourceTree = "<group>"; };
+		E218EF821890936B00ADC609 /* AATTPendingFileAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingFileAttachment.h; sourceTree = "<group>"; };
+		E218EF831890936B00ADC609 /* AATTPendingFileAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingFileAttachment.m; sourceTree = "<group>"; };
+		E218EF841890936B00ADC609 /* AATTPendingMessageDeletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTPendingMessageDeletion.h; sourceTree = "<group>"; };
+		E218EF851890936B00ADC609 /* AATTPendingMessageDeletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTPendingMessageDeletion.m; sourceTree = "<group>"; };
+		E218EF861890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTTargetWithActionChannelsSpecSet.h; sourceTree = "<group>"; };
+		E218EF871890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTTargetWithActionChannelsSpecSet.m; sourceTree = "<group>"; };
+		E218EF881890936B00ADC609 /* MessageBeast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageBeast.h; path = MessageBeast/MessageBeast.h; sourceTree = "<group>"; };
+		E218EF891890936B00ADC609 /* ANKAnnotatableResource+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKAnnotatableResource+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
+		E218EF8A1890936B00ADC609 /* ANKAnnotatableResource+AATTAnnotationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKAnnotatableResource+AATTAnnotationHelper.m"; sourceTree = "<group>"; };
+		E218EF8B1890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKChannel+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
+		E218EF8C1890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKChannel+AATTAnnotationHelper.m"; sourceTree = "<group>"; };
+		E218EF8D1890936B00ADC609 /* ANKClient+AATTMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKClient+AATTMessageManager.h"; sourceTree = "<group>"; };
+		E218EF8E1890936B00ADC609 /* ANKClient+AATTMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKClient+AATTMessageManager.m"; sourceTree = "<group>"; };
+		E218EF8F1890936B00ADC609 /* ANKClient+PrivateChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKClient+PrivateChannel.h"; sourceTree = "<group>"; };
+		E218EF901890936B00ADC609 /* ANKClient+PrivateChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKClient+PrivateChannel.m"; sourceTree = "<group>"; };
+		E218EF911890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKMessage+AATTAnnotationHelper.h"; sourceTree = "<group>"; };
+		E218EF921890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKMessage+AATTAnnotationHelper.m"; sourceTree = "<group>"; };
+		E218EF931890936B00ADC609 /* MessageBeast-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MessageBeast-Prefix.pch"; sourceTree = "<group>"; };
+		E218EF941890936B00ADC609 /* NSObject+AATTPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+AATTPersistence.h"; sourceTree = "<group>"; };
+		E218EF951890936B00ADC609 /* NSObject+AATTPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+AATTPersistence.m"; sourceTree = "<group>"; };
+		E24F2883185BBED000957D43 /* MessageBeast-OSX.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "MessageBeast-OSX.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E24F2884185BBED000957D43 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		E24F2887185BBED000957D43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		E24F2888185BBED000957D43 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		E24F2889185BBED000957D43 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		E24F28FC185BC03A00957D43 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/lib/libsqlite3.0.dylib; sourceTree = DEVELOPER_DIR; };
+		E24F28FE185BC04500957D43 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
+		E24F2901185BC07400957D43 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
+		E24F2903185BC07E00957D43 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		E24F2905185BC08400957D43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		E29A82DF1821B8AA0057245C /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = fmdb/src/FMDatabase.h; sourceTree = "<group>"; };
+		E29A82E01821B8AA0057245C /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = fmdb/src/FMDatabase.m; sourceTree = "<group>"; };
+		E29A82E11821B8AA0057245C /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseAdditions.h; path = fmdb/src/FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseAdditions.m; path = fmdb/src/FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		E29A82E31821B8AA0057245C /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabasePool.h; path = fmdb/src/FMDatabasePool.h; sourceTree = "<group>"; };
+		E29A82E41821B8AA0057245C /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabasePool.m; path = fmdb/src/FMDatabasePool.m; sourceTree = "<group>"; };
+		E29A82E51821B8AA0057245C /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseQueue.h; path = fmdb/src/FMDatabaseQueue.h; sourceTree = "<group>"; };
+		E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseQueue.m; path = fmdb/src/FMDatabaseQueue.m; sourceTree = "<group>"; };
+		E29A82E71821B8AA0057245C /* fmdb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fmdb.m; path = fmdb/src/fmdb.m; sourceTree = "<group>"; };
+		E29A82E81821B8AA0057245C /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/src/FMResultSet.h; sourceTree = "<group>"; };
+		E29A82E91821B8AA0057245C /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/src/FMResultSet.m; sourceTree = "<group>"; };
+		E29A82F01821B8E10057245C /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		E29A831F1822FF090057245C /* NSOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSOrderedDictionary.h; path = NSOrderedDictionary/NSOrderedDictionary.h; sourceTree = "<group>"; };
+		E29A83201822FF090057245C /* NSOrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSOrderedDictionary.m; path = NSOrderedDictionary/NSOrderedDictionary.m; sourceTree = "<group>"; };
+		E2E5A6D61817FBF9009DECDB /* libMessageBeast.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMessageBeast.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2E5A6D91817FBF9009DECDB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		E2E5A6E71817FBF9009DECDB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		E2E5A6EA1817FBF9009DECDB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADNKit.xcodeproj; path = ADNKit/ADNKit.xcodeproj; sourceTree = "<group>"; };
+		E2E5A7231818004A009DECDB /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		E2E5A72518180053009DECDB /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		E2E5A72718180058009DECDB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		E2E5A72A18180190009DECDB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E24F2880185BBED000957D43 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E24F2906185BC08400957D43 /* Foundation.framework in Frameworks */,
+				E24F2904185BC07E00957D43 /* SystemConfiguration.framework in Frameworks */,
+				E24F2902185BC07400957D43 /* CoreServices.framework in Frameworks */,
+				E24F2900185BC05900957D43 /* ADNKit.framework in Frameworks */,
+				E24F28FF185BC04500957D43 /* libsqlite3.dylib in Frameworks */,
+				E24F2885185BBED000957D43 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2E5A6D31817FBF9009DECDB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */,
+				E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */,
+				E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */,
+				E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */,
+				E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E218EF531890936B00ADC609 /* MessageBeast */ = {
+			isa = PBXGroup;
+			children = (
+				E2A2C0761890986B00DE1CF0 /* Categories */,
+				E2A2C0731890985700DE1CF0 /* DB */,
+				E2A2C0751890986300DE1CF0 /* Manager */,
+				E2A2C0701890985100DE1CF0 /* Model */,
+				E2A2C0741890985C00DE1CF0 /* Persistence */,
+				E218EF931890936B00ADC609 /* MessageBeast-Prefix.pch */,
+			);
+			path = MessageBeast;
+			sourceTree = "<group>";
+		};
+		E24F2886185BBED000957D43 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E24F2887185BBED000957D43 /* Foundation.framework */,
+				E24F2888185BBED000957D43 /* CoreData.framework */,
+				E24F2889185BBED000957D43 /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		E29A82DE1821B8960057245C /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				E29A82DF1821B8AA0057245C /* FMDatabase.h */,
+				E29A82E01821B8AA0057245C /* FMDatabase.m */,
+				E29A82E11821B8AA0057245C /* FMDatabaseAdditions.h */,
+				E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */,
+				E29A82E31821B8AA0057245C /* FMDatabasePool.h */,
+				E29A82E41821B8AA0057245C /* FMDatabasePool.m */,
+				E29A82E51821B8AA0057245C /* FMDatabaseQueue.h */,
+				E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */,
+				E29A82E71821B8AA0057245C /* fmdb.m */,
+				E29A82E81821B8AA0057245C /* FMResultSet.h */,
+				E29A82E91821B8AA0057245C /* FMResultSet.m */,
+			);
+			name = FMDB;
+			sourceTree = "<group>";
+		};
+		E29A831E1822FEE90057245C /* NSOrderedDictionary */ = {
+			isa = PBXGroup;
+			children = (
+				E29A831F1822FF090057245C /* NSOrderedDictionary.h */,
+				E29A83201822FF090057245C /* NSOrderedDictionary.m */,
+			);
+			name = NSOrderedDictionary;
+			sourceTree = "<group>";
+		};
+		E2A2C0701890985100DE1CF0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E218EF561890936B00ADC609 /* AATTActionMessageSpec.h */,
+				E218EF571890936B00ADC609 /* AATTActionMessageSpec.m */,
+				E218EF5E1890936B00ADC609 /* AATTAnnotationInstances.h */,
+				E218EF5F1890936B00ADC609 /* AATTAnnotationInstances.m */,
+				E218EF601890936B00ADC609 /* AATTBaseMessageInstances.h */,
+				E218EF611890936B00ADC609 /* AATTBaseMessageInstances.m */,
+				E218EF621890936B00ADC609 /* AATTChannelRefreshResult.h */,
+				E218EF631890936B00ADC609 /* AATTChannelRefreshResult.m */,
+				E218EF641890936B00ADC609 /* AATTChannelRefreshResultSet.h */,
+				E218EF651890936B00ADC609 /* AATTChannelRefreshResultSet.m */,
+				E218EF661890936B00ADC609 /* AATTChannelSpec.h */,
+				E218EF671890936B00ADC609 /* AATTChannelSpec.m */,
+				E218EF681890936B00ADC609 /* AATTChannelSpecSet.h */,
+				E218EF691890936B00ADC609 /* AATTChannelSpecSet.m */,
+				E218EF6C1890936B00ADC609 /* AATTDisplayLocation.h */,
+				E218EF6D1890936B00ADC609 /* AATTDisplayLocation.m */,
+				E218EF6E1890936B00ADC609 /* AATTDisplayLocationInstances.h */,
+				E218EF6F1890936B00ADC609 /* AATTDisplayLocationInstances.m */,
+				E218EF701890936B00ADC609 /* AATTFilteredMessageBatch.h */,
+				E218EF711890936B00ADC609 /* AATTFilteredMessageBatch.m */,
+				E218EF721890936B00ADC609 /* AATTGeolocation.h */,
+				E218EF731890936B00ADC609 /* AATTGeolocation.m */,
+				E218EF741890936B00ADC609 /* AATTHashtagInstances.h */,
+				E218EF751890936B00ADC609 /* AATTHashtagInstances.m */,
+				E218EF7A1890936B00ADC609 /* AATTMessagePlus.h */,
+				E218EF7B1890936B00ADC609 /* AATTMessagePlus.m */,
+				E218EF801890936B00ADC609 /* AATTPendingFile.h */,
+				E218EF811890936B00ADC609 /* AATTPendingFile.m */,
+				E218EF821890936B00ADC609 /* AATTPendingFileAttachment.h */,
+				E218EF831890936B00ADC609 /* AATTPendingFileAttachment.m */,
+				E218EF841890936B00ADC609 /* AATTPendingMessageDeletion.h */,
+				E218EF851890936B00ADC609 /* AATTPendingMessageDeletion.m */,
+				E218EF861890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.h */,
+				E218EF871890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		E2A2C0731890985700DE1CF0 /* DB */ = {
+			isa = PBXGroup;
+			children = (
+				E218EF581890936B00ADC609 /* AATTADNDatabase.h */,
+				E218EF591890936B00ADC609 /* AATTADNDatabase.m */,
+				E218EF7E1890936B00ADC609 /* AATTOrderedMessageBatch.h */,
+				E218EF7F1890936B00ADC609 /* AATTOrderedMessageBatch.m */,
+			);
+			name = DB;
+			sourceTree = "<group>";
+		};
+		E2A2C0741890985C00DE1CF0 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				E218EF5C1890936B00ADC609 /* AATTADNPersistence.h */,
+				E218EF5D1890936B00ADC609 /* AATTADNPersistence.m */,
+			);
+			name = Persistence;
+			sourceTree = "<group>";
+		};
+		E2A2C0751890986300DE1CF0 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				E218EF541890936B00ADC609 /* AATTActionMessageManager.h */,
+				E218EF551890936B00ADC609 /* AATTActionMessageManager.m */,
+				E218EF5A1890936B00ADC609 /* AATTADNFileManager.h */,
+				E218EF5B1890936B00ADC609 /* AATTADNFileManager.m */,
+				E218EF6A1890936B00ADC609 /* AATTChannelSyncManager.h */,
+				E218EF6B1890936B00ADC609 /* AATTChannelSyncManager.m */,
+				E218EF761890936B00ADC609 /* AATTMessageManager.h */,
+				E218EF771890936B00ADC609 /* AATTMessageManager.m */,
+				E218EF781890936B00ADC609 /* AATTMessageManagerConfiguration.h */,
+				E218EF791890936B00ADC609 /* AATTMessageManagerConfiguration.m */,
+				E218EF7C1890936B00ADC609 /* AATTMinMaxPair.h */,
+				E218EF7D1890936B00ADC609 /* AATTMinMaxPair.m */,
+			);
+			name = Manager;
+			sourceTree = "<group>";
+		};
+		E2A2C0761890986B00DE1CF0 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				E218EF891890936B00ADC609 /* ANKAnnotatableResource+AATTAnnotationHelper.h */,
+				E218EF8A1890936B00ADC609 /* ANKAnnotatableResource+AATTAnnotationHelper.m */,
+				E218EF8B1890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.h */,
+				E218EF8C1890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.m */,
+				E218EF8D1890936B00ADC609 /* ANKClient+AATTMessageManager.h */,
+				E218EF8E1890936B00ADC609 /* ANKClient+AATTMessageManager.m */,
+				E218EF8F1890936B00ADC609 /* ANKClient+PrivateChannel.h */,
+				E218EF901890936B00ADC609 /* ANKClient+PrivateChannel.m */,
+				E218EF911890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.h */,
+				E218EF921890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.m */,
+				E218EF941890936B00ADC609 /* NSObject+AATTPersistence.h */,
+				E218EF951890936B00ADC609 /* NSObject+AATTPersistence.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		E2E5A6CD1817FBF9009DECDB = {
+			isa = PBXGroup;
+			children = (
+				E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */,
+				E218EF881890936B00ADC609 /* MessageBeast.h */,
+				E218EF531890936B00ADC609 /* MessageBeast */,
+				E29A831E1822FEE90057245C /* NSOrderedDictionary */,
+				E29A82DE1821B8960057245C /* FMDB */,
+				E2E5A6D81817FBF9009DECDB /* Frameworks */,
+				E2E5A6D71817FBF9009DECDB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E2E5A6D71817FBF9009DECDB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E2E5A6D61817FBF9009DECDB /* libMessageBeast.a */,
+				E24F2883185BBED000957D43 /* MessageBeast-OSX.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E2E5A6D81817FBF9009DECDB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E24F2905185BC08400957D43 /* Foundation.framework */,
+				E24F2903185BC07E00957D43 /* SystemConfiguration.framework */,
+				E24F2901185BC07400957D43 /* CoreServices.framework */,
+				E24F28FE185BC04500957D43 /* libsqlite3.dylib */,
+				E24F28FC185BC03A00957D43 /* libsqlite3.0.dylib */,
+				E29A82F01821B8E10057245C /* libsqlite3.dylib */,
+				E2E5A72A18180190009DECDB /* SystemConfiguration.framework */,
+				E2E5A72718180058009DECDB /* CoreLocation.framework */,
+				E2E5A72518180053009DECDB /* CFNetwork.framework */,
+				E2E5A7231818004A009DECDB /* MobileCoreServices.framework */,
+				E2E5A6D91817FBF9009DECDB /* Foundation.framework */,
+				E2E5A6E71817FBF9009DECDB /* XCTest.framework */,
+				E2E5A6EA1817FBF9009DECDB /* UIKit.framework */,
+				E24F2884185BBED000957D43 /* Cocoa.framework */,
+				E24F2886185BBED000957D43 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E2E5A7121817FDC3009DECDB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E2E5A7191817FDC3009DECDB /* libADNKit-iOS.a */,
+				E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */,
+				E2E5A71D1817FDC3009DECDB /* ADNKit.framework */,
+				E2E5A71F1817FDC3009DECDB /* ADNKitTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		E24F2881185BBED000957D43 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E24F2930185CD97800957D43 /* NSOrderedDictionary.h in Headers */,
+				E24F2931185CD97800957D43 /* FMDatabase.h in Headers */,
+				E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */,
+				E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */,
+				E24F2934185CD97800957D43 /* FMDatabaseQueue.h in Headers */,
+				E24F2935185CD97800957D43 /* FMResultSet.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		E24F2882185BBED000957D43 /* MessageBeast-OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E24F28A9185BBED100957D43 /* Build configuration list for PBXNativeTarget "MessageBeast-OSX" */;
+			buildPhases = (
+				E24F287F185BBED000957D43 /* Sources */,
+				E24F2880185BBED000957D43 /* Frameworks */,
+				E24F2881185BBED000957D43 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E24F28AC185BBEFD00957D43 /* PBXTargetDependency */,
+			);
+			name = "MessageBeast-OSX";
+			productName = "ADNKitUtils-OSX";
+			productReference = E24F2883185BBED000957D43 /* MessageBeast-OSX.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E2E5A6D51817FBF9009DECDB /* MessageBeast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E2E5A6F91817FBF9009DECDB /* Build configuration list for PBXNativeTarget "MessageBeast" */;
+			buildPhases = (
+				E2E5A6D21817FBF9009DECDB /* Sources */,
+				E2E5A6D31817FBF9009DECDB /* Frameworks */,
+				E2E5A6D41817FBF9009DECDB /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E2E5A7211817FDE4009DECDB /* PBXTargetDependency */,
+			);
+			name = MessageBeast;
+			productName = ADNKitUtils;
+			productReference = E2E5A6D61817FBF9009DECDB /* libMessageBeast.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E2E5A6CE1817FBF9009DECDB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Always All The Time";
+			};
+			buildConfigurationList = E2E5A6D11817FBF9009DECDB /* Build configuration list for PBXProject "MessageBeast" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E2E5A6CD1817FBF9009DECDB;
+			productRefGroup = E2E5A6D71817FBF9009DECDB /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E2E5A7121817FDC3009DECDB /* Products */;
+					ProjectRef = E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				E2E5A6D51817FBF9009DECDB /* MessageBeast */,
+				E24F2882185BBED000957D43 /* MessageBeast-OSX */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E2E5A7191817FDC3009DECDB /* libADNKit-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libADNKit-iOS.a";
+			remoteRef = E2E5A7181817FDC3009DECDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libADNKit-AFNetworking-iOS.a";
+			remoteRef = E2E5A71A1817FDC3009DECDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E2E5A71D1817FDC3009DECDB /* ADNKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ADNKit.framework;
+			remoteRef = E2E5A71C1817FDC3009DECDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E2E5A71F1817FDC3009DECDB /* ADNKitTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ADNKitTests.octest;
+			remoteRef = E2E5A71E1817FDC3009DECDB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E24F287F185BBED000957D43 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */,
+				E24F2908185BC13100957D43 /* FMDatabase.m in Sources */,
+				E24F2909185BC13100957D43 /* FMDatabaseAdditions.m in Sources */,
+				E24F290A185BC13100957D43 /* FMDatabasePool.m in Sources */,
+				E24F290B185BC13100957D43 /* FMDatabaseQueue.m in Sources */,
+				E24F290C185BC13100957D43 /* fmdb.m in Sources */,
+				E24F290D185BC13100957D43 /* FMResultSet.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2E5A6D21817FBF9009DECDB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E218EFB41890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.m in Sources */,
+				E218EFA01890936B00ADC609 /* AATTChannelSpecSet.m in Sources */,
+				E218EFA71890936B00ADC609 /* AATTMessageManager.m in Sources */,
+				E218EF9D1890936B00ADC609 /* AATTChannelRefreshResult.m in Sources */,
+				E218EFA51890936B00ADC609 /* AATTGeolocation.m in Sources */,
+				E218EF961890936B00ADC609 /* AATTActionMessageManager.m in Sources */,
+				E218EF991890936B00ADC609 /* AATTADNFileManager.m in Sources */,
+				E218EFAE1890936B00ADC609 /* AATTPendingMessageDeletion.m in Sources */,
+				E218EFA11890936B00ADC609 /* AATTChannelSyncManager.m in Sources */,
+				E29A82ED1821B8AA0057245C /* FMDatabaseQueue.m in Sources */,
+				E218EFA31890936B00ADC609 /* AATTDisplayLocationInstances.m in Sources */,
+				E218EF971890936B00ADC609 /* AATTActionMessageSpec.m in Sources */,
+				E218EFA61890936B00ADC609 /* AATTHashtagInstances.m in Sources */,
+				E218EFA81890936B00ADC609 /* AATTMessageManagerConfiguration.m in Sources */,
+				E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */,
+				E218EFB51890936B00ADC609 /* NSObject+AATTPersistence.m in Sources */,
+				E218EFAF1890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.m in Sources */,
+				E218EFB11890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.m in Sources */,
+				E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */,
+				E218EFAD1890936B00ADC609 /* AATTPendingFileAttachment.m in Sources */,
+				E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */,
+				E218EFA91890936B00ADC609 /* AATTMessagePlus.m in Sources */,
+				E218EFB21890936B00ADC609 /* ANKClient+AATTMessageManager.m in Sources */,
+				E29A82EC1821B8AA0057245C /* FMDatabasePool.m in Sources */,
+				E218EF9A1890936B00ADC609 /* AATTADNPersistence.m in Sources */,
+				E218EFAB1890936B00ADC609 /* AATTOrderedMessageBatch.m in Sources */,
+				E218EF9F1890936B00ADC609 /* AATTChannelSpec.m in Sources */,
+				E218EFB31890936B00ADC609 /* ANKClient+PrivateChannel.m in Sources */,
+				E218EF9B1890936B00ADC609 /* AATTAnnotationInstances.m in Sources */,
+				E218EFA41890936B00ADC609 /* AATTFilteredMessageBatch.m in Sources */,
+				E218EFAC1890936B00ADC609 /* AATTPendingFile.m in Sources */,
+				E29A82EB1821B8AA0057245C /* FMDatabaseAdditions.m in Sources */,
+				E218EF9C1890936B00ADC609 /* AATTBaseMessageInstances.m in Sources */,
+				E218EF9E1890936B00ADC609 /* AATTChannelRefreshResultSet.m in Sources */,
+				E218EFA21890936B00ADC609 /* AATTDisplayLocation.m in Sources */,
+				E218EFAA1890936B00ADC609 /* AATTMinMaxPair.m in Sources */,
+				E218EF981890936B00ADC609 /* AATTADNDatabase.m in Sources */,
+				E218EFB01890936B00ADC609 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E24F28AC185BBEFD00957D43 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ADNKit-OSX";
+			targetProxy = E24F28AB185BBEFD00957D43 /* PBXContainerItemProxy */;
+		};
+		E2E5A7211817FDE4009DECDB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ADNKit-AFNetworking-iOS";
+			targetProxy = E2E5A7201817FDE4009DECDB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E24F28A2185BBED100957D43 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MessageBeast-OSX/MessageBeast-OSX-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"${SRCROOT}/\"/**",
+				);
+				LD_DYLIB_INSTALL_NAME = "";
+				MACH_O_TYPE = mh_dylib;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "MessageBeast-OSX";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E24F28A3185BBED100957D43 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MessageBeast-OSX/MessageBeast-OSX-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"${SRCROOT}/\"/**",
+				);
+				LD_DYLIB_INSTALL_NAME = "";
+				MACH_O_TYPE = mh_dylib;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "MessageBeast-OSX";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E2E5A6F71817FBF9009DECDB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		E2E5A6F81817FBF9009DECDB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E2E5A6FA1817FBF9009DECDB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				DSTROOT = /tmp/MessageBeast.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MessageBeast/MessageBeast-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"${SRCROOT}/\"/**",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PRODUCT_NAME = MessageBeast;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E2E5A6FB1817FBF9009DECDB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				DSTROOT = /tmp/MessageBeast.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MessageBeast/MessageBeast-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"${SRCROOT}/\"/**",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
+				PRODUCT_NAME = MessageBeast;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E24F28A9185BBED100957D43 /* Build configuration list for PBXNativeTarget "MessageBeast-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E24F28A2185BBED100957D43 /* Debug */,
+				E24F28A3185BBED100957D43 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E2E5A6D11817FBF9009DECDB /* Build configuration list for PBXProject "MessageBeast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2E5A6F71817FBF9009DECDB /* Debug */,
+				E2E5A6F81817FBF9009DECDB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E2E5A6F91817FBF9009DECDB /* Build configuration list for PBXNativeTarget "MessageBeast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2E5A6FA1817FBF9009DECDB /* Debug */,
+				E2E5A6FB1817FBF9009DECDB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E2E5A6CE1817FBF9009DECDB /* Project object */;
+}
