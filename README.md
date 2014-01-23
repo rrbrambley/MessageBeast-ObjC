@@ -2,7 +2,7 @@ Message Beast
 ===========
 ![alt tag](https://raw.github.com/rrbrambley/MessageBeast-Android/master/Images/yeti-Message-Beast-with-Shadow-smallish.png)
 
-Message Beast is a robust library geared towards building single-user, non-social applications that rely on App.net [Messages](http://developers.app.net/docs/resources/message/) as a means of personal cloud storage. Some simple applications that could be built with Message Beast include:
+Message Beast is a robust library geared towards building single-user, non-social applications that rely on App.net [Messages](http://developers.app.net/docs/resources/message/) as a means of personal cloud storage. It is available for both Objective-C and [Android](https://github.com/rrbrambley/MessageBeast-Android). Some simple applications that could be built with Message Beast include:
 * a to-do list, 
 * a personal journal,
 * an expense tracker,
