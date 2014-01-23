@@ -10,7 +10,22 @@ static NSString *const kChannelAnnotationActionMetadata = @"com.alwaysallthetime
 
 @interface ANKChannel (AATTAnnotationHelper)
 
+/**
+ Obtain the target Channel id from this Channel's com.alwaysallthetime.action.metadata
+ Annotation. This Annotation is required for Action Channels.
+ 
+ @return the value for the channel_id key in this Channel's com.alwaysallthetime.action.metadata
+ Annotation, or nil if the Annotation does not exist.
+ */
 - (NSString *)targetChannelID;
+
+/**
+ Obtain the action type from this Channel's com.alwaysallthetime.action.metadata
+ Annotation. This Annotation is required for Action Channels.
+ 
+ @return the value for the action_type key in this Channel's com.alwaysallthetime.action.metadata
+ Annotation, or nil if the Annotation does not exist.
+ */
 - (NSString *)actionChannelType;
 
 @end

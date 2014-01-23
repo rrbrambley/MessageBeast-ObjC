@@ -10,10 +10,38 @@ static NSString *const kMessageAnnotationTargetMessage = @"com.alwaysallthetime.
 
 @interface ANKMessage (AATTAnnotationHelper)
 
+/**
+ Get the date value from this Message's net.app.ohai.displaydate Annotation.
+ 
+ @return the date value from this Message's net.app.ohai.displaydate Annotation,
+         or nil if no such Annotation exists.
+ */
 - (NSDate *)ohaiDisplayDate;
+
+/**
+ Get the id value from this Message's com.alwaysallthetime.action.target_message Annotation.
+ This Annotation is required for Action Messages.
+ 
+ @return the id value from this Message's com.alwaysallthetime.action.target_message Annotation
+         or nil if no such Annotation exists.
+ */
 - (NSString *)targetMessageID;
 
+/**
+ Add a net.app.ohai.displaydate Annotation to this Message whose date value is the
+ provided date.
+ 
+ @param date the NSDate to encode in the date value of the new Annotation
+ */
 - (void)addDisplayDateAnnotationWithDate:(NSDate *)date;
+
+/**
+ Add a com.alwaysallthetime.action.target_message Annotation to this Message whose
+ id value is the provided target Message id. This annotation is requried for all
+ Action Messages.
+ 
+ @param the id value to set in the new Annotation
+ */
 - (void)addTargetMessageAnnotationWithTargetMessageID:(NSString *)targetMessageID;
 
 /*
