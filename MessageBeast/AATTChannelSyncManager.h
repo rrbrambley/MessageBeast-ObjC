@@ -37,6 +37,28 @@ typedef void (^AATTChannelSyncManagerChannelsInitializedBlock)(NSError *error);
 typedef void (^AATTChannelSyncManagerSyncCompletionBlock)(NSError *error);
 typedef void (^AATTChannelSyncManagerChannelRefreshCompletionBlock)(AATTChannelRefreshResultSet *resultSet);
 
+/**
+ Create an AATTChannelSyncManager. This initializer is convenient for use cases where you don't
+ plan on creating an AATTMessageManager for use outside of this object.
+ 
+ @param client the ANKClient used to make requests. This will be used to construct an AATTMessageManager.
+ @param messageManagerConfiguration the AATTMessageManagerConfiguration to be used to construct the AATTMessageManager
+ @param channelSpecSet the AATTChannelSpecSet describing the Channels to be used with AATTChannelSyncManager
+ */
+- (id)initWithClient:(ANKClient *)client messageManagerConfiguration:(AATTMessageManagerConfiguration *)messageManagerConfiguration channelSpecSet:(AATTChannelSpecSet *)channelSpecSet;
+
+/**
+ Create an AATTChannelSyncManager to be used with a Channel and a set of Action Channels.
+ This initializer creates an AATTMessageManager and AATTActionMessageManager; it is convenient
+ for use cases where you don't plan on creating these for use outside this object.
+ 
+ @param client the ANKClient used to make requests. This will be used to construct an AATTMessageManager.
+ @param messageManagerConfiguration the AATTMessageManagerConfiguration to be used to construct the AATTMessageManager
+ @param targetWithActionChannelSpecSet the AATTTargetWithActionChannelsSpecSet describing the Channels
+ to be used with AATTChannelSyncManager
+ */
+- (id)initWithClient:(ANKClient *)client messageManagerConfiguration:(AATTMessageManagerConfiguration *)messageManagerConfiguration targetWithActionChannelSpecSet:(AATTTargetWithActionChannelsSpecSet *)targetWithActionChannelSpecSet;
+
 - (id)initWithMessageManager:(AATTMessageManager *)messageManager channelSpecSet:(AATTChannelSpecSet *)channelSpecSet;
 
 - (id)initWithActionMessageManager:(AATTActionMessageManager *)actionMessageManager targetWithActionChannelsSpecSet:(AATTTargetWithActionChannelsSpecSet *)targetWithActionChannelsSpecSet;

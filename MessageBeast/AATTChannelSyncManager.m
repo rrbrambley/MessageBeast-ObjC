@@ -28,6 +28,25 @@
 
 @implementation AATTChannelSyncManager
 
+- (id)initWithClient:(ANKClient *)client messageManagerConfiguration:(AATTMessageManagerConfiguration *)messageManagerConfiguration channelSpecSet:(AATTChannelSpecSet *)channelSpecSet {
+    self = [super init];
+    if(self) {
+        self.messageManager = [[AATTMessageManager alloc] initWithANKClient:client configuration:messageManagerConfiguration];
+        self.channelSpecSet = channelSpecSet;
+    }
+    return self;
+}
+
+- (id)initWithClient:(ANKClient *)client messageManagerConfiguration:(AATTMessageManagerConfiguration *)messageManagerConfiguration targetWithActionChannelSpecSet:(AATTTargetWithActionChannelsSpecSet *)targetWithActionChannelSpecSet {
+    self = [super init];
+    if(self) {
+        self.messageManager = [[AATTMessageManager alloc] initWithANKClient:client configuration:messageManagerConfiguration];
+        self.actionMessageManager = [AATTActionMessageManager sharedInstanceWithMessageManager:self.messageManager];
+        self.targetWithActionChannelsSpecSet = targetWithActionChannelSpecSet;
+    }
+    return self;
+}
+
 - (id)initWithMessageManager:(AATTMessageManager *)messageManager channelSpecSet:(AATTChannelSpecSet *)channelSpecSet {
     self = [super init];
     if(self) {
