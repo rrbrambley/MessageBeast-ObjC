@@ -2,7 +2,7 @@ Message Beast
 ===========
 ![alt tag](https://raw.github.com/rrbrambley/MessageBeast-Android/master/Images/yeti-Message-Beast-with-Shadow-smallish.png)
 
-Message Beast is a robust library geared towards building single-user, non-social applications that rely on App.net [Messages](http://developers.app.net/docs/resources/message/) as a means of personal cloud storage. It is available for both Objective-C and [Android](https://github.com/rrbrambley/MessageBeast-Android). Some simple applications that could be built with Message Beast include:
+Message Beast is a robust app engine geared towards building single-user, non-social applications that rely on App.net [Messages](http://developers.app.net/docs/resources/message/) as a means of personal cloud storage. It is available for both Objective-C and [Android](https://github.com/rrbrambley/MessageBeast-Android). Some simple applications that could be built with Message Beast include:
 * a to-do list, 
 * a personal journal,
 * an expense tracker,
@@ -20,9 +20,20 @@ Some key features of Message Beast are:
 4. **Full text search**. All Messages stored in the sqlite database are candidates for full-text search. This means you can build features that let users easily find old Messages in an instant.
 5. **Loads of other data lookups**. Other than full-text search, you can lookup messages by location, hashtag, date, or by occurrence of any Annotation that you wish.
 
-Getting Started
+Core Architecture
 ---------
-More docs in the works...
+Depending on your needs, you will then want to interface with one or more of the following:
+
+* **AATTMessageManager**: This class provides the main Message lifecycle functionality, including retrieving, deleting, and creating new Messages. It wraps ADNKit's base functionality to perform these tasks, and seamlessly persists Messages and Message metadata as new Messages are encountered/created. It also provides the functionality associated with creating offline Messages and sending them at a later time. Furthermore, it interfaces with the SQLite database to provide simple methods for doing things like performing full-text searches, and obtaining instances of Messages in which specific hashtags, locations, other types of Annotations were used.
+* **AATTActionMessageManager**: This class wraps the AATTMessageManager to support performing mutable actions via what Message Beast calls *Action Channels*. An Action Channel is a channel of type ``com.alwaysallthetime.action`` in which all Messages are [machine-only Messages](http://developers.app.net/docs/resources/message/#machine-only-messages), each with an Annotation that points to a *target* Message in your "main" Channel. An *Action Message* thus serves as a flag, indicating that the user performed a specific action on a Message (e.g. marked an entry as a favorite). The deletion of an Action Message corresponds to the undoing of the action on a Message. The ActionMessageManager is used to create Action Messages with the simple methods ``applyActionForActionChannelWithID:toTargetMessagePlus:`` and ``removeActionForActionChannelWithID:fromTargetMessagePlus:``.
+* **AATTChannelSyncManager**: The AATTChannelSyncManager was created to compensate for the fact that you may end up using several Channels for any given application while working with this library (especially when working with Action Channels). To avoid having to make many method calls to retrieve the newest Messages in all these Channels simultaneously, you can use AATTChannelSyncManager and make a single method call to achieve this.
+
+<p align="center">
+  <img src="https://raw.github.com/rrbrambley/MessageBeast-Android/master/Images/ArchitectureDependency.png"/>
+</p>
+
+<h3>AATTMessagePlus</h3>
+When working with these manager classes, you will most often be using **AATTMessagePlus** objects. AATTMessagePlus is a wrapper around ADNKits's ANKMessage class that adds extra functionality – including stuff for display locations, display dates, and features required to support unsent Messages. You will generally never need to construct AATTMessagePlus objects directly, as they will be given to you via the managers.
 
 
 License
