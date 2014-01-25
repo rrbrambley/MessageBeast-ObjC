@@ -27,6 +27,9 @@
  */
 @interface AATTChannelSyncManager : NSObject
 
+@property AATTMessageManager *messageManager;
+@property AATTActionMessageManager *actionMessageManager;
+
 @property ANKChannel *targetChannel;
 @property NSDictionary *actionChannels;
 

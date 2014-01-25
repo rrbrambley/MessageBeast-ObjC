@@ -17,13 +17,8 @@
 #import "ANKClient+PrivateChannel.h"
 
 @interface AATTChannelSyncManager ()
-
-@property AATTMessageManager *messageManager;
 @property AATTChannelSpecSet *channelSpecSet;
-
-@property AATTActionMessageManager *actionMessageManager;
 @property AATTTargetWithActionChannelsSpecSet *targetWithActionChannelsSpecSet;
-
 @end
 
 @implementation AATTChannelSyncManager
