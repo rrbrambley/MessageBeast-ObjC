@@ -227,7 +227,91 @@ if(state == AATTChannelFullSyncStateNotStarted ||
 
 It's worth noting that ``fetchAndPersistAllMessagesInChannels:completionBlock:`` actually will sync multiple Channels at once, just like the AATTChannelSyncManager, but the main difference is that the AATTChannelSyncManager provides feedback via the start block after it internally checks the state.
 
+<h3>Message Creation and Lifecycle</h3>
+AATTMessageManager provides a few different ways of creating Messages. The simplest way is:
 
+```objective-c
+ANKMessage *m = [[ANKMessage alloc] init];
+m.text = @"pizza party!";
+
+[myMessageManager createMessageInChannelWithID:myChannel.channelID message:m
+                  completionBlock:^(NSArray *messagePlusses, BOOL appended, 
+                                    ANKAPIResponseMeta *meta, NSError *error) {
+  if(!error) {
+    //messages includes our new MessagePlus, and MessagePlusses for any other Message that may 
+    //have not already been synced prior to creating this new one.
+    //
+    //appended does not apply in this case (true if the Messages are added to the end of the 
+    //Channel's Messages, false if they are prepended).
+  } else {
+    //sadface
+  }
+}];
+```
+
+This a thin wrapper around ADNKit's createMessage:inChannelWithID:completion: method that performs database insertion and extraction of other Message data (just as would happen when calling the fetch methods).
+
+For applications that should enable users to create Messages regardless of having an internet connection, you can use a different method:
+
+```objective-c
+ANKMessage *message = [[ANKMessage alloc] init];
+message.text = @"pizza party!";
+
+[myMessageManager createUnsentMessageAndAttemptSendInChannelWithID:myChannel.channelID message:mesage];
+```
+
+The first obvious difference between this method of creating a Message and the previous is that you do not pass a completion block when creating an unsent Message. Instead, because the Message could be sent at a later time, you should use NSNotificationCenter to listen for the AATTMessageManagerDidSendUnsentMessagesNotification elsewhere in your app.
+
+```objective-c
+//probably when my View Controller is being initialized or something
+[[NSNotificationCenter defaultCenter] addObserver:self 
+                                      selector:@selector(didSendUnsentMessages:) 
+                                      name:AATTMessageManagerDidSendUnsentMessagesNotification object:nil];
+
+...
+
+//and then elsewhere...
+- (void)didSendUnsentMessages:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSString *channelID = [userInfo objectForKey:@"channelID"];
+    NSArray *messageIDs = [userInfo objectForKey:@"messageIDs"];
+
+    //after the unsent messages are successfully sent, the local copies are deleted.
+    //do this to retrieve the newly sent messages:
+    [self.messageManager fetchNewestMessagesInChannelWithID:channelID 
+                          completionBlock:^(NSArray *messagePlusses, BOOL appended,
+                          ANKAPIResponseMeta *meta, NSError *error) {
+        if(!error) {
+            //we got our new messages.
+        } else {
+            // FAILtown, USA
+        }
+    }];
+}
+```
+
+If your Message depends on the existence of [File](developers.app.net/docs/resources/file/) objects for [OEmbeds](https://github.com/appdotnet/object-metadata/blob/master/annotations/net.app.core.oembed.md) or [attachments](https://github.com/appdotnet/object-metadata/blob/master/annotations/net.app.core.attachments.md), you can also create unsent Messages with pending file uploads. Pending files are added to the ``AATTADNFileManager`` and  then you use the createUnsentMessageAndAttemptSendInChannelWithID:message:pendingFileAttachments: method.
+
+```objective-c
+AATTPendingFile *pendingFile = [AATTPendingFile pendingFileWithFileAtURL:self.myFileURL];
+pendingFile.isPublic = NO;
+pendingFile.type = @"com.sweetapp.bro";
+pendingFile.name = @"monster_trux.jpg";
+[[AATTADNFileManagerInstance sharedInstance] addPendingFile:pendingFile];
+
+//create a pending file attachment using our new pending file
+NSArray *attachments = @[[[AATTPendingFileAttachment alloc] initWithPendingFileID:pendingFile.ID isOEmbed:YES]]];
+
+[self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:myChannel.channelID
+                     message:message pendingFileAttachments:attachments];
+```
+
+When Messages fail to send on their first attempt, you need to trigger another send attempt before any AATTMessageManager's fetch methods can be executed. For example, ``fetchNewestMessagesInChannelWithID:completionBlock:`` will return NO if unsent Messages are blocking the newest Messages from being retrieved.
+
+```objective-c
+//this will send both pending Message deletions and unsent Messages
+[self.messageManager sendAllUnsentForChannelWithID:myChannel.channelID];
+```
 
 License
 -------
