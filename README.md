@@ -35,6 +35,138 @@ Depending on your needs, you will then want to interface with one or more of the
 <h3>AATTMessagePlus</h3>
 When working with these manager classes, you will most often be using **AATTMessagePlus** objects. AATTMessagePlus is a wrapper around ADNKits's ANKMessage class that adds extra functionality – including stuff for display locations, display dates, and features required to support unsent Messages. You will generally never need to construct AATTMessagePlus objects directly, as they will be given to you via the managers.
 
+Example Code
+------------
+
+<h3>AATTChannelSyncManager</h3>
+The easiest way to work with one or more Channels is to rely on AATTChannelSyncManager. This will do all the heavy lifting  associated with creating and initializing your private Channels, as well as performing full syncs on these Channels. Here's an example in which we will work with an [Ohai Journal Channel](https://github.com/appdotnet/object-metadata/blob/master/channel-types/net.app.ohai.journal.md):
+
+```objective-c
+//set up the query parameters to be used when making requests for my channel.
+NSDictionary *parameters = @{@"include_deleted" : @0, @"include_machine" : @1,
+                             @"include_message_annotations" : @1};
+
+//create a channel spec for an Ohai Journal Channel.
+AATTChannelSpec *spec = [[AATTChannelSpec alloc] initWithType:@"net.app.ohai.journal"
+                                                 queryParameters:parameters];
+AATTChannelSpecSet *specSet = [[AATTChannelSpecSet alloc] initWithChannelSpecs:@[spec]];
+
+//clear the general parameters so that our code can set them on a per-channel basis
+ANKClient *client = [ANKClient sharedClient];
+client.generalParameters = nil;
+
+//you can configure this all you want; read the docs for this.
+AATTMessageManagerConfiguration *config = [[AATTMessageManagerConfiguration alloc] init];
+
+AATTChannelSyncManager *channelSyncManager = [[AATTChannelSyncManager alloc] initWithClient:client 
+                                             messageManagerConfiguration:config channelSpecSet:specSet];
+[channelSyncManager initChannelsWithCompletionBlock:^(NSError *error) {
+  if(!error) {
+    //we're now ready to call fetchNewestMessagesWithCompletionBlock: whenevs.
+  } else {
+    //whoops
+  }
+}];
+```
+
+<h3>AATTMessageManager</h3>
+The above code creates a new AATTMessageManager when the AATTChannelSyncManager is constructed. In more advanced use cases, you may wish to have an AATTMessageManager available without the use of an AATTChannelSyncManager. Regardless, you will only need one instance of a AATTMessageManager, so you may choose to create a singleton instance by doing something like this:
+
+```objective-c
+@implementation AATTMessageManagerInstance
+
++ (AATTMessageManager *)sharedInstance {
+    static AATTMessageManager *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        AATTMessageManagerConfiguration *config = [[AATTMessageManagerConfiguration alloc] init];
+
+        //all Messages will be inserted into the sqlite 
+        config.isDatabaseInsertionEnabled = YES;
+        
+        //location annotations will be examined and AATTDisplayLocations will be assigned to Messages
+        config.isLocationLookupEnabled = YES;
+        
+        //a reference to all Messages with OEmbed Annotations will be stored in the sqlite database
+        [config addAnnotationExtractionForAnnotationOfType:kANKCoreAnnotationEmbeddedMedia];
+        
+        //instead of relying only on ANKMessage.createdAt, use the Ohai display date annotation
+        config.dateAdapter = ^NSDate *(ANKMessage *message) {
+            NSDate *displayDate = [message ohaiDisplayDate];
+            if(!displayDate) {
+                displayDate = message.createdAt;
+            }
+            return displayDate;
+        };
+        ANKClient *client = [ANKClient sharedInstance];
+        sharedInstance = [[AATTMessageManager alloc] initWithANKClient:client configuration:config];
+    });
+    
+    return sharedInstance;
+}
+
+@end
+```
+
+And then you could choose to use this singleton instance to construct an AATTChannelSyncManager as well, if you wanted.
+
+<h3>AATTActionMessageManager</h3>
+If you'd like to build an app that supports mutable actions on Messages in your Channel, you should use the AATTActionMessageManager. Let's suppose you're working on a to-do list app that allows users to mark entries as "high-priority." Here's an example of how you might use the above AATTMessageManager singleton code to construct an AATTActionMessageManager that uses one Action Channel:
+
+```objective-c
+AATTMessageManager *messageManager = [AATTMessageManagerInstance sharedInstance];
+AATTActionMessageManager actionMessageManager = [AATTActionMessageManager sharedInstanceWithMessageManager:messageManager];
+[actionMessageManager initActionChannelWithType:"com.myapp.action.highpriority" targetChannel:myTodoChannel
+                                                completionBlock:^(ANKChannel *actionChannel, NSError *error) {
+    if(actionChannel) {
+        //now we're ready to apply actions to myTodoChannel
+        //let's stash this newly initialized Action Channel to be used later...
+        self.highPriorityChannel = actionChannel;
+    } else {
+        NSLog(@"Could not init action channel with action type %@", actionType);
+    }
+}];
+```
+
+And later on you could allow the user to perform the high priority action on a Message by doing something like:
+
+```objective-c
+[actionMessageManager applyActionForChannelWithID:self.highPriorityChannel.channelID
+                      toTargetMessagePlus:myMessagePlus];
+```
+
+And remove the action with:
+
+```objective-c
+[actionMessageManager removeActionForActionChannelWithID:self.highPriorityChannel.channelID
+                      fromTargetMessageWithID:myMessagePlus.messageID];
+```
+
+Here's an example of how you could more easily work with your main to-do list Channel and your high-priority Action Channel by using the AATTChannelSyncManager:
+
+```objective-c
+//set up the query parameters to be used when making requests for my channel.
+NSDictionary *parameters = @{@"include_deleted" : @0, @"include_machine" : @1,
+                              @"include_message_annotations" : @1};
+AATTChannelSpec *spec = [[AATTChannelSpec alloc] initWithType:@"com.myapp.todolist" queryParameters:parameters];
+AATTTargetWithActionChannelSpecSet *specSet = 
+  [[AATTTargetWithActionChannelSpecSet alloc] initWithTargetChannelSpec:spec
+                                              actionChannelActionTypes:@[@"com.myapp.action.highpriority"]];
+AATTActionMessageManager *actionMessageManager = [AATTActionMessageManagerInstance sharedInstance];
+AATTChannelSyncManager syncManager = 
+  [[AATTChannelSyncManager alloc]  initWithActionMessageManager:actionMessageManager 
+                                  targetWithActionChannelsSpecSet:specSet];
+[syncManager initChannelsWithCompletionBlock:^(NSError *error) {
+  if(!error) {
+    //we can now work with our channels!
+    self.todoChannel = syncManager.targetChannel;
+    self.highPriorityActionChannel = [syncManager.actionChannels objectForKey:@"com.myapp.action.highpriority"];
+    
+  } else {
+    //whoops
+  }
+}];
+```
 
 License
 -------
