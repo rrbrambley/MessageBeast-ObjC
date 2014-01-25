@@ -168,6 +168,67 @@ AATTChannelSyncManager syncManager =
 }];
 ```
 
+<h3>Loading Persisted Messages</h3>
+The AATTMessageManager's fetch methods will always only fetch Messages that it does not currently have persisted. If you want to load persisted Messages, e.g. on app launch, you should:
+
+```objective-c
+//load up to 50 Messages in my channel.
+NSOrderedDictionary *messages = [messageManager loadPersistedMesssageForChannelWithID:myChannel.channelID
+                                                limit:50];
+```
+
+When you load persisted Messages, the Message's stay available in the AATTMessageManager's internal Message map. This means that subsequent calls to loadPersistedMesssageForChannelWithID:limit: will load *more* Messages (e.g. Mesasges 0-49 in first call above, then 50-99 in second call). If you don't need the Messages to be kept in memory, you should use one of the ``loadPersistedMessagesTemporarilyForChannelWithID`` methods.
+
+<h3>Full Channel Sync</h3>
+Having all a user's data available on their device (versus in the cloud) might be necessary to make your app function properly. If this is the case, you might want to use one of the following methods of syncing the user's data.
+
+With AATTChannelSyncManager:
+
+```objective-c
+//assume we have instantiated AATTChannelSyncManager as it was in the example, above
+
+[channelSyncManager initChannelsWithCompletionBlock:^(NSError *error) {
+  if(!error) {
+    //now that we've initialized our channels, we can perform a sync.
+    
+    [channelSyncManager checkFullSyncStatusWithStartBlock:^{
+      //show progress or something (e.g. "Retrieving your data...")
+      //this will only be called if your channel hasn't already been synced once before
+      
+    } completionBlock:^(NSError *error) {
+      //this will be called instantly if the channel has already been synced once.
+      //
+      //otherwise, the startBlock will be called first, and this will eventually be called
+      //after all Messages have been downloaded and persisted.
+      
+    }];
+  }
+}];
+```
+
+Using AATTChannelSyncManager to perform the full sync is especially convenient when you are syncing multiple Channels (e.g. three Action Channels along with your single target Channel) – all of the Channels will be synced with a single method call. Alternatively, if you can use AATTMessageManager's methods to directly check the sync state of your Channel and start the sync if necessary (this is what AATTChannelSyncManager does under the hood):
+
+```objective-c
+AATTChannelFullSyncState state = [messageManager fullSyncStateForChannelWithID:myChannel.channelID];
+if(state == AATTChannelFullSyncStateNotStarted ||
+   state == AATTChannelFullSyncStateStarted) {
+   [messageManager fetchAndPersistAllMessagesInChannels:@[myChannel]
+                   completionBlock:^(BOOL success, NSError *error) {
+      if(!error) {
+        //done!
+      } else {
+        //sad face
+      }
+   }];
+} else {
+  //we're already done, carry on by launching the app normally
+}
+```
+
+It's worth noting that ``fetchAndPersistAllMessagesInChannels:completionBlock:`` actually will sync multiple Channels at once, just like the AATTChannelSyncManager, but the main difference is that the AATTChannelSyncManager provides feedback via the start block after it internally checks the state.
+
+
+
 License
 -------
 The MIT License (MIT)
