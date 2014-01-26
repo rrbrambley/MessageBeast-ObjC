@@ -296,6 +296,16 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  */
 - (void)refreshMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerRefreshCompletionBlock)block;
 
+#pragma mark - Search Messages
+
+/**
+ Search persisted Message text with a query.
+ 
+ @param query the search query
+ @param channelID the id of the Channel from which Messages will be retrieved
+ */
+- (AATTOrderedMessageBatch *)searchMessagesWithQuery:(NSString *)query inChannelWithID:(NSString *)channelID;
+
 #pragma mark - Delete Messages
 
 /**

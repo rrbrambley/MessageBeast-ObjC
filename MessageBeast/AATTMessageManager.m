@@ -64,7 +64,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return self;
 }
 
-#pragma mark Getters
+#pragma mark - Getters
 
 - (ANKClient *)client {
     return _client;
@@ -95,7 +95,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return [messages allObjects];
 }
 
-#pragma mark Setters
+#pragma mark - Setters
 
 - (void)setQueryParametersForChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters {
     [self.queryParametersByChannel setObject:parameters forKey:channelID];
@@ -105,7 +105,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     [AATTADNPersistence saveFullSyncState:fullSyncState channelID:channelID];
 }
 
-#pragma mark Load Messages
+#pragma mark - Load Messages
 
 - (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit {
     AATTOrderedMessageBatch *batch = [self loadPersistedMessageBatchForChannelWithID:channelID limit:limit performLookups:YES];
@@ -145,7 +145,15 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return messagePlusses;
 }
 
-#pragma mark Fetch Messages
+#pragma mark - Search
+
+- (AATTOrderedMessageBatch *)searchMessagesWithQuery:(NSString *)query inChannelWithID:(NSString *)channelID {
+    AATTOrderedMessageBatch *batch = [self.database messagesInChannelWithID:channelID searchQuery:query];
+    [self performLookupsOnMessagePlusses:batch.messagePlusses.allObjects persistIfEnabled:NO];
+    return batch;
+}
+
+#pragma mark - Fetch Messages
 
 - (void)fetchAndPersistAllMessagesInChannels:(NSArray *)channels completionBlock:(AATTMessageManagerMultiChannelSyncBlock)block {
     int i = 0;
@@ -836,7 +844,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     }
 }
 
-#pragma mark Location Lookup
+#pragma mark - Location Lookup
 
 - (void)lookupLocationForMessagePlusses:(NSArray *)messagePlusses persistIfEnabled:(BOOL)persistIfEnabled {
     for(AATTMessagePlus *messagePlus in messagePlusses) {
