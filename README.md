@@ -312,6 +312,34 @@ When Messages fail to send on their first attempt, you need to trigger another s
 //this will send both pending Message deletions and unsent Messages
 [self.messageManager sendAllUnsentForChannelWithID:myChannel.channelID];
 ```
+<h3>Message Search and Lookup</h3>
+Full-text search is available for all Messages persisted by AATTMessageManager. 
+
+```objective-c
+AATTOrderedMessageBatch *results = [self.messageManager searchMessagesWithQuery:@"pizza"
+                                                        inChannelWithID:myChannel.channelID];
+//Message ids mapped to AATTMessagePlus objects, in reverse chronological order
+NSOrderedDictionary *messages = results.messagePlusses;
+```
+
+Because location Annotations are not part of the Message text, the human-readable name of all display locations are indexed separately. To search by human-readable location name, use:
+
+```objective-c
+//find MessagePlus objects that have a DisplayLocation name matching "the mission"
+AATTOrderedMessageBatch *results = [self.messageManager searchMessagesWithQuery:@"the mission"
+                                                        inChannelWithID:myChannel.channelID];
+```
+
+Other methods available for looking up Messages:
+
+```objective-c
+
+```
+
+Future Improvements, Additions, Fixes
+------
+See [Issues](https://github.com/rrbrambley/MessageBeast-ObjC/issues).
+
 
 License
 -------
