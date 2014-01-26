@@ -306,6 +306,14 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  */
 - (AATTOrderedMessageBatch *)searchMessagesWithQuery:(NSString *)query inChannelWithID:(NSString *)channelID;
 
+/**
+ Search for persisted Messages, using a query that matches against their associated AATTDisplayLocations.
+ 
+ @param displayLocationQuery the search query
+ @param channelID the id of the Channel from which Messages will be retrieved
+ */
+- (AATTOrderedMessageBatch *)searchMessagesWithDisplayLocationQuery:(NSString *)displayLocationQuery inChannelWithID:(NSString *)channelID;
+
 #pragma mark - Delete Messages
 
 /**

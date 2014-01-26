@@ -153,6 +153,12 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return batch;
 }
 
+- (AATTOrderedMessageBatch *)searchMessagesWithDisplayLocationQuery:(NSString *)displayLocationQuery inChannelWithID:(NSString *)channelID {
+    AATTOrderedMessageBatch *batch = [self.database messagesInChannelWithID:channelID displayLocationSearchQuery:displayLocationQuery];
+    [self performLookupsOnMessagePlusses:batch.messagePlusses.allObjects persistIfEnabled:NO];
+    return batch;
+}
+
 #pragma mark - Fetch Messages
 
 - (void)fetchAndPersistAllMessagesInChannels:(NSArray *)channels completionBlock:(AATTMessageManagerMultiChannelSyncBlock)block {
