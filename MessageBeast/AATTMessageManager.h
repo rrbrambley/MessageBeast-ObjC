@@ -16,7 +16,34 @@ typedef NS_ENUM(NSUInteger, AATTChannelFullSyncState) {
 	AATTChannelFullSyncStateComplete
 };
 
+/**
+ A notification posted when unsent Messages are successfully sent.
+ Since the unsent copies of the Message are deleted upon being sent,
+ you may want to listen for this notification and call fetchNewestMessagesInChannelWithID:completionBlock:
+ to fetch the server-generated copies of the Messages.
+ 
+ This notification may be triggered by:
+ 
+ sendAllUnsentForChannelWithID:
+ createUnsentMessageAndAttemptSendInChannelWithID:message:
+ createUnsentMessageAndAttemptSendInChannelWithID:message:pendingFileAttachments:
+ 
+ UserInfo: @{@"channelID" : NSString*, @"messageIDs" : NSArray*}
+ */
 extern NSString *const AATTMessageManagerDidSendUnsentMessagesNotification;
+
+/**
+ A notification posted when unsent Messages fail to be sent.
+ 
+ This notification may be triggered by:
+ 
+ sendAllUnsentForChannelWithID:
+ createUnsentMessageAndAttemptSendInChannelWithID:message:
+ createUnsentMessageAndAttemptSendInChannelWithID:message:pendingFileAttachments:
+ 
+ UserInfo: @{@"channelID" : NSString*, @"messageID" : NSString*, @"sendAttempts" : NSNumber*}
+ */
+extern NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification;
 
 @interface AATTMessageManager : NSObject
 
