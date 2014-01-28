@@ -47,6 +47,8 @@ static NSUInteger const kSyncBatchSize = 100;
 
 NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMessageManagerDidSendUnsentMessagesNotification";
 
+NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AATTMessageManagerDidFailToSendUnsentMessagesNotification";
+
 @implementation AATTMessageManager
 
 - (id)initWithANKClient:(ANKClient *)client configuration:(AATTMessageManagerConfiguration *)configuration {
@@ -470,6 +472,12 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
                 NSLog(@"Failed to send unsent message; %@", error.localizedDescription);
                 [messagePlus incrementSendAttemptsCount];
                 [self.database insertOrReplaceMessage:messagePlus];
+                
+                NSDictionary *userInfo = @{@"channelID" : message.channelID,
+                                           @"messageID" : messagePlus.message.messageID,
+                                           @"sendAttempts" : [NSNumber numberWithInteger:messagePlus.sendAttemptsCount]};
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidFailToSendUnsentMessagesNotification object:self userInfo:userInfo];
             }
         }];
     }
