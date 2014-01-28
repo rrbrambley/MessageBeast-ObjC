@@ -33,11 +33,11 @@ typedef void (^AATTMessageManagerBatchSyncBlock)(NSArray *messagePlusses, ANKAPI
 typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messagePlus, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *meta, NSError *error);
 
-#pragma mark Initializer
+#pragma mark - Initializer
 
 - (id)initWithANKClient:(ANKClient *)client configuration:(AATTMessageManagerConfiguration *)configuration;
 
-#pragma mark Getters
+#pragma mark - Getters
 
 /**
  Get the ANKClient used by this AATTMessageManager
@@ -76,7 +76,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  */
 - (NSArray *)loadedMessagesForChannelWithID:(NSString *)channelID;
 
-#pragma mark Setters
+#pragma mark - Setters
 
 /**
  Set the query parameters that should be used for the specified channel.
@@ -89,7 +89,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  */
 - (void)setQueryParametersForChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters;
 
-#pragma mark Load Messages
+#pragma mark - Load Messages
 
 /**
  Load persisted messages that were previously stored in the sqlite database.
@@ -113,8 +113,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  */
 - (AATTFilteredMessageBatch *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit messageFilter:(AATTMessageFilter)messageFilter;
 
+#pragma mark - Get Persisted Messages
+
 /**
- Load persisted messages that have the specified display location.
+ Get persisted messages that have the specified display location.
  These messages are not kept in memory by the message manager.
 
  @param channelID the id of the channel for which messages should be loaded.
@@ -124,10 +126,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
+- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
 
 /**
- Load persisted messages that have the specified hashtag.
+ Get persisted messages that have the specified hashtag.
  These messages are not kept in memory by the message manager.
 
  @param channelID the id of the channel for which messages should be loaded.
@@ -135,10 +137,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
+- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
 
 /**
- Load persisted messages.
+ Get persisted messages.
  These messages are not kept in memory by the message manager.
 
  @param channelID the id of the channel for which messages should be loaded.
@@ -146,9 +148,9 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
+- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
 
-#pragma mark Fetch Messages
+#pragma mark - Fetch Messages
 
 - (void)fetchAndPersistAllMessagesInChannels:(NSArray *)channels completionBlock:(AATTMessageManagerMultiChannelSyncBlock)block;
 

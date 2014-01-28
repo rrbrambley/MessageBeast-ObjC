@@ -128,17 +128,19 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     return filteredBatch;
 }
 
-- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
+#pragma mark - Get Persisted Messages
+
+- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
     AATTDisplayLocationInstances *instances = [self.database displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:locationPrecision];
-    return [self loadPersistedMessagesTemporarilyForChannelWithID:channelID messageIDs:instances.messageIDs.set];
+    return [self getPersistedMessagesForChannelWithID:channelID messageIDs:instances.messageIDs.set];
 }
 
-- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
+- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
     AATTHashtagInstances *hashtagInstances = [self.database hashtagInstancesInChannelWithID:channelID hashtagName:hashtagName];
-    return [self loadPersistedMessagesTemporarilyForChannelWithID:channelID messageIDs:hashtagInstances.messageIDs.set];
+    return [self getPersistedMessagesForChannelWithID:channelID messageIDs:hashtagInstances.messageIDs.set];
 }
 
-- (NSOrderedDictionary *)loadPersistedMessagesTemporarilyForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
+- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
     AATTOrderedMessageBatch *messageBatch = [self.database messagesWithIDs:messageIDs];
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
     [self performLookupsOnMessagePlusses:messagePlusses.allObjects persistIfEnabled:NO];
