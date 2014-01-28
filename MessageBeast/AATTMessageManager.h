@@ -41,7 +41,7 @@ extern NSString *const AATTMessageManagerDidSendUnsentMessagesNotification;
  createUnsentMessageAndAttemptSendInChannelWithID:message:
  createUnsentMessageAndAttemptSendInChannelWithID:message:pendingFileAttachments:
  
- UserInfo: @{@"channelID" : NSString*, @"messageID" : NSString*, @"sendAttempts" : NSNumber*}
+ UserInfo: @{@"channelID" : NSString*, @"messageID" : NSString*, @"sendAttemptsCount" : NSNumber*}
  */
 extern NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification;
 

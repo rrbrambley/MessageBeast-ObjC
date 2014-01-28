@@ -475,7 +475,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                 
                 NSDictionary *userInfo = @{@"channelID" : message.channelID,
                                            @"messageID" : messagePlus.message.messageID,
-                                           @"sendAttempts" : [NSNumber numberWithInteger:messagePlus.sendAttemptsCount]};
+                                           @"sendAttemptsCount" : [NSNumber numberWithInteger:messagePlus.sendAttemptsCount]};
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidFailToSendUnsentMessagesNotification object:self userInfo:userInfo];
             }
