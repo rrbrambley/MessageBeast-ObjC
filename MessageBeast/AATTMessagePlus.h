@@ -14,7 +14,7 @@
 @property NSDate *displayDate;
 @property AATTDisplayLocation *displayLocation;
 @property BOOL isUnsent;
-@property NSInteger sendAttemptsCount;
+@property NSUInteger sendAttemptsCount;
 @property (nonatomic) NSArray *photoOEmbeds;
 @property (nonatomic) NSArray *html5VideoOEmbeds;
 @property NSDictionary *pendingFileAttachments;
