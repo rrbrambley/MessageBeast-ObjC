@@ -83,9 +83,6 @@ The above code creates a new AATTMessageManager when the AATTChannelSyncManager 
     dispatch_once(&onceToken, ^{
         AATTMessageManagerConfiguration *config = [[AATTMessageManagerConfiguration alloc] init];
 
-        //all Messages will be inserted into the sqlite 
-        config.isDatabaseInsertionEnabled = YES;
-        
         //location annotations will be examined and AATTDisplayLocations will be assigned to Messages
         config.isLocationLookupEnabled = YES;
         
