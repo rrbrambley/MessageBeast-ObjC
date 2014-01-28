@@ -165,9 +165,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 /**
  Fetch and persist all messages in a channel.
 
- This is intended to be used as a one-time sync, e.g. after a user signs in. For this reason,
- it is required that your AATTMessageManagerConfiguration has its isDatabaseInsertionEnabled property
- set to YES.
+ This is intended to be used as a one-time sync, e.g. after a user signs in.
 
  Because this could potentially result in a very large amount of messages being obtained,
  the provided AATTMessageManagerCompletionBlock will only be passed the first 100 messages that are
@@ -190,7 +188,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  into memory thus far.
 
  After messages are fetched, processing on the messages will occur in accordance
- with this manager's configuration (e.g. database insertion).
+ with this manager's configuration (e.g. location lookup).
 
  This method can only succesfully execute if there are 0 unsent messages in the specified channel.
 
@@ -210,7 +208,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  into memory thus far.
  
  After messages are fetched, processing on the messages will occur in accordance
- with this manager's configuration (e.g. database insertion).
+ with this manager's configuration (e.g. location lookup).
  
  This method can only succesfully execute if there are 0 unsent messages in the specified channel.
  
@@ -228,7 +226,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  thus far, while the before_id parameter is set to nil.
 
  After messages are fetched, processing on the messages will occur in accordance
- with this manager's configuration (e.g. database insertion).
+ with this manager's configuration (e.g. location lookup).
 
  This method can only succesfully execute if there are 0 unsent messages in the specified channel.
 
@@ -247,7 +245,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  thus far, while the before_id parameter is set to nil.
  
  After messages are fetched, processing on the messages will occur in accordance
- with this manager's configuration (e.g. database insertion).
+ with this manager's configuration (e.g. location lookup).
  
  This method can only succesfully execute if there are 0 unsent messages in the specified channel.
  
@@ -265,7 +263,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  thus far, while the since_id parameter is set to nil.
 
  After messages are fetched, processing on the messages will occur in accordance
- with this manager's configuration (e.g. database insertion).
+ with this manager's configuration (e.g. location lookup).
 
  This method can only succesfully execute if there are 0 unsent messages in the specified channel.
 
@@ -284,7 +282,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  thus far, while the since_id parameter is set to nil.
  
  After messages are fetched, processing on the messages will occur in accordance
- with this manager's configuration (e.g. database insertion).
+ with this manager's configuration (e.g. location lookup).
  
  This method can only succesfully execute if there are 0 unsent messages in the specified channel.
  
@@ -299,7 +297,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  Fetch a new instance of the specified AATTMessagePlus' backing message.
 
  After the message is fetched, processing will occur in accordance
- with this manager's configuration (e.g. database insertion).
+ with this manager's configuration (e.g. location lookup).
 
  @param messagePlus the AATTMessagePlus to refresh.
  @param compltionBlock the AATTMessageManagerRefreshCompletionBlock to which the result will be delivered.

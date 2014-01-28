@@ -10,7 +10,6 @@
 
 @interface AATTMessageManagerConfiguration : NSObject
 
-@property BOOL isDatabaseInsertionEnabled;
 @property BOOL isLocationLookupEnabled;
 @property NSMutableSet *annotationExtractions;
 

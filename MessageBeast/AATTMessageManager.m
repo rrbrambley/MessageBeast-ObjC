@@ -124,7 +124,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     
     //do this after we have successfully filtered out stuff,
     //as to not perform lookups on things we didn't keep.
-    [self performLookupsOnMessagePlusses:filteredBatch.messagePlusses.allObjects persistIfEnabled:NO];
+    [self performLookupsOnMessagePlusses:filteredBatch.messagePlusses.allObjects persist:NO];
     
     return filteredBatch;
 }
@@ -144,7 +144,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
     AATTOrderedMessageBatch *messageBatch = [self.database messagesWithIDs:messageIDs];
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
-    [self performLookupsOnMessagePlusses:messagePlusses.allObjects persistIfEnabled:NO];
+    [self performLookupsOnMessagePlusses:messagePlusses.allObjects persist:NO];
     return messagePlusses;
 }
 
@@ -157,13 +157,13 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 - (AATTOrderedMessageBatch *)searchMessagesWithQuery:(NSString *)query inChannelWithID:(NSString *)channelID {
     AATTOrderedMessageBatch *batch = [self.database messagesInChannelWithID:channelID searchQuery:query];
-    [self performLookupsOnMessagePlusses:batch.messagePlusses.allObjects persistIfEnabled:NO];
+    [self performLookupsOnMessagePlusses:batch.messagePlusses.allObjects persist:NO];
     return batch;
 }
 
 - (AATTOrderedMessageBatch *)searchMessagesWithDisplayLocationQuery:(NSString *)displayLocationQuery inChannelWithID:(NSString *)channelID {
     AATTOrderedMessageBatch *batch = [self.database messagesInChannelWithID:channelID displayLocationSearchQuery:displayLocationQuery];
-    [self performLookupsOnMessagePlusses:batch.messagePlusses.allObjects persistIfEnabled:NO];
+    [self performLookupsOnMessagePlusses:batch.messagePlusses.allObjects persist:NO];
     return batch;
 }
 
@@ -210,13 +210,9 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 }
 
 - (void)fetchAndPersistAllMessagesInChannelWithID:(NSString *)channelID batchSyncBlock:(AATTMessageManagerBatchSyncBlock)batchSyncBlock completionBlock:(AATTMessageManagerCompletionBlock)block {
-    if(!self.configuration.isDatabaseInsertionEnabled) {
-        [NSException raise:@"Illegal state" format:@"fetchAndPersistAllMessagesInChannelWithID:completionBlock: can only be executed if the AATTMessageManagerConfiguration.isDatabaseInsertionEnabled property is set to YES"];
-    } else {
-        NSMutableArray *messages = [[NSMutableArray alloc] initWithCapacity:kSyncBatchSize];
-        [self setFullSyncState:AATTChannelFullSyncStateStarted forChannelWithID:channelID];
-        [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:nil batchSyncBlock:batchSyncBlock block:block];
-    }
+    NSMutableArray *messages = [[NSMutableArray alloc] initWithCapacity:kSyncBatchSize];
+    [self setFullSyncState:AATTChannelFullSyncStateStarted forChannelWithID:channelID];
+    [self fetchAllMessagesInChannelWithID:channelID messagePlusses:messages sinceID:nil beforeID:nil batchSyncBlock:batchSyncBlock block:block];
 }
 
 - (BOOL)fetchMessagesInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerCompletionBlock)block {
@@ -262,7 +258,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
             }
             
             [self adjustDateAndInsertMessagePlus:messagePlus];
-            [self performLookupsOnMessagePlusses:@[messagePlus] persistIfEnabled:YES];
+            [self performLookupsOnMessagePlusses:@[messagePlus] persist:YES];
 
             block(messagePlus, meta, error);
         }
@@ -724,7 +720,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         }
         
         NSArray *newestMessages = [NSArray arrayWithArray:[newestMessagesDictionary allObjects]];
-        [self performLookupsOnMessagePlusses:newestMessages persistIfEnabled:YES];
+        [self performLookupsOnMessagePlusses:newestMessages persist:YES];
 
         if(filterBlock) {
             filterBlock(newestMessages, appended, excludedResults, meta, error);
@@ -760,7 +756,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     [self.minMaxPairs setObject:minMaxPair forKey:channelID];
     
     if(performLookups) {
-        [self performLookupsOnMessagePlusses:[messagePlusses allObjects] persistIfEnabled:NO];
+        [self performLookupsOnMessagePlusses:[messagePlusses allObjects] persist:NO];
     }
     return orderedMessageBatch;
 }
@@ -784,14 +780,12 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     NSDate *adjustedDate = [self adjustedDateForMessage:messagePlus.message];
     messagePlus.displayDate = adjustedDate;
     
-    if(self.configuration.isDatabaseInsertionEnabled) {
-        [self.database insertOrReplaceMessage:messagePlus];
-        [self.database insertOrReplaceHashtagInstances:messagePlus];
-        
-        if(self.configuration.annotationExtractions.count > 0) {
-            for(NSString *annotationType in self.configuration.annotationExtractions) {
-                [self.database insertOrReplaceAnnotationInstancesOfType:annotationType forTargetMessagePlus:messagePlus];
-            }
+    [self.database insertOrReplaceMessage:messagePlus];
+    [self.database insertOrReplaceHashtagInstances:messagePlus];
+    
+    if(self.configuration.annotationExtractions.count > 0) {
+        for(NSString *annotationType in self.configuration.annotationExtractions) {
+            [self.database insertOrReplaceAnnotationInstancesOfType:annotationType forTargetMessagePlus:messagePlus];
         }
     }
 }
@@ -852,22 +846,22 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     }];
 }
 
-- (void)performLookupsOnMessagePlusses:(NSArray *)messagePlusses persistIfEnabled:(BOOL)persistIfEnabled {
+- (void)performLookupsOnMessagePlusses:(NSArray *)messagePlusses persist:(BOOL)persist {
     if(self.configuration.isLocationLookupEnabled) {
-        [self lookupLocationForMessagePlusses:messagePlusses persistIfEnabled:persistIfEnabled];
+        [self lookupLocationForMessagePlusses:messagePlusses persist:persist];
     }
 }
 
 #pragma mark - Location Lookup
 
-- (void)lookupLocationForMessagePlusses:(NSArray *)messagePlusses persistIfEnabled:(BOOL)persistIfEnabled {
+- (void)lookupLocationForMessagePlusses:(NSArray *)messagePlusses persist:(BOOL)persist {
     for(AATTMessagePlus *messagePlus in messagePlusses) {
         ANKMessage *message = messagePlus.message;
         
         ANKAnnotation *checkin = [message firstAnnotationOfType:kANKCoreAnnotationCheckin];
         if(checkin) {
             messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromCheckinAnnotation:checkin];
-            if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
+            if(persist) {
                 [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
             }
             continue;
@@ -876,7 +870,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
         ANKAnnotation *ohai = [message firstAnnotationOfType:@"net.app.ohai.location"];
         if(ohai) {
             messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromOhaiLocationAnnotation:ohai];
-            if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
+            if(persist) {
                 [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
             }
             continue;
@@ -895,19 +889,19 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
                 //use - we might obtain a geolocation with this message's lat/long, but that
                 //doesn't mean that this message + geolocation combo has been saved.
                 //(this database lookup is merely an optimization to avoid having to fire off
-                // the async task in reverseGeocode:latitude:longitude:persistIfEnabled)
-                if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
+                // the async task in reverseGeocode:latitude:longitude:persist:)
+                if(persist) {
                     [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
                 }
                 continue;
             } else {
-                [self reverseGeocode:messagePlus latitude:[latitude doubleValue] longitude:[longitude doubleValue] persistIfEnabled:persistIfEnabled];
+                [self reverseGeocode:messagePlus latitude:[latitude doubleValue] longitude:[longitude doubleValue] persist:persist];
             }
         }
     }
 }
 
-- (void)reverseGeocode:(AATTMessagePlus *)messagePlus latitude:(double)latitude longitude:(double)longitude persistIfEnabled:(BOOL)persistIfEnabled {
+- (void)reverseGeocode:(AATTMessagePlus *)messagePlus latitude:(double)latitude longitude:(double)longitude persist:(BOOL)persist {
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
@@ -916,7 +910,7 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
             if(geolocation) {
                 messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromGeolocation:geolocation];
                 
-                if(persistIfEnabled && self.configuration.isDatabaseInsertionEnabled) {
+                if(persist) {
                     [self.database insertOrReplaceGeolocation:geolocation];
                     [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
                 }
