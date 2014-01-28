@@ -288,6 +288,7 @@ The first obvious difference between this method of creating a Message and the p
     }];
 }
 ```
+You may also choose to listen to the ``AATTMessageManagerDidFailToSendUnsentMessagesNotification`` to find out when messages do not send successfully. The userInfo will contain the keys ``channelID``, ``messageID``, and ``sendAttemptsCount``.
 
 If your Message depends on the existence of [File](developers.app.net/docs/resources/file/) objects for [OEmbeds](https://github.com/appdotnet/object-metadata/blob/master/annotations/net.app.core.oembed.md) or [attachments](https://github.com/appdotnet/object-metadata/blob/master/annotations/net.app.core.attachments.md), you can also create unsent Messages with pending file uploads. Pending files are added to the ``AATTADNFileManager`` and  then you use the createUnsentMessageAndAttemptSendInChannelWithID:message:pendingFileAttachments: method.
 
