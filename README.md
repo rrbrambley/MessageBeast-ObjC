@@ -179,7 +179,7 @@ NSOrderedDictionary *messages = [messageManager loadPersistedMesssageForChannelW
                                                 limit:50];
 ```
 
-When you load persisted Messages, the Message's stay available in the AATTMessageManager's internal Message map. This means that subsequent calls to loadPersistedMesssageForChannelWithID:limit: will load *more* Messages (e.g. Mesasges 0-49 in first call above, then 50-99 in second call). If you don't need the Messages to be kept in memory, you should use one of the ``loadPersistedMessagesTemporarilyForChannelWithID`` methods.
+When you load persisted Messages, the Message's stay available in the AATTMessageManager's internal Message map. This means that subsequent calls to loadPersistedMesssageForChannelWithID:limit: will load *more* Messages (e.g. Mesasges 0-49 in first call above, then 50-99 in second call). If you don't need the Messages to be kept in memory, you should use one of the ``persistedMessagesForChannelWithID`` methods.
 
 <h3>Full Channel Sync</h3>
 Having all a user's data available on their device (versus in the cloud) might be necessary to make your app function properly. If this is the case, you might want to use one of the following methods of syncing the user's data.
@@ -335,7 +335,20 @@ AATTOrderedMessageBatch *results = [self.messageManager searchMessagesWithQuery:
 Other methods available for looking up Messages:
 
 ```objective-c
+//all messages in my channel that use the OEmbed Annotation
+NSOrderedDictionary *annotations = [self.messageManager persistedMessagesForChannelWithID:myChannel.channelID
+                                                     annotationType:@"net.app.core.oembed"];
 
+//all messages in my channel that have the hashtag "food"
+NSOrderedDictionary *hashtags = [self.messageManager persistedMessagesForChannelWithID:myChannel.channelID
+                                                     hashtagName:@"food"];
+
+//all messages in my channel that have an AATTDisplayLocation with the same name as that of myMessagePlus,
+//and that lie within ~one hundred meters of that AATTDisplayLocation (e.g. McDonald's in San Francisco is not
+//the same McDonald's in Chicago).
+NSOrderedDictionary *locations = [self.messageManager persistedMessagesForChannelWithID:myChannel.channelID
+                                                      displayLocation:myMessagePlus.displayLocation
+                                                      locationPrecision:AATTLocationPrecisionOneHundredMeters];
 ```
 
 Future Improvements, Additions, Fixes
