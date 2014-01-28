@@ -126,7 +126,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
+- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
 
 /**
  Get persisted messages that have the specified hashtag.
@@ -137,7 +137,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
+- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
 
 /**
  Get persisted messages.
@@ -148,7 +148,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
+- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
 
 #pragma mark - Fetch Messages
 

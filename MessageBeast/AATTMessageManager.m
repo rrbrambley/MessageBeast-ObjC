@@ -130,17 +130,17 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
 
 #pragma mark - Get Persisted Messages
 
-- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
+- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
     AATTDisplayLocationInstances *instances = [self.database displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:locationPrecision];
-    return [self getPersistedMessagesForChannelWithID:channelID messageIDs:instances.messageIDs.set];
+    return [self persistedMessagesForChannelWithID:channelID messageIDs:instances.messageIDs.set];
 }
 
-- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
+- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
     AATTHashtagInstances *hashtagInstances = [self.database hashtagInstancesInChannelWithID:channelID hashtagName:hashtagName];
-    return [self getPersistedMessagesForChannelWithID:channelID messageIDs:hashtagInstances.messageIDs.set];
+    return [self persistedMessagesForChannelWithID:channelID messageIDs:hashtagInstances.messageIDs.set];
 }
 
-- (NSOrderedDictionary *)getPersistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
+- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
     AATTOrderedMessageBatch *messageBatch = [self.database messagesWithIDs:messageIDs];
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
     [self performLookupsOnMessagePlusses:messagePlusses.allObjects persistIfEnabled:NO];

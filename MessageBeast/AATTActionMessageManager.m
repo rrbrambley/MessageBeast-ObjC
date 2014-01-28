@@ -213,7 +213,7 @@
 
 - (NSArray *)targetMessagePlussesForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId targetChannelID:(NSString *)targetChannelID {
     NSSet *targetMessageIDs = [self targetMessageIDsForMessagePlusses:actionMessages];
-    NSOrderedDictionary *targetMessages = [self.messageManager getPersistedMessagesForChannelWithID:targetChannelID messageIDs:targetMessageIDs];
+    NSOrderedDictionary *targetMessages = [self.messageManager persistedMessagesForChannelWithID:targetChannelID messageIDs:targetMessageIDs];
     return [targetMessages allObjects];
 }
 
