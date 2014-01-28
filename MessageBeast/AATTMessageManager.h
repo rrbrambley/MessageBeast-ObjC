@@ -150,6 +150,14 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  */
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
 
+/**
+ Get persisted messages having the specified Annotation type.
+ 
+ @param channelID the id of the channel associated with the messages to be loaded.
+ @param annotationType the annotation type
+ */
+- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType;
+
 #pragma mark - Fetch Messages
 
 - (void)fetchAndPersistAllMessagesInChannels:(NSArray *)channels completionBlock:(AATTMessageManagerMultiChannelSyncBlock)block;

@@ -11,6 +11,7 @@
 #import "AATTActionMessageManager.h"
 #import "AATTADNDatabase.h"
 #import "AATTADNPersistence.h"
+#import "AATTAnnotationInstances.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTADNFileManager.h"
@@ -145,6 +146,11 @@ NSString *const AATTMessageManagerDidSendUnsentMessagesNotification = @"AATTMess
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
     [self performLookupsOnMessagePlusses:messagePlusses.allObjects persistIfEnabled:NO];
     return messagePlusses;
+}
+
+- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType {
+    AATTAnnotationInstances *annotationInstances = [self.database annotationInstancesOfType:annotationType inChannelWithID:channelID];
+    return [self persistedMessagesForChannelWithID:channelID messageIDs:annotationInstances.messageIDs.set];
 }
 
 #pragma mark - Search
