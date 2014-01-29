@@ -450,4 +450,11 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  */
 - (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID;
 
+/**
+ Return the maximum Message ID (across all Channels).
+ 
+ @return the maximum Message ID
+ */
+- (NSUInteger)maxMessageID;
+
 @end

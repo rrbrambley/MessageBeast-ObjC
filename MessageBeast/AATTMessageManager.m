@@ -370,9 +370,8 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         [self loadPersistedMesssageForChannelWithID:channelID limit:1];
     }
     
-    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    NSNumber *maxNumber = [minMaxPair maxIDAsNumber];
-    NSInteger newMessageID = maxNumber ? [maxNumber integerValue] + 1 : 1;
+    NSInteger maxID = [self.database maxMessageID];
+    NSInteger newMessageID = maxID + 1;
     NSString *newMessageIDString = [NSString stringWithFormat:@"%ld", (long)newMessageID];
     
     AATTMessagePlus *unsentMessagePlus = [AATTMessagePlus unsentMessagePlusForChannelWithID:channelID messageID:newMessageIDString message:message pendingFileAttachments:pendingFileAttachments];
@@ -388,6 +387,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     [newChannelMessages addEntriesFromOrderedDictionary:channelMessages];
     [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
     
+    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     minMaxPair.maxID = newMessageIDString;
     
     [self sendUnsentMessagesInChannelWithID:channelID];

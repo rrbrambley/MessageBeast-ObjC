@@ -866,6 +866,19 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     return has;
 }
 
+- (NSUInteger)maxMessageID {
+    __block NSUInteger maxID = 0;
+    static NSString *select = @"SELECT MAX(message_id) FROM messages";
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select];
+        if([resultSet next]) {
+            maxID = [resultSet intForColumnIndex:0];
+            [resultSet close];
+        }
+    }];
+    return maxID;
+}
+
 #pragma mark - Private Stuff
 
 - (AATTOrderedMessageBatch *)messagesWithSelectStatement:(NSString *)selectStatement arguments:(NSArray *)arguments {
