@@ -50,4 +50,12 @@ typedef void (^PrivateChannelCompletionBlock)(ANKChannel *channel, NSError *erro
  */
 - (void)getOrCreateActionChannelWithType:(NSString *)actionType targetChannel:(ANKChannel *)targetChannel completionBlock:(PrivateChannelCompletionBlock)block;
 
+/**
+ Deactivate a private Channel or Action Channel and remove it from persistence.
+ 
+ @param channel the Channel to deactivate
+ @param block the completion block
+ */
+- (void)deactivatePrivateOrActionChannel:(ANKChannel *)channel completionBlock:(PrivateChannelCompletionBlock)block;
+
 @end

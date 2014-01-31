@@ -7,6 +7,7 @@
 //
 
 #import "AATTADNPersistence.h"
+#import "ANKChannel+AATTAnnotationHelper.h"
 #import "NSObject+AATTPersistence.h"
 
 @implementation AATTADNPersistence
@@ -17,6 +18,19 @@
 
 + (ANKChannel *)channelWithType:(NSString *)channelType {
     return (ANKChannel *)[self codingObjectForKey:[NSString stringWithFormat:@"channel_%@", channelType]];
+}
+
++ (void)deleteChannel:(ANKChannel *)channel {
+    NSString *actionType = [channel actionChannelType];
+    NSString *targetChannelID = [channel targetChannelID];
+    
+    NSString *key = nil;
+    if(actionType && targetChannelID) {
+        key = [NSString stringWithFormat:@"actionChannel_%@_%@", actionType, targetChannelID];
+    } else {
+        key = [NSString stringWithFormat:@"channel_%@", channel.type];
+    }
+    [self deleteCodingObjectForKey:key];
 }
 
 + (void)saveActionChannel:(ANKChannel *)channel actionType:(NSString *)actionType targetChannelID:(NSString *)targetChannelID {

@@ -26,8 +26,12 @@
 + (NSData *)codingObjectForKey:(NSString *)key;
 
 /**
- A convenience method for saving a NSCoding object to NSUserDefaults
+ A convenience method for saving an NSCoding object to NSUserDefaults
  */
 + (void)saveCodingObject:(NSObject<NSCoding> *)obj forKey:(NSString *)key;
 
+/**
+ A convenience method for deleting an NSCoding object from NSUserDefaults
+ */
++ (void)deleteCodingObjectForKey:(NSString *)key;
 @end

@@ -173,4 +173,12 @@
     return NO;
 }
 
+- (void)deactivatePrivateOrActionChannel:(ANKChannel *)channel completionBlock:(PrivateChannelCompletionBlock)block {
+    [self deactivateChannel:channel completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+        if(!error) {
+            [AATTADNPersistence deleteChannel:channel];
+        }
+        block(responseObject, error);
+    }];
+}
 @end

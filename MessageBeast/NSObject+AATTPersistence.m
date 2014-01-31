@@ -39,4 +39,12 @@
     [self saveObject:[NSKeyedArchiver archivedDataWithRootObject:obj] forKey:key];
 }
 
++ (void)deleteCodingObjectForKey:(NSString *)key {
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    if(standardUserDefaults) {
+        [standardUserDefaults removeObjectForKey:key];
+        [standardUserDefaults synchronize];
+    }
+}
+
 @end
