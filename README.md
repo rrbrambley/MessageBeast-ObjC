@@ -318,7 +318,7 @@ Full-text search is available for all Messages persisted by AATTMessageManager.
 ```objective-c
 AATTOrderedMessageBatch *results = [self.messageManager searchMessagesWithQuery:@"pizza"
                                                         inChannelWithID:myChannel.channelID];
-//Message ids mapped to AATTMessagePlus objects, in reverse chronological order
+//Message NSDates mapped to AATTMessagePlus objects, in reverse chronological order
 NSOrderedDictionary *messages = results.messagePlusses;
 ```
 
