@@ -92,11 +92,11 @@
         } else {
             NSLog(@"Batch sync failed with error: %@", error.localizedDescription);
         }
-    } completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+    } completionBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
-            completionBlock(messagePlusses, appended, meta, error);
+            completionBlock(messagePlusses, meta, error);
         } else {
-            completionBlock(messagePlusses, appended, meta, error);
+            completionBlock(messagePlusses, meta, error);
         }
     }];
 }
@@ -108,14 +108,14 @@
         //we do this so that the max id is known.
         [self.messageManager loadPersistedMesssageForChannelWithID:actionChannelID limit:1];
     }
-    BOOL canFetch = [self.messageManager fetchNewestMessagesInChannelWithID:actionChannelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+    BOOL canFetch = [self.messageManager fetchNewestMessagesInChannelWithID:actionChannelID completionBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             for(AATTMessagePlus *messagePlus in messagePlusses) {
                 NSString *targetMessageID = messagePlus.message.targetMessageID;
                 [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageID targetChannelID:targetChannelID];
             }
         }
-        completionBlock(messagePlusses, appended, meta, error);
+        completionBlock(messagePlusses, meta, error);
     }];
     return canFetch;
 }
@@ -194,7 +194,7 @@
         
         ANKChannel *actionChannel = [self.actionChannels objectForKey:channelID];
         NSString *targetChannelID = [actionChannel targetChannelID];
-        [self.messageManager fetchNewestMessagesInChannelWithID:channelID completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+        [self.messageManager fetchNewestMessagesInChannelWithID:channelID completionBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
             if(!error) {
                 for(NSString *sentMessageID in messageIDs) {
                     [self.database deleteActionMessageSpecForActionMessageWithID:sentMessageID];

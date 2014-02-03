@@ -53,8 +53,8 @@ extern NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification
  */
 typedef NSOrderedDictionary* (^AATTMessageFilter)(NSOrderedDictionary *messages);
 
-typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error);
-typedef void (^AATTMessageManagerCompletionWithFilterBlock)(NSArray *messagePlusses, BOOL appended, NSOrderedDictionary *excludedResults, ANKAPIResponseMeta *meta, NSError *error);
+typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error);
+typedef void (^AATTMessageManagerCompletionWithFilterBlock)(NSArray *messagePlusses, NSOrderedDictionary *excludedResults, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerMultiChannelSyncBlock)(BOOL success, NSError *error);
 typedef void (^AATTMessageManagerBatchSyncBlock)(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messagePlus, ANKAPIResponseMeta *meta, NSError *error);

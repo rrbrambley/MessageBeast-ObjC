@@ -10,7 +10,18 @@
 
 @implementation AATTMinMaxPair
 
-- (AATTMinMaxPair *)combineWith:(AATTMinMaxPair *)otherMinMaxPair {
+- (id)initWithMinID:(NSString *)minID maxID:(NSString *)maxID minDate:(NSDate *)minDate maxDate:(NSDate *)maxDate {
+    self = [super init];
+    if(self) {
+        self.minID = minID;
+        self.maxID = maxID;
+        self.minDate = minDate;
+        self.maxDate = maxDate;
+    }
+    return self;
+}
+
+- (void)updateByCombiningWithMinMaxPair:(AATTMinMaxPair *)otherMinMaxPair {
     NSNumber *thisMin = [self minIDAsNumber];
     NSNumber *thisMax = [self maxIDAsNumber];
     NSNumber *otherMin = [otherMinMaxPair minIDAsNumber];
@@ -34,11 +45,33 @@
         newMax = [thisMax stringValue];
     }
     
-    AATTMinMaxPair *pair = [[AATTMinMaxPair alloc] init];
-    pair.minID = newMin;
-    pair.maxID = newMax;
+    self.minID = newMin;
+    self.maxID = newMax;
     
-    return pair;
+    //
+    //date
+    //
+    NSTimeInterval newMinDate = 0;
+    NSTimeInterval newMaxDate = 0;
+    
+    if(self.minDate && otherMinMaxPair.minDate) {
+        newMinDate = MIN(self.minDate.timeIntervalSince1970, otherMinMaxPair.minDate.timeIntervalSince1970);
+    } else if(otherMinMaxPair.minDate) {
+        newMinDate = otherMinMaxPair.minDate.timeIntervalSince1970;
+    } else if(self.minDate) {
+        newMinDate = self.minDate.timeIntervalSince1970;
+    }
+    
+    if(self.maxDate && otherMinMaxPair.maxDate) {
+        newMaxDate = MAX(self.maxDate.timeIntervalSince1970, otherMinMaxPair.maxDate.timeIntervalSince1970);
+    } else if(otherMinMaxPair.maxDate) {
+        newMaxDate = otherMinMaxPair.maxDate.timeIntervalSince1970;
+    } else if(self.maxDate) {
+        newMaxDate = self.maxDate.timeIntervalSince1970;
+    }
+    
+    self.minDate = [NSDate dateWithTimeIntervalSince1970:newMinDate];
+    self.maxDate = [NSDate dateWithTimeIntervalSince1970:newMaxDate];
 }
 
 - (NSNumber *)maxIDAsNumber {
@@ -47,6 +80,15 @@
 
 - (NSNumber *)minIDAsNumber {
     return self.minID ? [NSNumber numberWithInteger:[self.minID integerValue]] : nil;
+}
+
+- (void)expandDateIfMinOrMaxForDate:(NSDate *)date {
+    NSTimeInterval time = date.timeIntervalSince1970;
+    if(time < self.minDate.timeIntervalSince1970) {
+        self.minDate = date;
+    } else if(time > self.maxDate.timeIntervalSince1970) {
+        self.maxDate = date;
+    }
 }
 
 @end

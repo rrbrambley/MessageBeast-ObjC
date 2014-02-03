@@ -185,7 +185,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 
 - (void)fetchAndPersistAllMessagesInChannels:(NSArray *)channels currentChannelIndex:(NSInteger)currentChannelIndex completionBlock:(AATTMessageManagerMultiChannelSyncBlock)block {
     
-    AATTMessageManagerCompletionBlock currentChannelSyncBlock = ^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+    AATTMessageManagerCompletionBlock currentChannelSyncBlock = ^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(error) {
             block(NO, error);
         } else {
@@ -259,7 +259,8 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                 [channelMessages setObject:messagePlus forKey:messagePlus.message.messageID];
             }
             
-            [self adjustDateAndInsertMessagePlus:messagePlus];
+            [self adjustDateForMessagePlus:messagePlus];
+            [self insertMessagePlus:messagePlus];
             [self performLookupsOnMessagePlusses:@[messagePlus] persist:YES];
 
             block(messagePlus, meta, error);
@@ -285,13 +286,13 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         if([unsentChannelMessages objectForKey:messageID]) {
             [unsentChannelMessages removeEntryWithKey:messageID];
         }
+        [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
         
-        [self didDeleteMessageWithID:messageID inChannelWithID:channelID];
         block(nil, nil);
     } else {
         void (^finishDelete)(void) = ^void(void) {
             [self.database deleteMessagePlus:messagePlus];
-            [self didDeleteMessageWithID:messagePlus.message.messageID inChannelWithID:messagePlus.message.channelID];
+            [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
         };
         
         void (^deleteMessage)(void) = ^void(void) {
@@ -320,31 +321,13 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }
 }
 
-- (void)didDeleteMessageWithID:(NSString *)messageID inChannelWithID:(NSString *)channelID {
-    NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
-    if([channelMessages objectForKey:messageID]) {
-        [channelMessages removeEntryWithKey:messageID];
-    }
-    
-    AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    if(channelMessages.count > 0) {
-        minMaxPair.maxID = channelMessages.keyEnumerator.nextObject;
-    } else {
-        minMaxPair.maxID = nil;
-    }
-    
-    if([messageID isEqualToString:minMaxPair.minID]) {
-        minMaxPair.minID = channelMessages.allKeys.lastObject;
-    }
-}
-
 #pragma mark - Create Messages
 
 - (void)createMessageInChannelWithID:(NSString *)channelID message:(ANKMessage *)message completionBlock:(AATTMessageManagerCompletionBlock)block {
     
     [self.client createMessage:message inChannelWithID:channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
         if(error) {
-            block(responseObject, NO, meta, error);
+            block(responseObject, meta, error);
         } else {
             [self fetchNewestMessagesInChannelWithID:channelID completionBlock:block];
         }
@@ -380,14 +363,18 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     //TODO: handle display location
     
     NSMutableOrderedDictionary *unsentChannelMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
-    [unsentChannelMessages setObject:unsentMessagePlus forKey:newMessageIDString];
+    [unsentChannelMessages setObject:unsentMessagePlus forKey:unsentMessagePlus.displayDate];
     
     NSMutableOrderedDictionary *newChannelMessages = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:channelMessages.count + 1];
     [newChannelMessages setObject:unsentMessagePlus forKey:newMessageIDString];
     [newChannelMessages addEntriesFromOrderedDictionary:channelMessages];
     [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
     
+    //update the MinMaxPair
+    //we can assume the new id is the max (that's how we generated it)
+    //but we have to check to see if the time is min or max
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+    [minMaxPair expandDateIfMinOrMaxForDate:unsentMessagePlus.displayDate];
     minMaxPair.maxID = newMessageIDString;
     
     [self sendUnsentMessagesInChannelWithID:channelID];
@@ -434,37 +421,16 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         
         [self.client createMessage:message inChannelWithID:message.channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
             if(!error) {
-                [unsentMessages removeEntryWithKey:message.messageID];
+                [unsentMessages removeEntryWithKey:messagePlus.displayDate];
                 [sentMessageIDs addObject:message.messageID];
                 
                 [self.database deleteMessagePlus:messagePlus];
                 
-                NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:message.channelID];
-                if([channelMessages objectForKey:message.messageID]) {
-                    [channelMessages removeEntryWithKey:message.messageID];
-                }
+                [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
                 
-                AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:message.channelID];
                 if(unsentMessages.count > 0) {
-                    NSString *nextID = unsentMessages.keyEnumerator.nextObject;
-                    minMaxPair.maxID = nextID;
                     [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs];
                 } else {
-                    if(channelMessages.count > 0) {
-                        //step back in time until we find the first message that was NOT one
-                        //of the unsent messages. this will be the max id.
-                        NSEnumerator *enumerator = channelMessages.keyEnumerator;
-                        NSString *nextID = nil;
-                        while((nextID = enumerator.nextObject)) {
-                            if(![sentMessageIDs containsObject:nextID]) {
-                                minMaxPair.maxID = nextID;
-                                break;
-                            }
-                        }
-                    } else {
-                        minMaxPair.maxID = nil;
-                    }
-                    
                     NSDictionary *userInfo = @{@"channelID" : message.channelID, @"messageIDs" : sentMessageIDs};
                     [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidSendUnsentMessagesNotification object:self userInfo:userInfo];
                 }
@@ -558,7 +524,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     
     BOOL keepInMemory = messages.count == 0;
     
-    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:keepInMemory messageFilter:nil completionBlock:^(NSArray *messagePlusses, BOOL appended, ANKAPIResponseMeta *meta, NSError *error) {
+    [self fetchMessagesWithQueryParameters:parameters inChannelWithId:channelID keepInMemory:keepInMemory messageFilter:nil completionBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             if(messages.count == 0) {
                 [messages addObjectsFromArray:messagePlusses];
@@ -581,10 +547,10 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
             } else {
                 NSLog(@"Setting full sync state to COMPLETE for channel %@", channelID);
                 [self setFullSyncState:AATTChannelFullSyncStateComplete forChannelWithID:channelID];
-                block(messages, YES, meta, error);
+                block(messages, meta, error);
             }
         } else {
-            block(messages, YES, meta, error);
+            block(messages, meta, error);
         }
     } filterBlock:nil];
 }
@@ -662,6 +628,75 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }
 }
 
+- (void)deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:(AATTMessagePlus *)messagePlus {
+    NSString *channelID = messagePlus.message.channelID;
+    NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
+    
+    if([channelMessages objectForKey:messagePlus.displayDate]) {
+        //
+        //modify the MinMaxPair if the removed message was at the min or max date/id.
+        //we know the channel messages are ordered by date, but the ids are not necessarily ordered.
+        //
+        AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+        NSString *deletedMessageID = messagePlus.message.messageID;
+        BOOL adjustMax = [deletedMessageID isEqualToString:minMaxPair.maxID];
+        BOOL adjustMin = [deletedMessageID isEqualToString:minMaxPair.minID];
+        NSNumber *maxIDAsNumber = minMaxPair.maxIDAsNumber;
+        NSNumber *minIDAsNumber = minMaxPair.minIDAsNumber;
+        NSNumber *newMaxID = nil;
+        NSNumber *newMinID = nil;
+        NSTimeInterval deletedDate = messagePlus.displayDate.timeIntervalSince1970;
+        
+        //we have to iterate because ids are not in order in map,
+        //but we need need to find new min/max id. we will set the new
+        //dates while doing so as well
+        
+        NSDate *lastDate = nil;
+        NSDate *secondToLastDate = nil;
+        
+        for(NSDate *nextDate in channelMessages.allKeys) {
+            
+            //so this is the second date, and the first date was the one that was removed
+            //the new max date is the second key.
+            if(lastDate && !secondToLastDate && lastDate.timeIntervalSince1970 == deletedDate) {
+                minMaxPair.maxDate = nextDate;
+            }
+            
+            AATTMessagePlus *nextMessagePlus = [channelMessages objectForKey:nextDate];
+            NSInteger nextID = nextMessagePlus.message.messageID.integerValue;
+            if(adjustMax && maxIDAsNumber.integerValue > nextID && (!newMaxID || nextID > newMaxID.integerValue)) {
+                newMaxID = [NSNumber numberWithInteger:nextID];
+            }
+            if(adjustMin && minIDAsNumber.integerValue < nextID && (!newMinID || nextID < newMinID.integerValue)) {
+                newMinID = [NSNumber numberWithInteger:nextID];
+            }
+            secondToLastDate = lastDate;
+            lastDate = nextDate;
+        }
+        
+        //the last date was the removed one, so the new min date is the second to last date.
+        if(deletedDate == lastDate.timeIntervalSince1970) {
+            minMaxPair.minDate = secondToLastDate;
+        }
+        if(newMaxID) {
+            minMaxPair.maxID = newMaxID.stringValue;
+        }
+        if(newMinID) {
+            minMaxPair.minID = newMinID.stringValue;
+        }
+        
+        //handle the edge case where there is only one item in the map, about to get removed
+        if(channelMessages.count == 1) {
+            minMaxPair.minID = nil;
+            minMaxPair.maxID = nil;
+            minMaxPair.minDate = nil;
+            minMaxPair.maxDate = nil;
+        }
+        
+        [channelMessages removeEntryWithKey:messagePlus.displayDate];
+    }
+}
+
 - (BOOL)fetchMessagesWithQueryParameters:(NSDictionary *)parameters inChannelWithId:(NSString *)channelID keepInMemory:(BOOL)keepInMemory messageFilter:(AATTMessageFilter)filter completionBlock:(AATTMessageManagerCompletionBlock)block filterBlock:(AATTMessageManagerCompletionWithFilterBlock)filterBlock {
     NSMutableOrderedDictionary *unsentMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
     if(unsentMessages.count > 0) {
@@ -672,68 +707,62 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }
     
     [self.client fetchMessagesInChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-        BOOL appended = YES;
-        NSString *beforeID = [parameters objectForKey:@"before_id"];
-        NSString *sinceID = [parameters objectForKey:@"since_id"];
-        
-        AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-        if(beforeID && !sinceID && keepInMemory) {
-            NSString *newMinID = meta.minID;
-            if(newMinID) {
-                minMaxPair.minID = newMinID;
-            }
-        } else if(!beforeID && sinceID) {
-            appended = NO;
-            if(keepInMemory) {
-                NSString *newMaxID = meta.maxID;
-                if(newMaxID) {
-                    minMaxPair.maxID = newMaxID;
-                }
-            }
-        } else if(!beforeID && !sinceID && keepInMemory) {
-            minMaxPair.minID = meta.minID;
-            minMaxPair.maxID = meta.maxID;
-        }
-        
         NSOrderedDictionary *excludedResults = nil;
+        
         NSArray *responseMessages = responseObject;
         NSMutableOrderedDictionary *channelMessagePlusses = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
-        
         NSMutableOrderedDictionary *newestMessagesDictionary = [[NSMutableOrderedDictionary alloc] initWithCapacity:responseMessages.count];
         NSMutableOrderedDictionary *newChannelMessages = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:([channelMessagePlusses count] + [responseMessages count])];
         
-        if(appended) {
-            [newChannelMessages addEntriesFromOrderedDictionary:channelMessagePlusses];
-        }
+        [newChannelMessages addEntriesFromOrderedDictionary:channelMessagePlusses];
+        
         for(ANKMessage *m in responseMessages) {
             AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:m];
-            [newestMessagesDictionary setObject:messagePlus forKey:m.messageID];
-            [newChannelMessages setObject:messagePlus forKey:m.messageID];
+            [self adjustDateForMessagePlus:messagePlus];
+            [newestMessagesDictionary setObject:messagePlus forKey:messagePlus.displayDate];
+            [newChannelMessages setObject:messagePlus forKey:messagePlus.displayDate];
         }
-        if(!appended) {
-            [newChannelMessages addEntriesFromOrderedDictionary:channelMessagePlusses];
-        }
+        
+        //SORT!
+        [newChannelMessages sortEntrysByKeysUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            return [obj2 compare:obj1];
+        }];
         
         if(filter) {
             excludedResults = filter(newestMessagesDictionary);
             [self removeExcludedMessages:excludedResults fromDictionary:newestMessagesDictionary];
         }
         
+        NSDate *minDate = nil;
+        NSDate *maxDate = nil;
+        
         for(AATTMessagePlus *messagePlus in [newestMessagesDictionary allObjects]) {
-            [self adjustDateAndInsertMessagePlus:messagePlus];
+            [self insertMessagePlus:messagePlus];
+            
+            NSTimeInterval time = messagePlus.displayDate.timeIntervalSince1970;
+            if(!minDate || time < minDate.timeIntervalSince1970) {
+                minDate = messagePlus.displayDate;
+            }
+            if(!maxDate || time > maxDate.timeIntervalSince1970) {
+                maxDate = messagePlus.displayDate;
+            }
         }
         
         if(keepInMemory) {
             [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
+            
+            AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
+            AATTMinMaxPair *batchMinMaxPair = [[AATTMinMaxPair alloc] initWithMinID:meta.minID maxID:meta.maxID minDate:minDate maxDate:maxDate];
+            [minMaxPair updateByCombiningWithMinMaxPair:batchMinMaxPair];
         }
         
         NSArray *newestMessages = [NSArray arrayWithArray:[newestMessagesDictionary allObjects]];
         [self performLookupsOnMessagePlusses:newestMessages persist:YES];
 
         if(filterBlock) {
-            filterBlock(newestMessages, appended, excludedResults, meta, error);
+            filterBlock(newestMessages, excludedResults, meta, error);
         } else if(block) {
-            block(newestMessages, appended, meta, error);
+            block(newestMessages, meta, error);
         }
     }];
     
@@ -743,16 +772,14 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 - (AATTOrderedMessageBatch *)loadPersistedMessageBatchForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit performLookups:(BOOL)performLookups {
     NSDate *beforeDate = nil;
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
-    if(minMaxPair.minID) {
-        NSMutableOrderedDictionary *messages = [self.messagesByChannelID objectForKey:channelID];
-        AATTMessagePlus *messagePlus = [messages objectForKey:minMaxPair.minID];
-        beforeDate = messagePlus.displayDate;
+    if(minMaxPair.minDate) {
+        beforeDate = minMaxPair.minDate;
     }
     
     AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesInChannelWithID:channelID beforeDate:beforeDate limit:limit];
     NSOrderedDictionary *messagePlusses = orderedMessageBatch.messagePlusses;
     AATTMinMaxPair *dbMinMaxPair = orderedMessageBatch.minMaxPair;
-    minMaxPair = [minMaxPair combineWith:dbMinMaxPair];
+    [minMaxPair updateByCombiningWithMinMaxPair:dbMinMaxPair];
     
     NSMutableOrderedDictionary *channelMessages = [messagePlusses objectForKey:channelID];
     if(channelMessages) {
@@ -760,8 +787,6 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     } else {
         [self.messagesByChannelID setObject:messagePlusses forKey:channelID];
     }
-    
-    [self.minMaxPairs setObject:minMaxPair forKey:channelID];
     
     if(performLookups) {
         [self performLookupsOnMessagePlusses:[messagePlusses allObjects] persist:NO];
@@ -784,10 +809,12 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return pair;
 }
 
-- (void)adjustDateAndInsertMessagePlus:(AATTMessagePlus *)messagePlus {
+- (void)adjustDateForMessagePlus:(AATTMessagePlus *)messagePlus {
     NSDate *adjustedDate = [self adjustedDateForMessage:messagePlus.message];
     messagePlus.displayDate = adjustedDate;
-    
+}
+
+- (void)insertMessagePlus:(AATTMessagePlus *)messagePlus {
     [self.database insertOrReplaceMessage:messagePlus];
     [self.database insertOrReplaceHashtagInstances:messagePlus];
     

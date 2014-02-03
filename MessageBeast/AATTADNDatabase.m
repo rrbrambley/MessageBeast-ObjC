@@ -398,7 +398,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
             messagePlus.displayDate = date;
             messagePlus.isUnsent = YES;
             messagePlus.sendAttemptsCount = sendAttemptsCount;
-            [messagePlusses setObject:messagePlus forKey:messageID];
+            [messagePlusses setObject:messagePlus forKey:date];
         }
     }];
     
@@ -884,17 +884,22 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 - (AATTOrderedMessageBatch *)messagesWithSelectStatement:(NSString *)selectStatement arguments:(NSArray *)arguments {
     NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] init];
     NSMutableArray *unsentMessagePlusses = [NSMutableArray array];
-    __block NSString *maxID = nil;
-    __block NSString *minID = nil;
+    __block int maxID = -1;
+    __block int minID = -1;
+    __block NSDate *minDate = nil;
+    __block NSDate *maxDate = nil;
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:selectStatement withArgumentsInArray:arguments];
         
+        int messageID = -1;
+        NSDate *date = nil;
+        
         ANKMessage *m = nil;
         while([resultSet next]) {
-            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
+            messageID = [resultSet intForColumnIndex:0];
             //1 is channel; will come from json
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
+            date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
             NSString *messageJSONString = [resultSet stringForColumnIndex:3];
             NSString *messageText = [resultSet stringForColumnIndex:4];
             BOOL isUnsent = [resultSet boolForColumnIndex:5];
@@ -908,10 +913,17 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
             messagePlus.isUnsent = isUnsent;
             messagePlus.sendAttemptsCount = sendAttemptsCount;
             messagePlus.displayDate = date;
-            [messagePlusses setObject:messagePlus forKey:messageID];
+            [messagePlusses setObject:messagePlus forKey:date];
             
-            if(!maxID) {
+            if(maxID == -1) {
                 maxID = messageID;
+                minID = messageID;
+                maxDate = date;
+            } else {
+                //this must happen because id order is not necessarily same as date order
+                //(and we know the results are ordered by date)
+                maxID = MAX(messageID, maxID);
+                minID = MIN(messageID, minID);
             }
             
             //this is just for efficiency
@@ -921,16 +933,16 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
                 [unsentMessagePlusses addObject:messagePlus];
             }
         }
-        if(m) {
-            minID = m.messageID;
-        }
+        //because they're ordered by recency, we know the last one will be the minDate
+        minDate = date;
     }];
     
     [self populatePendingFileAttachmentsForMessagePlusses:unsentMessagePlusses];
     
-    AATTMinMaxPair *minMaxPair = [[AATTMinMaxPair alloc] init];
-    minMaxPair.minID = minID;
-    minMaxPair.maxID = maxID;
+    NSString *minIDString = minID != -1 ? [NSString stringWithFormat:@"%d", minID] : nil;
+    NSString *maxIDString = maxID != -1 ? [NSString stringWithFormat:@"%d", maxID] : nil;
+    
+    AATTMinMaxPair *minMaxPair = [[AATTMinMaxPair alloc] initWithMinID:minIDString maxID:maxIDString minDate:minDate maxDate:maxDate];
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
 }
 

@@ -10,12 +10,11 @@
 
 @implementation AATTChannelRefreshResult
 
-- (id)initWithChannel:(ANKChannel *)channel messagePlusses:(NSArray *)messagePlusses appended:(BOOL)appended {
+- (id)initWithChannel:(ANKChannel *)channel messagePlusses:(NSArray *)messagePlusses {
     self = [super init];
     if(self) {
         _channel = channel;
         _messagePlusses = messagePlusses;
-        _appended = appended;
         _success = YES;
     }
     return self;

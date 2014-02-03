@@ -14,10 +14,9 @@
 @property (readonly) BOOL success;
 @property (readonly) ANKChannel *channel;
 @property (readonly) NSArray *messagePlusses;
-@property (readonly) BOOL appended;
 @property (readonly) NSError *error;
 
-- (id)initWithChannel:(ANKChannel *)channel messagePlusses:(NSArray *)messagePlusses appended:(BOOL)appended;
+- (id)initWithChannel:(ANKChannel *)channel messagePlusses:(NSArray *)messagePlusses;
 - (id)initWithChannel:(ANKChannel *)channel error:(NSError *)error;
 - (id)initWithChannel:(ANKChannel *)channel;
 
