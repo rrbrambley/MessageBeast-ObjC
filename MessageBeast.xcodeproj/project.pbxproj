@@ -59,6 +59,8 @@
 		E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E31821B8AA0057245C /* FMDatabasePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F2934185CD97800957D43 /* FMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E51821B8AA0057245C /* FMDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F2935185CD97800957D43 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E81821B8AA0057245C /* FMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E26F137F18A015B800A7C4B9 /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
+		E26F138018A0168500A7C4B9 /* MessageBeast.h in Headers */ = {isa = PBXBuildFile; fileRef = E218EF881890936B00ADC609 /* MessageBeast.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E01821B8AA0057245C /* FMDatabase.m */; };
 		E29A82EB1821B8AA0057245C /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */; };
 		E29A82EC1821B8AA0057245C /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E41821B8AA0057245C /* FMDatabasePool.m */; };
@@ -67,7 +69,6 @@
 		E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E29A82F01821B8E10057245C /* libsqlite3.dylib */; };
 		E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83201822FF090057245C /* NSOrderedDictionary.m */; };
 		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
-		E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
 		E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A72A18180190009DECDB /* SystemConfiguration.framework */; };
 		E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A7231818004A009DECDB /* MobileCoreServices.framework */; };
 /* End PBXBuildFile section */
@@ -250,10 +251,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E26F137F18A015B800A7C4B9 /* libADNKit-AFNetworking-iOS.a in Frameworks */,
 				E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */,
 				E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */,
 				E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */,
-				E2E5A7221817FDFC009DECDB /* libADNKit-AFNetworking-iOS.a in Frameworks */,
 				E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -472,6 +473,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E26F138018A0168500A7C4B9 /* MessageBeast.h in Headers */,
 				E24F2930185CD97800957D43 /* NSOrderedDictionary.h in Headers */,
 				E24F2931185CD97800957D43 /* FMDatabase.h in Headers */,
 				E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */,
