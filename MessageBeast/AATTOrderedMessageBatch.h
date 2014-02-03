@@ -13,7 +13,15 @@
 
 @interface AATTOrderedMessageBatch : NSObject
 
+/**
+ An Ordered Dictionary of @{NSDate : AATTMessagePlus} in
+ reverse chronological order.
+ */
 @property NSOrderedDictionary *messagePlusses;
+
+/**
+ The min and max IDs and dates in this batch.
+ */
 @property AATTMinMaxPair *minMaxPair;
 
 - (id)initWithOrderedMessagePlusses:(NSOrderedDictionary *)messagePlusses minMaxPair:(AATTMinMaxPair *)minMaxPair;

@@ -123,7 +123,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
  @param channelID the id of the channel for which messages should be loaded.
  @param limit the maximum number of messages to load from the database.
- @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
+ @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
 - (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
@@ -150,7 +150,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @param displayLocation the AATTDisplayLocation of interest
  @param locationPrecision the precision to be used when determining whether two locations
         with the same name are considered the same display location.
- @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
+ @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
@@ -161,7 +161,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
  @param channelID the id of the channel for which messages should be loaded.
  @param hashtagName the hashtag name (without the #)
- @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
+ @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
@@ -172,7 +172,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
  @param channelID the id of the channel for which messages should be loaded.
  @param messageIDs the messages to load.
- @return a dictionary with message IDs mapped to AATTMessagePlus objects, in reverse
+ @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs;
