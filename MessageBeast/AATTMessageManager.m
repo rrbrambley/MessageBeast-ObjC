@@ -256,7 +256,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
             
             NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:messagePlus.message.channelID];
             if(channelMessages) { //could be nil if the channel messages weren't loaded first, etc.
-                [channelMessages setObject:messagePlus forKey:messagePlus.message.messageID];
+                [channelMessages setObject:messagePlus forKey:messagePlus.displayDate];
             }
             
             [self adjustDateForMessagePlus:messagePlus];
