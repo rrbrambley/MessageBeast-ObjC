@@ -277,14 +277,13 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 - (void)deleteMessage:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {
     if(messagePlus.isUnsent) {
         ANKMessage *message = messagePlus.message;
-        NSString *messageID = message.messageID;
         NSString *channelID = message.channelID;
         
         [self.database deleteMessagePlus:messagePlus];
         
         NSMutableOrderedDictionary *unsentChannelMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
-        if([unsentChannelMessages objectForKey:messageID]) {
-            [unsentChannelMessages removeEntryWithKey:messageID];
+        if([unsentChannelMessages objectForKey:messagePlus.displayDate]) {
+            [unsentChannelMessages removeEntryWithKey:messagePlus.displayDate];
         }
         [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
         
@@ -366,7 +365,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     [unsentChannelMessages setObject:unsentMessagePlus forKey:unsentMessagePlus.displayDate];
     
     NSMutableOrderedDictionary *newChannelMessages = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:channelMessages.count + 1];
-    [newChannelMessages setObject:unsentMessagePlus forKey:newMessageIDString];
+    [newChannelMessages setObject:unsentMessagePlus forKey:unsentMessagePlus.displayDate];
     [newChannelMessages addEntriesFromOrderedDictionary:channelMessages];
     [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
     
@@ -853,16 +852,17 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
             NSAssert(messagePlusNeedingFile.pendingFileAttachments, @"AATTMessagePlus is missing pending file attachments");
             [messagePlusNeedingFile replacePendingFileAttachmentWithAnnotationForPendingFileWithID:pendingFileID file:file];
             
+            NSDate *messageDate = messagePlusNeedingFile.displayDate;
             NSString *messageID = messagePlusNeedingFile.message.messageID;
             NSString *channelID = messagePlusNeedingFile.message.channelID;
             NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:channelID];
             NSMutableOrderedDictionary *unsentMessages = [self.unsentMessagesByChannelID objectForKey:channelID];
             
-            if([channelMessages objectForKey:messageID]) {
-                [channelMessages setObject:messagePlusNeedingFile forKey:messageID];
+            if([channelMessages objectForKey:messageDate]) {
+                [channelMessages setObject:messagePlusNeedingFile forKey:messageDate];
             }
-            if([unsentMessages objectForKey:messageID]) {
-                [unsentMessages setObject:messagePlusNeedingFile forKey:messageID];
+            if([unsentMessages objectForKey:messageDate]) {
+                [unsentMessages setObject:messagePlusNeedingFile forKey:messageDate];
             }
             
             [self.database insertOrReplaceMessage:messagePlusNeedingFile];
