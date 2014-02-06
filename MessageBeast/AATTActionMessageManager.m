@@ -87,7 +87,7 @@
             NSLog(@"synced batch of %lu messages", (unsigned long)messagePlusses.count);
             for(AATTMessagePlus *messagePlus in messagePlusses) {
                 NSString *targetMessageId = [messagePlus.message targetMessageID];
-                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageId targetChannelID:targetChannelID];
+                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageId targetChannelID:targetChannelID targetMessageDisplayDate:messagePlus.displayDate];
             }
         } else {
             NSLog(@"Batch sync failed with error: %@", error.localizedDescription);
@@ -112,7 +112,7 @@
         if(!error) {
             for(AATTMessagePlus *messagePlus in messagePlusses) {
                 NSString *targetMessageID = messagePlus.message.targetMessageID;
-                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageID targetChannelID:targetChannelID];
+                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageID targetChannelID:targetChannelID targetMessageDisplayDate:messagePlus.displayDate];
             }
         }
         completionBlock(messagePlusses, meta, error);
@@ -131,7 +131,7 @@
         [m addTargetMessageAnnotationWithTargetMessageID:targetMessageID];
         
         AATTMessagePlus *unsentActionMessage = [self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:actionChannelID message:m];
-        [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageID:targetMessageID targetChannelID:message.channelID];
+        [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageID:targetMessageID targetChannelID:message.channelID targetMessageDisplayDate:unsentActionMessage.displayDate];
     }
 }
 
@@ -200,7 +200,7 @@
                     [self.database deleteActionMessageSpecForActionMessageWithID:sentMessageID];
                 }
                 for(AATTMessagePlus *messagePlus in messagePlusses) {
-                    [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:messagePlus.message.targetMessageID targetChannelID:targetChannelID];
+                    [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:messagePlus.message.targetMessageID targetChannelID:targetChannelID targetMessageDisplayDate:messagePlus.displayDate];
                 }
             } else {
                 NSLog(@"Could not fetch newest messages for action channel with ID %@; %@", channelID, error.localizedDescription);

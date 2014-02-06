@@ -76,8 +76,9 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  @param messagePlus the action message
  @param targetMessageID the ID of the target message
  @param targetChannelID the ID of the target message's channel.
+ @param targetMessageDisplayDate the display date of the target message.
  */
-- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID;
+- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID targetMessageDisplayDate:(NSDate *)targetMessageDisplayDate;
 
 /**
  Insert a pending message deletion.

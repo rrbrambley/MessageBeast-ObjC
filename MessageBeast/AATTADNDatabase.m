@@ -62,7 +62,7 @@ static NSString *const kCreatePendingFilesTable = @"CREATE TABLE IF NOT EXISTS p
 
 static NSString *const kCreatePendingFileAttachmentsTable = @"CREATE TABLE IF NOT EXISTS pending_file_attachments (pending_file_attachment_file_id TEXT NOT NULL, pending_file_attachment_message_id TEXT NOT NULL, pending_file_attachment_channel_id TEXT NOT NULL, pending_file_attachment_is_oembed INTEGER NOT NULL, PRIMARY KEY (pending_file_attachment_file_id, pending_file_attachment_message_id))";
 
-static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EXISTS action_messages (action_message_id TEXT PRIMARY KEY, action_message_channel_id TEXT NOT NULL, action_message_target_message_id TEXT NOT NULL, action_message_target_channel_id TEXT NOT NULL)";
+static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EXISTS action_messages (action_message_id TEXT PRIMARY KEY, action_message_channel_id TEXT NOT NULL, action_message_target_message_id TEXT NOT NULL, action_message_target_channel_id TEXT NOT NULL, action_message_target_message_display_date INTEGER NOT NULL)";
 
 static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT EXISTS pending_file_deletions (pending_file_deletion_file_id TEXT PRIMARY KEY)";
 
@@ -237,11 +237,12 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     }
 }
 
-- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID {
-    static NSString *insertOrReplaceActionMessageSpec = @"INSERT OR REPLACE INTO action_messages (action_message_id, action_message_channel_id, action_message_target_message_id, action_message_target_channel_id) VALUES (?, ?, ?, ?)";
+- (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID targetMessageDisplayDate:(NSDate *)targetMessageDisplayDate {
+    static NSString *insertOrReplaceActionMessageSpec = @"INSERT OR REPLACE INTO action_messages (action_message_id, action_message_channel_id, action_message_target_message_id, action_message_target_channel_id, action_message_target_message_display_date) VALUES (?, ?, ?, ?, ?)";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         ANKMessage *message = messagePlus.message;
-        if(![db executeUpdate:insertOrReplaceActionMessageSpec, message.messageID, message.channelID, targetMessageID, targetChannelID]) {
+        NSNumber *targetMessageDisplayDate = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
+        if(![db executeUpdate:insertOrReplaceActionMessageSpec, message.messageID, message.channelID, targetMessageID, targetChannelID, targetMessageDisplayDate]) {
             *rollback = YES;
             return;
         }
@@ -598,7 +599,6 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs inActionChannelWithID:(NSString *)actionChannelID {
-    NSMutableArray *actionMessageSpecs = [[NSMutableArray alloc] initWithCapacity:targetMessageIDs.count];
     NSString *select = @"SELECT * FROM action_messages WHERE";
     
     NSInteger startIndex = 0;
@@ -629,20 +629,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     }
     select = [NSString stringWithFormat:@"%@)", select];
 
-    [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
-        while([resultSet next]) {
-            NSString *aMessageID = [resultSet stringForColumnIndex:0];
-            NSString *aChannelID = [resultSet stringForColumnIndex:1];
-            NSString *tMessageID = [resultSet stringForColumnIndex:2];
-            NSString *tChannelID = [resultSet stringForColumnIndex:3];
-            
-            AATTActionMessageSpec *spec = [[AATTActionMessageSpec alloc] initWithActionMessageID:aMessageID actionChannelID:aChannelID targetMessageID:tMessageID targetChannelID:tChannelID];
-            [actionMessageSpecs addObject:spec];
-        }
-    }];
-    
-    return actionMessageSpecs;
+    return [self actionMessageSpecsWithSelectStatement:select arguments:args];
 }
 
 - (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID {
@@ -944,6 +931,24 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     
     AATTMinMaxPair *minMaxPair = [[AATTMinMaxPair alloc] initWithMinID:minIDString maxID:maxIDString minDate:minDate maxDate:maxDate];
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
+}
+
+- (NSArray *)actionMessageSpecsWithSelectStatement:(NSString *)select arguments:(NSArray *)arguments {
+    NSMutableArray *actionMessageSpecs = [NSMutableArray array];
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:arguments];
+        while([resultSet next]) {
+            NSString *aMessageID = [resultSet stringForColumnIndex:0];
+            NSString *aChannelID = [resultSet stringForColumnIndex:1];
+            NSString *tMessageID = [resultSet stringForColumnIndex:2];
+            NSString *tChannelID = [resultSet stringForColumnIndex:3];
+            NSDate *tMessageDate = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:4]];
+            
+            AATTActionMessageSpec *spec = [[AATTActionMessageSpec alloc] initWithActionMessageID:aMessageID actionChannelID:aChannelID targetMessageID:tMessageID targetChannelID:tChannelID targetMessageDate:tMessageDate];
+            [actionMessageSpecs addObject:spec];
+        }
+    }];
+    return actionMessageSpecs;
 }
 
 - (void)populatePendingFileAttachmentsForMessagePlusses:(NSArray *)messagePlusses {
