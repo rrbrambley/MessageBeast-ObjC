@@ -385,7 +385,6 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, channelID, [NSNumber numberWithInt:1]];
         while([resultSet next]) {
-            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
             NSString *messageJSONString = [resultSet stringForColumnIndex:2];
             NSString *messageText = [resultSet stringForColumnIndex:3];
