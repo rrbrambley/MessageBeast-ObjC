@@ -211,9 +211,9 @@
 
 #pragma mark - Private
 
-- (NSArray *)targetMessagePlussesForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId targetChannelID:(NSString *)targetChannelID {
+- (NSArray *)targetMessagePlussesForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId {
     NSSet *targetMessageIDs = [self targetMessageIDsForMessagePlusses:actionMessages];
-    NSOrderedDictionary *targetMessages = [self.messageManager persistedMessagesForChannelWithID:targetChannelID messageIDs:targetMessageIDs];
+    NSOrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:targetMessageIDs];
     return [targetMessages allObjects];
 }
 

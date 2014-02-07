@@ -135,15 +135,15 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
     AATTDisplayLocationInstances *instances = [self.database displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:locationPrecision];
-    return [self persistedMessagesForChannelWithID:channelID messageIDs:instances.messageIDs.set];
+    return [self persistedMessagesWithMessageIDs:instances.messageIDs.set];
 }
 
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
     AATTHashtagInstances *hashtagInstances = [self.database hashtagInstancesInChannelWithID:channelID hashtagName:hashtagName];
-    return [self persistedMessagesForChannelWithID:channelID messageIDs:hashtagInstances.messageIDs.set];
+    return [self persistedMessagesWithMessageIDs:hashtagInstances.messageIDs.set];
 }
 
-- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID messageIDs:(NSSet *)messageIDs {
+- (NSOrderedDictionary *)persistedMessagesWithMessageIDs:(NSSet *)messageIDs {
     AATTOrderedMessageBatch *messageBatch = [self.database messagesWithIDs:messageIDs];
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
     [self performLookupsOnMessagePlusses:messagePlusses.allObjects persist:NO];
@@ -152,7 +152,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType {
     AATTAnnotationInstances *annotationInstances = [self.database annotationInstancesOfType:annotationType inChannelWithID:channelID];
-    return [self persistedMessagesForChannelWithID:channelID messageIDs:annotationInstances.messageIDs.set];
+    return [self persistedMessagesWithMessageIDs:annotationInstances.messageIDs.set];
 }
 
 #pragma mark - Search
