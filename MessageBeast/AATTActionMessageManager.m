@@ -81,14 +81,10 @@
 #pragma mark - Retrieval
 
 - (void)fetchAndPersistAllMessagesInActionChannelWithID:(NSString *)actionChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
-    NSString *targetChannelID = [self targetChannelIDForActionChannelWithID:actionChannelID];
     [self.messageManager fetchAndPersistAllMessagesInChannelWithID:actionChannelID batchSyncBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
             NSLog(@"synced batch of %lu messages", (unsigned long)messagePlusses.count);
-            for(AATTMessagePlus *messagePlus in messagePlusses) {
-                NSString *targetMessageId = [messagePlus.message targetMessageID];
-                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageId targetChannelID:targetChannelID targetMessageDisplayDate:messagePlus.displayDate];
-            }
+            [self processNewActionMessages:messagePlusses];
         } else {
             NSLog(@"Batch sync failed with error: %@", error.localizedDescription);
         }
@@ -102,7 +98,6 @@
 }
 
 - (BOOL)fetchNewestMessagesInActionChannelWithID:(NSString *)actionChannelID completionBlock:(AATTMessageManagerCompletionBlock)completionBlock {
-    NSString *targetChannelID = [self targetChannelIDForActionChannelWithID:actionChannelID];
     NSArray *messages = [self.messageManager loadedMessagesForChannelWithID:actionChannelID];
     if(!messages || messages.count == 0) {
         //we do this so that the max id is known.
@@ -110,10 +105,7 @@
     }
     BOOL canFetch = [self.messageManager fetchNewestMessagesInChannelWithID:actionChannelID completionBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
         if(!error) {
-            for(AATTMessagePlus *messagePlus in messagePlusses) {
-                NSString *targetMessageID = messagePlus.message.targetMessageID;
-                [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:targetMessageID targetChannelID:targetChannelID targetMessageDisplayDate:messagePlus.displayDate];
-            }
+            [self processNewActionMessages:messagePlusses];
         }
         completionBlock(messagePlusses, meta, error);
     }];
@@ -131,7 +123,7 @@
         [m addTargetMessageAnnotationWithTargetMessageID:targetMessageID];
         
         AATTMessagePlus *unsentActionMessage = [self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:actionChannelID message:m];
-        [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageID:targetMessageID targetChannelID:message.channelID targetMessageDisplayDate:unsentActionMessage.displayDate];
+        [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageID:targetMessageID targetChannelID:message.channelID targetMessageDisplayDate:messagePlus.displayDate];
     }
 }
 
@@ -200,7 +192,10 @@
                     [self.database deleteActionMessageSpecForActionMessageWithID:sentMessageID];
                 }
                 for(AATTMessagePlus *messagePlus in messagePlusses) {
-                    [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:messagePlus.message.targetMessageID targetChannelID:targetChannelID targetMessageDisplayDate:messagePlus.displayDate];
+                    AATTMessagePlus *targetMessagePlus = [self.messageManager persistedMessageWithID:messagePlus.message.targetMessageID];
+                    if(targetMessagePlus) {
+                        [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:messagePlus.message.targetMessageID targetChannelID:targetChannelID targetMessageDisplayDate:targetMessagePlus.displayDate];
+                    }
                 }
             } else {
                 NSLog(@"Could not fetch newest messages for action channel with ID %@; %@", channelID, error.localizedDescription);
@@ -228,6 +223,29 @@
 - (NSString *)targetChannelIDForActionChannelWithID:(NSString *)actionChannelID {
     ANKChannel *actionChannel = [self.actionChannels objectForKey:actionChannelID];
     return actionChannel.targetChannelID;
+}
+
+- (void)processNewActionMessages:(NSArray *)actionMessages {
+    NSMutableDictionary *targetMessageIDToActionMessage = [NSMutableDictionary dictionaryWithCapacity:actionMessages.count];
+    
+    for(AATTMessagePlus *messagePlus in actionMessages) {
+        NSString *targetMessageID = messagePlus.message.targetMessageID;
+        if(targetMessageID) {
+            [targetMessageIDToActionMessage setObject:messagePlus forKey:targetMessageID];
+        } else {
+            NSLog(@"action message %@ is missing target message metadata!", messagePlus.message.messageID);
+        }
+    }
+    
+    NSSet *keySet = [NSSet setWithArray:targetMessageIDToActionMessage.allKeys];
+    NSOrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:keySet];
+    for(AATTMessagePlus *targetMessage in targetMessages.allObjects) {
+        NSString *targetMessageID = targetMessage.message.messageID;
+        NSString *targetChannelID = targetMessage.message.channelID;
+        AATTMessagePlus *actionMessage = [targetMessageIDToActionMessage objectForKey:targetMessageID];
+        NSDate *targetMessageDisplayDate = targetMessage.displayDate;
+        [self.database insertOrReplaceActionMessageSpec:actionMessage targetMessageID:targetMessageID targetChannelID:targetChannelID targetMessageDisplayDate:targetMessageDisplayDate];
+    }
 }
 
 @end
