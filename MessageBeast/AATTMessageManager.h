@@ -167,6 +167,15 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 - (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
 
 /**
+ Get a persisted message.
+ This message is not kept in memory by the message manager.
+ 
+ @param messageID the id of the message to load.
+ @return an AATTMessagePlus or nil if none with the provided id is persisted.
+ */
+- (AATTMessagePlus *)persistedMessageWithID:(NSString *)messageID;
+
+/**
  Get persisted messages.
  These messages are not kept in memory by the message manager.
 

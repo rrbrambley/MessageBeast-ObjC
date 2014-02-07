@@ -143,6 +143,14 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return [self persistedMessagesWithMessageIDs:hashtagInstances.messageIDs.set];
 }
 
+- (AATTMessagePlus *)persistedMessageWithID:(NSString *)messageID {
+    AATTMessagePlus *messagePlus = [self.database messagePlusForMessageID:messageID];
+    if(messagePlus) {
+        [self performLookupsOnMessagePlusses:@[messagePlus] persist:NO];
+    }
+    return messagePlus;
+}
+
 - (NSOrderedDictionary *)persistedMessagesWithMessageIDs:(NSSet *)messageIDs {
     AATTOrderedMessageBatch *messageBatch = [self.database messagesWithIDs:messageIDs];
     NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
