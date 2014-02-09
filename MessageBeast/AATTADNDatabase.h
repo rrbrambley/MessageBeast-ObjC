@@ -335,6 +335,23 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs inActionChannelWithID:(NSString *)actionChannelID;
 
 /**
+ Obtain an array of AATTActionMessageSpec objects ordered by target message ID.
+ 
+ @param actionChannelID the id of the action channel associated with the action message specs of interest
+ @param limit the maximum number of specs to obtain from the database.
+ */
+- (NSArray *)actionMessageSpecsOrderedByTargetMessageDisplayDateInActionChannelWithID:(NSString *)actionChannelID limit:(NSUInteger)limit;
+
+/**
+ Obtain an array of AATTActionMessageSpec objects ordered by target message ID.
+ 
+ @param actionChannelID the id of the action channel associated with the action message specs of interest
+ @param beforeDate a date later than the target message date of all returned specs
+ @param limit the maximum number of specs to obtain from the database
+ */
+- (NSArray *)actionMessageSpecsOrderedByTargetMessageDisplayDateInActionChannelWithID:(NSString *)actionChannelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+
+/**
  Obtain a pending file.
  
  @param pendingFileID the id of the pending file

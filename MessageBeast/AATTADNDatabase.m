@@ -631,6 +631,27 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     return [self actionMessageSpecsWithSelectStatement:select arguments:args];
 }
 
+- (NSArray *)actionMessageSpecsOrderedByTargetMessageDisplayDateInActionChannelWithID:(NSString *)actionChannelID limit:(NSUInteger)limit {
+    return [self actionMessageSpecsOrderedByTargetMessageDisplayDateInActionChannelWithID:actionChannelID beforeDate:nil limit:limit];
+}
+
+- (NSArray *)actionMessageSpecsOrderedByTargetMessageDisplayDateInActionChannelWithID:(NSString *)actionChannelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
+    NSString *select = @"SELECT * FROM action_messages WHERE action_message_channel_id = ?";
+    NSArray *arguments = nil;
+    
+    if(beforeDate) {
+        select = [NSString stringWithFormat:@"%@ AND CAST(action_message_target_message_display_date AS INTEGER) < ?", select];
+        arguments = @[actionChannelID, [NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
+    } else {
+        arguments = @[actionChannelID];
+    }
+    
+    select = [NSString stringWithFormat:@"%@ ORDER BY action_message_target_message_display_date DESC LIMIT %d", select, limit];
+    
+    return [self actionMessageSpecsWithSelectStatement:select arguments:arguments];
+}
+
+
 - (AATTPendingFile *)pendingFileWithID:(NSString *)pendingFileID {
     static NSString *select = @"SELECT * FROM pending_files WHERE pending_file_id = ?";
     __block AATTPendingFile *pendingFile = nil;

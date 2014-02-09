@@ -56,6 +56,15 @@ typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChann
  */
 - (BOOL)isActionedTargetMessageID:(NSString *)targetMessageID inActionChannelWithID:(NSString *)actionChannelID;
 
+/**
+ Get an array of messages that have had a specific action channel's action applied.
+ 
+ @param actionChannelID the action channel ID
+ @param beforeDate a date later than the display date of all returned messages.
+ @param limit the maximum number of messages to return.
+ */
+- (NSArray *)actionedMessagesInActionChannelWithID:(NSString *)actionChannelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+
 #pragma mark - Other Getters
 
 /*

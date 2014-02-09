@@ -72,6 +72,16 @@
     return [self.database hasActionMessageSpecForActionChannelWithID:actionChannelID targetMessageID:targetMessageID];
 }
 
+- (NSArray *)actionedMessagesInActionChannelWithID:(NSString *)actionChannelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
+    NSArray *actionMessageSpecs = [self.database actionMessageSpecsOrderedByTargetMessageDisplayDateInActionChannelWithID:actionChannelID beforeDate:beforeDate limit:limit];
+    NSMutableSet *targetMessageIDs = [NSMutableSet setWithCapacity:actionMessageSpecs.count];
+    for(AATTActionMessageSpec *spec in actionMessageSpecs) {
+        [targetMessageIDs addObject:spec.targetMessageID];
+    }
+    NSOrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:targetMessageIDs];
+    return [NSArray arrayWithArray:targetMessages.allObjects];
+}
+
 #pragma mark - Other Getters
 
 - (AATTMessageManager *)messageManager {
