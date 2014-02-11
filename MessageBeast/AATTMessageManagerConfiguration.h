@@ -11,6 +11,7 @@
 @interface AATTMessageManagerConfiguration : NSObject
 
 @property BOOL isLocationLookupEnabled;
+@property BOOL isHashtagExtractionEnabled;
 @property NSMutableSet *annotationExtractions;
 
 @property (nonatomic, copy) NSDate * (^dateAdapter)(ANKMessage *message);

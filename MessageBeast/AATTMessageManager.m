@@ -823,7 +823,10 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 
 - (void)insertMessagePlus:(AATTMessagePlus *)messagePlus {
     [self.database insertOrReplaceMessage:messagePlus];
-    [self.database insertOrReplaceHashtagInstances:messagePlus];
+    
+    if(self.configuration.isHashtagExtractionEnabled) {
+        [self.database insertOrReplaceHashtagInstances:messagePlus];
+    }
     
     if(self.configuration.annotationExtractions.count > 0) {
         for(NSString *annotationType in self.configuration.annotationExtractions) {
