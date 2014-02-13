@@ -727,7 +727,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     static NSString *deleteSearchableLocationInstance = @"DELETE FROM location_instances_search WHERE docid=?";
     static NSString *deleteMessage = @"DELETE FROM messages WHERE message_id = ?";
     static NSString *deleteHashtags = @"DELETE FROM hashtag_instances WHERE hashtag_name = ? AND hashtag_message_id = ?";
-    static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_name = ? AND location_message_id = ? AND location_latitude = ? AND location_longitude = ?";
+    static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_message_id = ?";
     static NSString *deleteAnnotationInstances = @"DELETE FROM annotation_instances WHERE annotation_message_id = ?";
     
     ANKMessage *message = messagePlus.message;
@@ -757,14 +757,9 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
             }
         }
         
-        AATTDisplayLocation *displayLocation = messagePlus.displayLocation;
-        if(displayLocation) {
-            NSNumber *latitude = [NSNumber numberWithDouble:displayLocation.latitude];
-            NSNumber *longitude = [NSNumber numberWithDouble:displayLocation.longitude];
-            if(![db executeUpdate:deleteLocations, displayLocation.name, message.messageID, latitude, longitude]) {
-                *rollback = YES;
-                return;
-            }
+        if(![db executeUpdate:deleteLocations, message.messageID]) {
+            *rollback = YES;
+            return;
         }
         
         if(messagePlus.pendingFileAttachments.count > 0) {
