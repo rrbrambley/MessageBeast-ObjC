@@ -941,13 +941,13 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                 }
                 continue;
             } else {
-                [self reverseGeocode:messagePlus latitude:[latitude doubleValue] longitude:[longitude doubleValue] persist:persist];
+                [self reverseGeocode:messagePlus latitude:[latitude doubleValue] longitude:[longitude doubleValue]];
             }
         }
     }
 }
 
-- (void)reverseGeocode:(AATTMessagePlus *)messagePlus latitude:(double)latitude longitude:(double)longitude persist:(BOOL)persist {
+- (void)reverseGeocode:(AATTMessagePlus *)messagePlus latitude:(double)latitude longitude:(double)longitude {
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
@@ -955,11 +955,8 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
             AATTGeolocation *geolocation = [self geolocationForPlacemarks:placemarks latitude:latitude longitude:longitude];
             if(geolocation) {
                 messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromGeolocation:geolocation];
-                
-                if(persist) {
-                    [self.database insertOrReplaceGeolocation:geolocation];
-                    [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
-                }
+                [self.database insertOrReplaceGeolocation:geolocation];
+                [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
             }
             //
             //TODO
