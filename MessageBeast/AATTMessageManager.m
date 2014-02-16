@@ -310,7 +310,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                     block(meta, error);
                 } else {
                     finishDelete();
-                    [self.database insertOrReplacePendingDeletionForMessagePlus:messagePlus deleteAssociatedFiles:NO];
+                    [self.database insertOrReplacePendingDeletionForMessagePlus:messagePlus];
                     block(meta, error);
                 }
             }];

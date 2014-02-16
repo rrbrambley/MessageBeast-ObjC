@@ -84,9 +84,8 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  Insert a pending message deletion.
  
  @param messagePlus the MessagePlus to be deleted
- @param deleteAssociatedFiles true if attachments and associated OEmbed files should be deleted when possible.
  */
-- (void)insertOrReplacePendingDeletionForMessagePlus:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles;
+- (void)insertOrReplacePendingDeletionForMessagePlus:(AATTMessagePlus *)messagePlus;
 
 /**
  Insert a pending file. This is intended to be used to track files that are going to be uploaded but have not been uploaded yet.

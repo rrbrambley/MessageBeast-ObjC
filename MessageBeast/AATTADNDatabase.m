@@ -56,7 +56,7 @@ static NSString *const kCreateAnnotationInstancesTable = @"CREATE TABLE IF NOT E
 
 static NSString *const kCreateGeolocationsTable = @"CREATE TABLE IF NOT EXISTS geolocations (geolocation_locality TEXT NOT NULL, geolocation_sublocality TEXT, geolocation_latitude REAL NOT NULL, geolocation_longitude REAL NOT NULL, PRIMARY KEY (geolocation_latitude, geolocation_longitude))";
 
-static NSString *const kCreatePendingMessageDeletionsTable = @"CREATE TABLE IF NOT EXISTS pending_message_deletions (pending_message_deletion_message_id TEXT PRIMARY KEY, pending_message_deletion_channel_id TEXT NOT NULL, pending_message_deletion_delete_associated_files BOOLEAN NOT NULL)";
+static NSString *const kCreatePendingMessageDeletionsTable = @"CREATE TABLE IF NOT EXISTS pending_message_deletions (pending_message_deletion_message_id TEXT PRIMARY KEY, pending_message_deletion_channel_id TEXT NOT NULL)";
 
 static NSString *const kCreatePendingFilesTable = @"CREATE TABLE IF NOT EXISTS pending_files (pending_file_id TEXT PRIMARY KEY, pending_file_url TEXT NOT NULL, pending_file_type TEXT NOT NULL, pending_file_name TEXT NOT NULL, pending_file_mimetype TEXT NOT NULL, pending_file_kind TEXT, pending_file_public BOOLEAN, pending_file_send_attempts INTEGER)";
 
@@ -249,12 +249,11 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     }];
 }
 
-- (void)insertOrReplacePendingDeletionForMessagePlus:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles {
-    static NSString *insertOrReplacePendingDeletion = @"INSERT OR REPLACE INTO pending_message_deletions (pending_message_deletion_message_id, pending_message_deletion_channel_id, pending_message_deletion_delete_associated_files) VALUES (?, ?, ?)";
+- (void)insertOrReplacePendingDeletionForMessagePlus:(AATTMessagePlus *)messagePlus {
+    static NSString *insertOrReplacePendingDeletion = @"INSERT OR REPLACE INTO pending_message_deletions (pending_message_deletion_message_id, pending_message_deletion_channel_id) VALUES (?, ?)";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         ANKMessage *message = messagePlus.message;
-        NSNumber *delete = [NSNumber numberWithBool:deleteAssociatedFiles];
-        if(![db executeUpdate:insertOrReplacePendingDeletion, message.messageID, message.channelID, delete]) {
+        if(![db executeUpdate:insertOrReplacePendingDeletion, message.messageID, message.channelID]) {
             *rollback = YES;
             return;
         }
@@ -690,15 +689,14 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (NSDictionary *)pendingMessageDeletionsInChannelWithID:(NSString *)channelID {
-    static NSString *select = @"SELECT pending_message_deletion_message_id, pending_message_deletion_delete_associated_files FROM pending_message_deletions WHERE pending_message_deletion_channel_id = ?";
+    static NSString *select = @"SELECT pending_message_deletion_message_id FROM pending_message_deletions WHERE pending_message_deletion_channel_id = ?";
     NSMutableDictionary *deletions = [[NSMutableDictionary alloc] init];
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, channelID];
         while([resultSet next]) {
             NSString *messageID = [resultSet stringForColumnIndex:0];
-            BOOL deleteAssociatedFiles = [resultSet boolForColumnIndex:1];
-            AATTPendingMessageDeletion *deletion = [[AATTPendingMessageDeletion alloc] initWithMessageID:messageID channelID:channelID deleteAssociatedFiles:deleteAssociatedFiles];
+            AATTPendingMessageDeletion *deletion = [[AATTPendingMessageDeletion alloc] initWithMessageID:messageID channelID:channelID];
             [deletions setObject:deletion forKey:messageID];
         }
     }];

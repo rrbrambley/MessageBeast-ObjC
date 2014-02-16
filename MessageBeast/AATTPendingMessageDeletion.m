@@ -10,12 +10,11 @@
 
 @implementation AATTPendingMessageDeletion
 
-- (id)initWithMessageID:(NSString *)messageID channelID:(NSString *)channelID deleteAssociatedFiles:(BOOL)deleteAssociatedFiles {
+- (id)initWithMessageID:(NSString *)messageID channelID:(NSString *)channelID {
     self = [super init];
     if(self) {
         self.messageID = messageID;
         self.channelID = channelID;
-        self.deleteAssociatedFiles = deleteAssociatedFiles;
     }
     return self;
 }

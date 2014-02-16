@@ -12,8 +12,7 @@
 
 @property NSString *messageID;
 @property NSString *channelID;
-@property BOOL deleteAssociatedFiles;
 
-- (id)initWithMessageID:(NSString *)messageID channelID:(NSString *)channelID deleteAssociatedFiles:(BOOL)deleteAssociatedFiles;
+- (id)initWithMessageID:(NSString *)messageID channelID:(NSString *)channelID;
 
 @end
