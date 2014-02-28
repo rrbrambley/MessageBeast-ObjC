@@ -13,12 +13,15 @@
 @implementation AATTMessagePlus
 
 + (instancetype)unsentMessagePlusForChannelWithID:(NSString *)channelID messageID:(NSString *)messageID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments {
-
-    NSDate *date = [NSDate date];
     
     message.messageID = messageID;
     message.channelID = channelID;
-    [message addDisplayDateAnnotationWithDate:date];
+
+    NSDate *date = [message ohaiDisplayDate];
+    if(!date) {
+        date = [NSDate date];
+        [message addDisplayDateAnnotationWithDate:date];
+    }
     
     AATTMessagePlus *unsentMessagePlus = [[AATTMessagePlus alloc] initWithMessage:message];
     unsentMessagePlus.isUnsent = YES;
