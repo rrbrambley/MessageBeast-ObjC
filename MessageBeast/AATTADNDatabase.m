@@ -42,13 +42,13 @@
 
 #pragma mark - Table creation
 
-static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id INTEGER PRIMARY KEY, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL, message_text TEXT, message_unsent BOOLEAN, message_send_attempts INTEGER)";
+static NSString *const kCreateMessagesTable = @"CREATE TABLE IF NOT EXISTS messages (message_id INTEGER PRIMARY KEY, message_message_id TEXT UNIQUE, message_channel_id TEXT NOT NULL, message_date INTEGER NOT NULL, message_json TEXT NOT NULL, message_text TEXT, message_unsent BOOLEAN, message_send_attempts INTEGER)";
 
-static NSString *const kCreateMessagesSearchTable = @"CREATE VIRTUAL TABLE messages_search USING fts4(content=\"messages\", message_channel_id TEXT, message_text TEXT)";
+static NSString *const kCreateMessagesSearchTable = @"CREATE VIRTUAL TABLE messages_search USING fts4(content=\"messages\", message_message_id TEXT, message_channel_id TEXT, message_text TEXT)";
 
-static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_message_id INTEGER PRIMARY KEY, location_name TEXT NOT NULL, location_short_name TEXT, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL)";
+static NSString *const kCreateDisplayLocationInstancesTable = @"CREATE TABLE IF NOT EXISTS location_instances (location_id INTEGER PRIMARY KEY, location_message_id TEXT UNIQUE, location_name TEXT NOT NULL, location_short_name TEXT, location_channel_id TEXT NOT NULL, location_latitude REAL NOT NULL, location_longitude REAL NOT NULL, location_factual_id TEXT, location_date INTEGER NOT NULL)";
 
-static NSString *const kCreateDisplayLocationInstancesSearchTable = @"CREATE VIRTUAL TABLE location_instances_search USING fts4(content=\"location_instances\", location_channel_id TEXT, location_name TEXT)";
+static NSString *const kCreateDisplayLocationInstancesSearchTable = @"CREATE VIRTUAL TABLE location_instances_search USING fts4(content=\"location_instances\", location_message_id TEXT, location_channel_id TEXT, location_name TEXT)";
 
 static NSString *const kCreateHashtagInstancesTable = @"CREATE TABLE IF NOT EXISTS hashtag_instances (hashtag_name TEXT NOT NULL, hashtag_message_id TEXT NOT NULL, hashtag_channel_id TEXT NOT NULL, hashtag_date INTEGER NOT NULL, PRIMARY KEY (hashtag_name, hashtag_message_id))";
 
@@ -118,20 +118,20 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 #pragma mark - Insertion
 
 - (void)insertOrReplaceMessage:(AATTMessagePlus *)messagePlus {
-    static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_channel_id, message_date, message_json, message_text, message_unsent, message_send_attempts) VALUES(?, ?, ?, ?, ?, ?, ?)";
+    static NSString *insertOrReplaceMessage = @"INSERT OR REPLACE INTO messages (message_id, message_message_id, message_channel_id, message_date, message_json, message_text, message_unsent, message_send_attempts) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
+    ANKMessage *message = messagePlus.message;
+    NSString *messageID = message.messageID;
+    NSString *messageText = message.text;
+    
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
-        ANKMessage *message = messagePlus.message;
-        NSNumber *messageID = [self numberIDForStringMessageID:message.messageID];
-        NSString *messageText = message.text;
-        
         message.text = nil;
         
         NSString *jsonString = [self JSONStringWithANKResource:message];
         NSNumber *unsent = [NSNumber numberWithBool:messagePlus.isUnsent];
         NSNumber *sendAttempts = [NSNumber numberWithInteger:messagePlus.sendAttemptsCount];
         
-        if(![db executeUpdate:insertOrReplaceMessage, messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString, messageText, unsent, sendAttempts]) {
+        if(![db executeUpdate:insertOrReplaceMessage, nil, messageID, messagePlus.message.channelID, [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]], jsonString, messageText, unsent, sendAttempts]) {
             *rollBack = YES;
         }
         
@@ -141,10 +141,14 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
                 [self insertOrReplacePendingFileAttachmentWithPendingFileID:pendingFileID messageID:message.messageID channelID:message.channelID isOEmbed:attachment.isOEmbed db:db];
             }
         }
-        
-        [self insertSearchableMessageText:messageID channelID:message.channelID text:messageText withDB:db];
         message.text = messageText;
     }];
+    
+    NSUInteger maxID = [self maxMessageID];
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
+        [self insertSearchableMessageTextForMessageWithRowID:maxID messageID:messageID channelID:message.channelID text:messageText withDB:db];
+    }];
+
 }
 
 - (void)insertOrReplacePendingFileAttachmentWithPendingFileID:(NSString *)pendingFileID messageID:(NSString *)messageID channelID:(NSString *)channelID isOEmbed:(BOOL)isOEmbed db:(FMDatabase *)db {
@@ -177,23 +181,27 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 
 - (void)insertOrReplaceDisplayLocationInstance:(AATTMessagePlus *)messagePlus {
     if(messagePlus.displayLocation) {
-        static NSString *insertOrReplaceDisplayLocationInstance = @"INSERT OR REPLACE INTO location_instances (location_message_id, location_name, location_short_name, location_channel_id, location_latitude, location_longitude, location_factual_id, location_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        static NSString *insertOrReplaceDisplayLocationInstance = @"INSERT OR REPLACE INTO location_instances (location_id, location_message_id, location_name, location_short_name, location_channel_id, location_latitude, location_longitude, location_factual_id, location_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        AATTDisplayLocation *l = messagePlus.displayLocation;
+        NSString *messageID = messagePlus.message.messageID;
+        NSString *name = l.name;
+        NSString *shortName = l.shortName;
+        NSString *channelID = messagePlus.message.channelID;
+        NSNumber *latitude = [NSNumber numberWithDouble:l.latitude];
+        NSNumber *longitude = [NSNumber numberWithDouble:l.longitude];
+        NSString *factualID = l.factualID;
+        NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
+        
         [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
-            AATTDisplayLocation *l = messagePlus.displayLocation;
-            NSNumber *messageID = [self numberIDForStringMessageID:messagePlus.message.messageID];
-            NSString *name = l.name;
-            NSString *shortName = l.shortName;
-            NSString *channelID = messagePlus.message.channelID;
-            NSNumber *latitude = [NSNumber numberWithDouble:l.latitude];
-            NSNumber *longitude = [NSNumber numberWithDouble:l.longitude];
-            NSString *factualID = l.factualID;
-            NSNumber *date = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
-            
-            if(![db executeUpdate:insertOrReplaceDisplayLocationInstance, messageID, name, shortName, channelID, latitude, longitude, factualID, date]) {
+            if(![db executeUpdate:insertOrReplaceDisplayLocationInstance, nil, messageID, name, shortName, channelID, latitude, longitude, factualID, date]) {
                 *rollBack = YES;
             }
-            
-            [self insertSearchableDisplayLocationInstance:messageID channelID:channelID name:name withDB:db];
+        }];
+        
+        NSUInteger maxID = [self maxDisplayLocationInstanceID];
+        [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollBack) {
+            [self insertSearchableDisplayLocationInstanceWithRowID:maxID messageID:messageID channelID:channelID name:name withDB:db];
         }];
     }
 }
@@ -303,12 +311,12 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID searchQuery:(NSString *)query {
-    NSString *select = @"SELECT docid FROM messages_search WHERE message_channel_id = ? AND message_text MATCH ?";
+    NSString *select = @"SELECT message_message_id FROM messages_search WHERE message_channel_id = ? AND message_text MATCH ?";
     NSMutableSet *messageIDs = [NSMutableSet set];
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, channelID, query];
         while([resultSet next]) {
-            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
+            NSString *messageID = [resultSet stringForColumnIndex:0];
             [messageIDs addObject:messageID];
         }
     }];
@@ -317,12 +325,12 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID displayLocationSearchQuery:(NSString *)displayLocationSearchQuery {
-    NSString *select = @"SELECT docid FROM location_instances_search WHERE location_channel_id = ? AND location_name MATCH ?";
+    NSString *select = @"SELECT location_message_id FROM location_instances_search WHERE location_channel_id = ? AND location_name MATCH ?";
     NSMutableSet *messageIDs = [NSMutableSet set];
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, channelID, displayLocationSearchQuery];
         while([resultSet next]) {
-            NSString *messageID = [[resultSet objectForColumnIndex:0] stringValue];
+            NSString *messageID = [resultSet stringForColumnIndex:0];
             [messageIDs addObject:messageID];
         }
     }];
@@ -331,7 +339,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (AATTOrderedMessageBatch *)messagesWithIDs:(NSSet *)messageIDs {
-    NSString *select = @"SELECT * FROM messages WHERE message_id IN (";
+    NSString *select = @"SELECT * FROM messages WHERE message_message_id IN (";
     NSMutableArray *args = [NSMutableArray arrayWithCapacity:messageIDs.count];
     
     NSUInteger index = 0;
@@ -379,15 +387,15 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 - (NSOrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID {
     NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] init];
     
-    static NSString *select = @"SELECT message_id, message_date, message_json, message_text, message_send_attempts FROM messages WHERE message_channel_id = ? AND message_unsent = ? ORDER BY message_date ASC";
+    static NSString *select = @"SELECT message_date, message_json, message_text, message_send_attempts FROM messages WHERE message_channel_id = ? AND message_unsent = ? ORDER BY message_date ASC";
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, channelID, [NSNumber numberWithInt:1]];
         while([resultSet next]) {
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:1]];
-            NSString *messageJSONString = [resultSet stringForColumnIndex:2];
-            NSString *messageText = [resultSet stringForColumnIndex:3];
-            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:4];
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:0]];
+            NSString *messageJSONString = [resultSet stringForColumnIndex:1];
+            NSString *messageText = [resultSet stringForColumnIndex:2];
+            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:3];
             
             NSDictionary *messageJSON = [self JSONDictionaryWithString:messageJSONString];
             ANKMessage *message = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
@@ -721,8 +729,8 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 #pragma mark - Deletion
 
 - (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus {
-    static NSString *deleteSearchableMessageText = @"DELETE FROM messages_search WHERE docid=?";
-    static NSString *deleteSearchableLocationInstance = @"DELETE FROM location_instances_search WHERE docid=?";
+    static NSString *deleteSearchableMessageText = @"DELETE FROM messages_search WHERE message_message_id=?";
+    static NSString *deleteSearchableLocationInstance = @"DELETE FROM location_instances_search WHERE location_message_id=?";
     static NSString *deleteMessage = @"DELETE FROM messages WHERE message_id = ?";
     static NSString *deleteHashtags = @"DELETE FROM hashtag_instances WHERE hashtag_name = ? AND hashtag_message_id = ?";
     static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_message_id = ?";
@@ -879,31 +887,44 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     return maxID;
 }
 
+- (NSUInteger)maxDisplayLocationInstanceID {
+    __block NSUInteger maxID = 0;
+    static NSString *select = @"SELECT MAX(location_id) FROM location_instances";
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        FMResultSet *resultSet = [db executeQuery:select];
+        if([resultSet next]) {
+            maxID = [resultSet intForColumnIndex:0];
+            [resultSet close];
+        }
+    }];
+    return maxID;
+}
+
 #pragma mark - Private Stuff
 
 - (AATTOrderedMessageBatch *)messagesWithSelectStatement:(NSString *)selectStatement arguments:(NSArray *)arguments {
     NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] init];
     NSMutableArray *unsentMessagePlusses = [NSMutableArray array];
-    __block int maxID = -1;
-    __block int minID = -1;
+    __block NSInteger maxID = -1;
+    __block NSInteger minID = -1;
     __block NSDate *minDate = nil;
     __block NSDate *maxDate = nil;
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:selectStatement withArgumentsInArray:arguments];
         
-        int messageID = -1;
+        NSString *messageID = nil;
         NSDate *date = nil;
         
         ANKMessage *m = nil;
         while([resultSet next]) {
-            messageID = [resultSet intForColumnIndex:0];
-            //1 is channel; will come from json
-            date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:2]];
-            NSString *messageJSONString = [resultSet stringForColumnIndex:3];
-            NSString *messageText = [resultSet stringForColumnIndex:4];
-            BOOL isUnsent = [resultSet boolForColumnIndex:5];
-            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:6];
+            messageID = [resultSet stringForColumnIndex:1];
+            //2 is channel; will come from json
+            date = [NSDate dateWithTimeIntervalSince1970:[resultSet doubleForColumnIndex:3]];
+            NSString *messageJSONString = [resultSet stringForColumnIndex:4];
+            NSString *messageText = [resultSet stringForColumnIndex:5];
+            BOOL isUnsent = [resultSet boolForColumnIndex:6];
+            NSInteger sendAttemptsCount = [resultSet intForColumnIndex:7];
             
             NSDictionary *messageJSON = [self JSONDictionaryWithString:messageJSONString];
             m = [[ANKMessage alloc] initWithJSONDictionary:messageJSON];
@@ -915,17 +936,23 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
             messagePlus.displayDate = date;
             [messagePlusses setObject:messagePlus forKey:date];
             
-            if(maxID == -1) {
-                maxID = messageID;
-                minID = messageID;
+            if(!maxID) {
                 maxDate = date;
-            } else {
-                //this must happen because id order is not necessarily same as date order
-                //(and we know the results are ordered by date)
-                maxID = MAX(messageID, maxID);
-                minID = MIN(messageID, minID);
             }
             
+            if(!isUnsent) {
+                NSInteger messageIDAsInt = [messageID integerValue];
+                if(!maxID) {
+                    maxID = messageIDAsInt;
+                    minID = messageIDAsInt;
+                } else {
+                    //this must happen because id order is not necessarily same as date order
+                    //(and we know the results are ordered by date)
+                    maxID = MAX(messageIDAsInt, maxID);
+                    minID = MIN(messageIDAsInt, minID);
+                }
+            }
+        
             //this is just for efficiency
             //if it is already sent, then we don't need to try to populate pending
             //file attachments.
@@ -985,17 +1012,17 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     return [db executeUpdate:delete, pendingFileID];
 }
 
-- (void)insertSearchableMessageText:(NSNumber *)messageID channelID:(NSString *)channelID text:(NSString *)text withDB:(FMDatabase *)db {
+- (void)insertSearchableMessageTextForMessageWithRowID:(NSUInteger)rowID messageID:(NSString *)messageID channelID:(NSString *)channelID text:(NSString *)text withDB:(FMDatabase *)db {
     if(text) {
-        static NSString *insert = @"INSERT INTO messages_search (docid, message_channel_id, message_text) VALUES (?, ?, ?)";
-        [db executeUpdate:insert, messageID, channelID, text];
+        static NSString *insert = @"INSERT INTO messages_search (docid, message_message_id, message_channel_id, message_text) VALUES (?, ?, ?, ?)";
+        [db executeUpdate:insert, [NSNumber numberWithUnsignedInt:rowID], messageID, channelID, text];
     }
 }
 
-- (void)insertSearchableDisplayLocationInstance:(NSNumber *)messageID channelID:(NSString *)channelID name:(NSString *)name withDB:(FMDatabase *)db {
+- (void)insertSearchableDisplayLocationInstanceWithRowID:(NSUInteger)rowID messageID:(NSString *)messageID channelID:(NSString *)channelID name:(NSString *)name withDB:(FMDatabase *)db {
     if(name) {
-        static NSString *insert = @"INSERT INTO location_instances_search (docid, location_channel_id, location_name) VALUES (?, ?, ?)";
-        [db executeUpdate:insert, messageID, channelID, name];
+        static NSString *insert = @"INSERT INTO location_instances_search (docid, location_message_id, location_channel_id, location_name) VALUES (?, ?, ?, ?)";
+        [db executeUpdate:insert, [NSNumber numberWithUnsignedInt:rowID], messageID, channelID, name];
     }
 }
 
