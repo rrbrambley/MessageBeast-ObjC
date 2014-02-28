@@ -419,10 +419,23 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                 [unsentMessages removeEntryWithKey:messagePlus.displayDate];
                 [sentMessageIDs addObject:message.messageID];
                 
+                //delete the old one.
                 [self.database deleteMessagePlus:messagePlus];
-                
                 [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
-                                
+
+                //now create a new one and add it to the places, update all the things.
+                AATTMessagePlus *newMessagePlus = [[AATTMessagePlus alloc] initWithMessage:responseObject];
+                [self adjustDateForMessagePlus:newMessagePlus];
+                [self performLookupsOnMessagePlusses:@[newMessagePlus] persist:YES];
+                [self insertMessagePlus:newMessagePlus];
+                
+                NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:newMessagePlus.message.channelID];
+                [channelMessages setObject:newMessagePlus forKey:newMessagePlus.displayDate];
+                
+                AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:newMessagePlus.message.channelID];
+                [minMaxPair expandDateIfMinOrMaxForDate:newMessagePlus.displayDate];
+                [minMaxPair expandIDIfMinOrMaxForID:newMessagePlus.message.messageID];
+                
                 if(unsentMessages.count > 0) {
                     [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs];
                 } else {
