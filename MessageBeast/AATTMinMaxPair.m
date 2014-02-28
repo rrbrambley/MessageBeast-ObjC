@@ -91,4 +91,13 @@
     }
 }
 
+- (void)expandIDIfMinOrMaxForID:(NSString *)ID {
+    NSNumber *thisMin = [self minIDAsNumber];
+    NSNumber *thisMax = [self maxIDAsNumber];
+    NSNumber *candidate = [NSNumber numberWithInteger:[ID integerValue]];
+    
+    self.minID = thisMin ? [NSString stringWithFormat:@"%d", MIN([thisMin intValue], [candidate intValue])] : ID;
+    self.maxID = thisMax ? [NSString stringWithFormat:@"%d", MAX([thisMax intValue], [candidate intValue])] : ID;
+}
+
 @end

@@ -55,4 +55,12 @@
  */
 - (void)expandDateIfMinOrMaxForDate:(NSDate *)date;
 
+/**
+ If the provided ID is less than the current min or greater than the current max,
+ update this AATTMinMaxPair's IDs accordingly.
+ 
+ @param the message ID to apply to this AATTMinMaxPair
+ */
+- (void)expandIDIfMinOrMaxForID:(NSString *)ID;
+
 @end
