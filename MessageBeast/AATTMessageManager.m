@@ -346,23 +346,14 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 }
 
 - (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments {
-    
-    //An unsent message id is always set to the max id + 1.
-    //
-    //This will work because we will never allow message retrieval to happen
-    //until unsent messages are sent to the server and they get their "real"
-    //message id. After they reach the server, we will delete them from existence
-    //on the client and retrieve them from the server.
-    //
+
     NSOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
     if(channelMessages.count == 0) {
         //we do this so that the max id is known.
         [self loadPersistedMesssageForChannelWithID:channelID limit:1];
     }
     
-    NSInteger maxID = [self.database maxMessageID];
-    NSInteger newMessageID = maxID + 1;
-    NSString *newMessageIDString = [NSString stringWithFormat:@"%ld", (long)newMessageID];
+    NSString *newMessageIDString = [[NSUUID UUID] UUIDString];
     
     AATTMessagePlus *unsentMessagePlus = [AATTMessagePlus unsentMessagePlusForChannelWithID:channelID messageID:newMessageIDString message:message pendingFileAttachments:pendingFileAttachments];
     [self.database insertOrReplaceMessage:unsentMessagePlus];
@@ -377,12 +368,8 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     [newChannelMessages addEntriesFromOrderedDictionary:channelMessages];
     [self.messagesByChannelID setObject:newChannelMessages forKey:channelID];
     
-    //update the MinMaxPair
-    //we can assume the new id is the max (that's how we generated it)
-    //but we have to check to see if the time is min or max
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [minMaxPair expandDateIfMinOrMaxForDate:unsentMessagePlus.displayDate];
-    minMaxPair.maxID = newMessageIDString;
     
     [self sendUnsentMessagesInChannelWithID:channelID];
     
@@ -426,7 +413,8 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         //let the server generate the "real" entities.
         message.entities = nil;
         
-        [self.client createMessage:message inChannelWithID:message.channelID parameters:[self.queryParametersByChannel objectForKey:message.channelID] completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+        NSDictionary *params = [self.queryParametersByChannel objectForKey:message.channelID];
+        [self.client createMessage:message inChannelWithID:message.channelID parameters:params completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
             if(!error) {
                 [unsentMessages removeEntryWithKey:messagePlus.displayDate];
                 [sentMessageIDs addObject:message.messageID];
@@ -434,7 +422,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                 [self.database deleteMessagePlus:messagePlus];
                 
                 [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
-                
+                                
                 if(unsentMessages.count > 0) {
                     [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs];
                 } else {
@@ -670,12 +658,14 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
             }
             
             AATTMessagePlus *nextMessagePlus = [channelMessages objectForKey:nextDate];
-            NSInteger nextID = nextMessagePlus.message.messageID.integerValue;
-            if(adjustMax && maxIDAsNumber.integerValue > nextID && (!newMaxID || nextID > newMaxID.integerValue)) {
-                newMaxID = [NSNumber numberWithInteger:nextID];
-            }
-            if(adjustMin && minIDAsNumber.integerValue < nextID && (!newMinID || nextID < newMinID.integerValue)) {
-                newMinID = [NSNumber numberWithInteger:nextID];
+            if(!nextMessagePlus.isUnsent) {
+                NSInteger nextID = nextMessagePlus.message.messageID.integerValue;
+                if(adjustMax && maxIDAsNumber.integerValue > nextID && (!newMaxID || nextID > newMaxID.integerValue)) {
+                    newMaxID = [NSNumber numberWithInteger:nextID];
+                }
+                if(adjustMin && minIDAsNumber.integerValue < nextID && (!newMinID || nextID < newMinID.integerValue)) {
+                    newMinID = [NSNumber numberWithInteger:nextID];
+                }
             }
             secondToLastDate = lastDate;
             lastDate = nextDate;
