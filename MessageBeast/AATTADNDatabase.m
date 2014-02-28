@@ -731,13 +731,13 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 - (void)deleteMessagePlus:(AATTMessagePlus *)messagePlus {
     static NSString *deleteSearchableMessageText = @"DELETE FROM messages_search WHERE message_message_id=?";
     static NSString *deleteSearchableLocationInstance = @"DELETE FROM location_instances_search WHERE location_message_id=?";
-    static NSString *deleteMessage = @"DELETE FROM messages WHERE message_id = ?";
+    static NSString *deleteMessage = @"DELETE FROM messages WHERE message_message_id = ?";
     static NSString *deleteHashtags = @"DELETE FROM hashtag_instances WHERE hashtag_name = ? AND hashtag_message_id = ?";
     static NSString *deleteLocations = @"DELETE FROM location_instances WHERE location_message_id = ?";
     static NSString *deleteAnnotationInstances = @"DELETE FROM annotation_instances WHERE annotation_message_id = ?";
     
     ANKMessage *message = messagePlus.message;
-    NSNumber *messageID = [self numberIDForStringMessageID:message.messageID];
+    NSString *messageID = message.messageID;
     
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
         //
@@ -1061,15 +1061,6 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     }
     formatter.maximumFractionDigits = decimalPlaces;
     return [formatter stringFromNumber:[NSNumber numberWithDouble:value]];
-}
-
-- (NSNumber *)numberIDForStringMessageID:(NSString *)messageID {
-    static NSNumberFormatter *formatter = nil;
-    if(!formatter) {
-        formatter = [[NSNumberFormatter alloc] init];
-        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    }
-    return [formatter numberFromString:messageID];
 }
 
 - (NSUInteger)precisionDigitsForLocationPrecision:(AATTLocationPrecision)locationPrecision {
