@@ -426,7 +426,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         //let the server generate the "real" entities.
         message.entities = nil;
         
-        [self.client createMessage:message inChannelWithID:message.channelID completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+        [self.client createMessage:message inChannelWithID:message.channelID parameters:[self.queryParametersByChannel objectForKey:message.channelID] completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
             if(!error) {
                 [unsentMessages removeEntryWithKey:messagePlus.displayDate];
                 [sentMessageIDs addObject:message.messageID];

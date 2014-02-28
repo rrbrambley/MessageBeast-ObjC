@@ -38,4 +38,10 @@
 						failure:[self failureHandlerForClientHandler:completionHandler]];
 }
 
+- (ANKJSONRequestOperation *)createMessage:(ANKMessage *)message inChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters completion:(ANKClientCompletionBlock)completionHandler {
+	return [self enqueuePOSTPath:[NSString stringWithFormat:@"channels/%@/messages", channelID]
+					  parameters:parameters
+						 success:[self successHandlerForResourceClass:[ANKMessage class] clientHandler:completionHandler]
+						 failure:[self failureHandlerForClientHandler:completionHandler]];
+}
 @end
