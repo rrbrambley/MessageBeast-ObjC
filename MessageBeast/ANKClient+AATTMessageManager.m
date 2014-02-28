@@ -39,8 +39,10 @@
 }
 
 - (ANKJSONRequestOperation *)createMessage:(ANKMessage *)message inChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters completion:(ANKClientCompletionBlock)completionHandler {
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[message JSONDictionary]];
+    [params addEntriesFromDictionary:parameters];
 	return [self enqueuePOSTPath:[NSString stringWithFormat:@"channels/%@/messages", channelID]
-					  parameters:parameters
+					  parameters:params
 						 success:[self successHandlerForResourceClass:[ANKMessage class] clientHandler:completionHandler]
 						 failure:[self failureHandlerForClientHandler:completionHandler]];
 }
