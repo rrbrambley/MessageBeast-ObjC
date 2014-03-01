@@ -274,18 +274,11 @@ The first obvious difference between this method of creating a Message and the p
     NSDictionary *userInfo = notification.userInfo;
     NSString *channelID = [userInfo objectForKey:@"channelID"];
     NSArray *messageIDs = [userInfo objectForKey:@"messageIDs"];
+    NSArray *replacementMessageIDs = [userInfo objectForKey:@"replacementMessageIDs"];
 
-    //after the unsent messages are successfully sent, the local copies are deleted.
-    //do this to retrieve the newly sent messages:
-    [self.messageManager fetchNewestMessagesInChannelWithID:channelID 
-                          completionBlock:^(NSArray *messagePlusses, BOOL appended,
-                          ANKAPIResponseMeta *meta, NSError *error) {
-        if(!error) {
-            //we got our new messages.
-        } else {
-            // FAILtown, USA
-        }
-    }];
+    //the sent messageIDs were replaced with the messages at corresponding indices
+    //in replacementMessageIDs. Use that to update any UI, etc. if necessary.
+    //
 }
 ```
 You may also choose to listen to the ``AATTMessageManagerDidFailToSendUnsentMessagesNotification`` to find out when messages do not send successfully. The userInfo will contain the keys ``channelID``, ``messageID``, and ``sendAttemptsCount``.
