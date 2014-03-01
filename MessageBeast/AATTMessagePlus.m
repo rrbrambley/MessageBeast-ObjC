@@ -133,4 +133,14 @@
     }
 }
 
+- (void)replaceTargetMessageAnnotationMessageID:(NSString *)newTargetMessageID {
+    NSArray *targetMessageAnnotations = [self.message annotationsWithType:kMessageAnnotationTargetMessage];
+    if(targetMessageAnnotations.count > 0) {
+        ANKAnnotation *annotation = [targetMessageAnnotations objectAtIndex:0];
+        NSMutableDictionary *newValue = [NSMutableDictionary dictionaryWithDictionary:annotation.value];
+        [newValue setObject:newTargetMessageID forKey:@"id"];
+        annotation.value = newValue;
+    }
+}
+
 @end

@@ -41,6 +41,7 @@
 @property AATTMessageManagerConfiguration *configuration;
 @property AATTADNDatabase *database;
 @property AATTADNFileManager *fileManager;
+@property AATTActionMessageManager *actionMessageManager;
 @end
 
 static NSUInteger const kSyncBatchSize = 100;
@@ -212,8 +213,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     ANKChannel *nextChannel = [channels objectAtIndex:currentChannelIndex];
     NSString *type = nextChannel.type;
     if([kChannelTypeAction isEqualToString:type]) {
-        AATTActionMessageManager *actionMessageManager = [AATTActionMessageManager sharedInstanceWithMessageManager:self];
-        [actionMessageManager fetchAndPersistAllMessagesInActionChannelWithID:nextChannel.channelID completionBlock:currentChannelSyncBlock];
+        [self.actionMessageManager fetchAndPersistAllMessagesInActionChannelWithID:nextChannel.channelID completionBlock:currentChannelSyncBlock];
     } else {
         [self fetchAndPersistAllMessagesInChannelWithID:nextChannel.channelID batchSyncBlock:nil completionBlock:currentChannelSyncBlock];
     }
@@ -341,11 +341,11 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }];
 }
 
-- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message {
-    return [self createUnsentMessageAndAttemptSendInChannelWithID:channelID message:message pendingFileAttachments:[NSArray array]];
+- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message attemptToSendImmediately:(BOOL)attemptToSendImmediately {
+    return [self createUnsentMessageAndAttemptSendInChannelWithID:channelID message:message pendingFileAttachments:[NSArray array] attemptToSendImmediately:attemptToSendImmediately];
 }
 
-- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments {
+- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments attemptToSendImmediately:(BOOL)attemptToSendImmediately {
 
     NSOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
     if(channelMessages.count == 0) {
@@ -371,7 +371,9 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:channelID];
     [minMaxPair expandDateIfMinOrMaxForDate:unsentMessagePlus.displayDate];
     
-    [self sendUnsentMessagesInChannelWithID:channelID];
+    if(attemptToSendImmediately) {
+        [self sendUnsentMessagesInChannelWithID:channelID];
+    }
     
     return unsentMessagePlus;
 }
@@ -443,10 +445,11 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                 if(unsentMessages.count > 0) {
                     [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
                 } else {
-                    NSDictionary *userInfo = @{@"channelID" : message.channelID,
-                                               @"messageIDs" : sentMessageIDs,
-                                               @"replacementMessageIDs" : replacementMessageIDs};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidSendUnsentMessagesNotification object:self userInfo:userInfo];
+                    if(self.actionMessageManager) {
+                        [self.actionMessageManager didSendUnsentMessagesInChannelWithID:newMessage.channelID sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
+                    } else {
+                        [self sendUnsentMessagesSentNotificationForChannelID:message.channelID sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
+                    }
                 }
             } else {
                 NSLog(@"Failed to send unsent message; %@", error.localizedDescription);
@@ -463,6 +466,13 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }
 }
 
+- (void)sendUnsentMessagesSentNotificationForChannelID:(NSString *)channelID sentMessageIDs:(NSArray *)sentMessageIDs replacementMessageIDs:(NSArray *)replacementMessageIDs {
+    NSDictionary *userInfo = @{@"channelID" : channelID,
+                               @"messageIDs" : sentMessageIDs,
+                               @"replacementMessageIDs" : replacementMessageIDs};
+    [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidSendUnsentMessagesNotification object:self userInfo:userInfo];
+}
+
 - (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {
     NSDictionary *deletions = [self.database pendingMessageDeletionsInChannelWithID:channelID];
     if(deletions.count > 0) {
@@ -470,6 +480,31 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         [self sendPendingDeletionAtIndex:0 inPendingDeletionsArray:pendingMessageDeletions completionBlock:block lastMeta:nil];
     } else if(block) {
         block(nil, nil);
+    }
+}
+
+#pragma mark - Other
+
+- (void)attachActionMessageManager:(AATTActionMessageManager *)actionMessageManager {
+    self.actionMessageManager = actionMessageManager;
+}
+
+- (void)replaceInMemoryMessagePlusWithMessagePlus:(AATTMessagePlus *)messagePlus {
+    NSString *channelID = messagePlus.message.channelID;
+    NSDate *date = messagePlus.displayDate;
+    
+    NSMutableDictionary *channelMessages = [self.messagesByChannelID objectForKey:channelID];
+    if(channelMessages) {
+        if([channelMessages objectForKey:date]) {
+            [channelMessages setObject:messagePlus forKey:date];
+        }
+    }
+    
+    NSMutableDictionary *unsentChannelMessages = [self.unsentMessagesByChannelID objectForKey:channelID];
+    if(unsentChannelMessages) {
+        if([unsentChannelMessages objectForKey:date]) {
+            [unsentChannelMessages setObject:messagePlus forKey:date];
+        }
     }
 }
 

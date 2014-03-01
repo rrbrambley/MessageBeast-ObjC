@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class AATTAnnotationInstances, AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, AATTPendingFile, NSOrderedDictionary;
+@class AATTActionMessageSpec, AATTAnnotationInstances, AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, AATTPendingFile, NSOrderedDictionary;
 
 typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
     AATTLocationPrecisionOneHundredMeters = 0, //actually 111 m
@@ -79,6 +79,17 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  @param targetMessageDisplayDate the display date of the target message.
  */
 - (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID targetMessageDisplayDate:(NSDate *)targetMessageDisplayDate;
+
+/**
+ Insert an action message spec.
+ 
+ @param actionMessageID the ID of the action message.
+ @param actionChannelID the ID of the action message's channel
+ @param targetMessageID the ID of the target message
+ @param targetChannelID the ID of the target message's channel
+ @param targetMessageDisplayDate the display date of the target message
+ */
+- (void)insertOrReplaceActionMessageSpecForActionMessageWithID:(NSString *)actionMessageID actionChannelID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID targetMessageDisplayDate:(NSDate *)targetMessageDisplayDate;
 
 /**
  Insert a pending message deletion.
@@ -315,6 +326,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  is applied.
  */
 - (NSArray *)placesForLatitude:(double)latitude longitude:(double)longitude locationPrecision:(AATTLocationPrecision)locationPrecision;
+
+/**
+ Obtain an AATTActionMessageSpec for an action message ID.
+ 
+ @param actionMessageID the action message ID
+ */
+- (AATTActionMessageSpec *)actionMessageSpecForActionMessageWithID:(NSString *)actionMessageID;
 
 /**
  Obtain an array of AATTActionMessageSpec objects.

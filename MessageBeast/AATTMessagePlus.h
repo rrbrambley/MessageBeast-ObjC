@@ -27,5 +27,6 @@
 - (NSURL *)firstHTML5VideoOEmbedSourceURL;
 - (void)incrementSendAttemptsCount;
 - (void)replacePendingFileAttachmentWithAnnotationForPendingFileWithID:(NSString *)pendingFileID file:(ANKFile *)file;
+- (void)replaceTargetMessageAnnotationMessageID:(NSString *)newTargetMessageID;
 
 @end

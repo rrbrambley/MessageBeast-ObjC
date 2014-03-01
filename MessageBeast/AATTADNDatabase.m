@@ -246,11 +246,14 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (void)insertOrReplaceActionMessageSpec:(AATTMessagePlus *)messagePlus targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID targetMessageDisplayDate:(NSDate *)targetMessageDisplayDate {
+    [self insertOrReplaceActionMessageSpecForActionMessageWithID:messagePlus.message.messageID actionChannelID:messagePlus.message.channelID targetMessageID:targetMessageID targetChannelID:targetChannelID targetMessageDisplayDate:targetMessageDisplayDate];
+}
+
+- (void)insertOrReplaceActionMessageSpecForActionMessageWithID:(NSString *)actionMessageID actionChannelID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID targetChannelID:(NSString *)targetChannelID targetMessageDisplayDate:(NSDate *)targetMessageDisplayDate {
     static NSString *insertOrReplaceActionMessageSpec = @"INSERT OR REPLACE INTO action_messages (action_message_id, action_message_channel_id, action_message_target_message_id, action_message_target_channel_id, action_message_target_message_display_date) VALUES (?, ?, ?, ?, ?)";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        ANKMessage *message = messagePlus.message;
-        NSNumber *targetMessageDisplayDate = [NSNumber numberWithDouble:[messagePlus.displayDate timeIntervalSince1970]];
-        if(![db executeUpdate:insertOrReplaceActionMessageSpec, message.messageID, message.channelID, targetMessageID, targetChannelID, targetMessageDisplayDate]) {
+        NSNumber *targetMessageDisplayDateNumber = [NSNumber numberWithDouble:[targetMessageDisplayDate timeIntervalSince1970]];
+        if(![db executeUpdate:insertOrReplaceActionMessageSpec, actionMessageID, actionChannelID, targetMessageID, targetChannelID, targetMessageDisplayDateNumber]) {
             *rollback = YES;
             return;
         }
@@ -598,6 +601,15 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     }];
     
     return places;
+}
+
+- (AATTActionMessageSpec *)actionMessageSpecForActionMessageWithID:(NSString *)actionMessageID {
+    NSString *select = @"SELECT * FROM action_messages WHERE action_message_id = ?";
+    NSArray *specs = [self actionMessageSpecsWithSelectStatement:select arguments:@[actionMessageID]];
+    if(specs.count > 0) {
+        return [specs objectAtIndex:0];
+    }
+    return nil;
 }
 
 - (NSArray *)actionMessageSpecsForTargetMessagesWithIDs:(NSArray *)targetMessageIDs {

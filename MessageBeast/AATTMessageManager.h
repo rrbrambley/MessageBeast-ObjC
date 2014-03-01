@@ -8,7 +8,7 @@
 
 #import "AATTADNDatabase.h"
 
-@class AATTDisplayLocation, AATTFilteredMessageBatch, AATTMessageManagerConfiguration, AATTMessagePlus, NSOrderedDictionary;
+@class AATTActionMessageManager, AATTDisplayLocation, AATTFilteredMessageBatch, AATTMessageManagerConfiguration, AATTMessagePlus, NSOrderedDictionary;
 
 typedef NS_ENUM(NSUInteger, AATTChannelFullSyncState) {
 	AATTChannelFullSyncStateNotStarted = 0,
@@ -409,8 +409,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
  @param channelID the id of the channel in which the message should be created
  @param message the message to be created
+ @param YES if the message manager should attempt to send the message immediately, NO
+        if the client application will send it at a later time.
  */
-- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message;
+- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message attemptToSendImmediately:(BOOL)attemptToSendImmediately;
 
 /**
  Create a new unsent message that requires files to be uploaded prior to creation.
@@ -426,8 +428,10 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @param channelId the id of the Channel in which the Message should be created
  @param message The Message to be created
  @param pendingFileAttachments an array of AATTPendingFileAttachments corresponding to pending files that need to be sent before this message can be sent to the server
+ @param YES if the message manager should attempt to send the message immediately, NO
+        if the client application will send it at a later time.
  */
-- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments;
+- (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments attemptToSendImmediately:(BOOL)attemptToSendImmediately;
 
 #pragma mark - Send Unsent
 
@@ -447,5 +451,34 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @param block AATTMessageManagerDeletionCompletionBlock
  */
 - (void)sendPendingDeletionsInChannelWithID:(NSString *)channelID completionBlock:(AATTMessageManagerDeletionCompletionBlock)block;
+
+/**
+ Send NSNotifcation indicating that unsent messages have been sent.
+ Not intended to be used by a client application.
+ */
+- (void)sendUnsentMessagesSentNotificationForChannelID:(NSString *)channelID sentMessageIDs:(NSArray *)sentMessageIDs replacementMessageIDs:(NSArray *)replacementMessageIDs;
+
+#pragma mark - Other
+
+/**
+ Attach an AATTActionMessageManager.
+ 
+ By attaching an AATTActionMessageManager, it will get first dibs on handling some
+ responses and processing action messages. Basically, by allowing the message manager
+ to have knowledge of the AATTActionMessageManager, we can assure the message manager
+ can perform a few select actions safely, before notifications go out and blocks are called
+ that may handle new messages in the client application.
+ 
+ @param actionMessageManager the manager to attach.
+ */
+- (void)attachActionMessageManager:(AATTActionMessageManager *)actionMessageManager;
+
+/**
+ Replace any in-memory instances the provided AATTMessagePlus (i.e. those with the same
+ channelID + displayDate)
+ 
+ @param messagePlus the AATTMessagePlus to replace the old ones.
+ */
+- (void)replaceInMemoryMessagePlusWithMessagePlus:(AATTMessagePlus *)messagePlus;
 
 @end

@@ -37,11 +37,11 @@
 - (id)initWithMessageManager:(AATTMessageManager *)messageManager {
     self = [super init];
     if(self) {
+        [messageManager attachActionMessageManager:self];
+        
         self.messageManager = messageManager;
         self.actionChannels = [NSMutableDictionary dictionaryWithCapacity:1];
         self.database = [AATTADNDatabase sharedInstance];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendUnsentMessages:) name:AATTMessageManagerDidSendUnsentMessagesNotification object:nil];
     }
     return self;
 }
@@ -132,7 +132,7 @@
         m.isMachineOnly = YES;
         [m addTargetMessageAnnotationWithTargetMessageID:targetMessageID];
         
-        AATTMessagePlus *unsentActionMessage = [self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:actionChannelID message:m];
+        AATTMessagePlus *unsentActionMessage = [self.messageManager createUnsentMessageAndAttemptSendInChannelWithID:actionChannelID message:m attemptToSendImmediately:!messagePlus.isUnsent];
         [self.database insertOrReplaceActionMessageSpec:unsentActionMessage targetMessageID:targetMessageID targetChannelID:message.channelID targetMessageDisplayDate:messagePlus.displayDate];
     }
 }
@@ -174,43 +174,74 @@
     }];
 }
 
-#pragma mark - NSNotification
+#pragma mark - Other
 
-- (void)didSendUnsentMessages:(NSNotification *)notification {
-    NSDictionary *userInfo = notification.userInfo;
-    NSString *channelID = [userInfo objectForKey:@"channelID"];
-    NSArray *messageIDs = [userInfo objectForKey:@"messageIDs"];
-    
+- (void)didSendUnsentMessagesInChannelWithID:(NSString *)channelID sentMessageIDs:(NSArray *)sentMessageIDs replacementMessageIDs:(NSArray *)replacementMessageIDs {
+
     //this is not an action channel.
     //it might be a target channel of one of our action channels though.
     if(![self.actionChannels objectForKey:channelID]) {
-        //remove all action messages that point to this now nonexistent target message id
-        NSArray *sentTargetMessages = [self.database actionMessageSpecsForTargetMessagesWithIDs:messageIDs];
-        for(AATTActionMessageSpec *spec in sentTargetMessages) {
-            [self.database deleteActionMessageSpecWithTargetMessageID:spec.targetMessageID actionChannelID:spec.actionChannelID];
+        //for any action messages that targeted the unsent message,
+        //we now need to create a new action message spec that points to the NEW message id
+        //to replace the former one.
+        //
+        //additionally, we need to make sure to send unsent action messages now that their
+        //associated target messages have been sent.
+        //
+        
+        NSMutableSet *actionChannelIDs = [NSMutableSet set];
+        NSArray *actionMessageSpes = [self.database actionMessageSpecsForTargetMessagesWithIDs:sentMessageIDs];
+        for(AATTActionMessageSpec *actionMessageSpec in actionMessageSpes) {
+            NSString *actionMessageID = actionMessageSpec.actionMessageID;
+            NSString *actionChannelID = actionMessageSpec.actionChannelID;
+            NSString *oldTargetMessageID = actionMessageSpec.targetMessageID;
+            NSString *newTargetMessageID = [replacementMessageIDs objectAtIndex:[sentMessageIDs indexOfObject:oldTargetMessageID]];
+            NSString *targetMessageChannelID = channelID;
+            NSDate *targetMessageDisplayDate = actionMessageSpec.targetMessageDate;
+            
+            NSLog(@"Updating action message spec; target id change: %@ ---> %@", oldTargetMessageID, newTargetMessageID);
+            
+            [self.database insertOrReplaceActionMessageSpecForActionMessageWithID:actionMessageID actionChannelID:actionChannelID targetMessageID:newTargetMessageID targetChannelID:targetMessageChannelID targetMessageDisplayDate:targetMessageDisplayDate];
+            
+            AATTMessagePlus *actionMessage = [self.database messagePlusForMessageID:actionMessageID];
+            if(actionMessage) {
+                NSString *formerTargetMessageID = [actionMessage.message targetMessageID];
+                if(formerTargetMessageID) {
+                    [actionMessage replaceTargetMessageAnnotationMessageID:newTargetMessageID];
+                    [self.database insertOrReplaceMessage:actionMessage];
+                    [self.messageManager replaceInMemoryMessagePlusWithMessagePlus:actionMessage];
+                    
+                    NSLog(@"replaced message's target message id annotation: %@ --> %@", formerTargetMessageID, [actionMessage.message targetMessageID]);
+                } else {
+                    NSLog(@"message %@ is not actually an action message. we're in a bad state. bummer.", actionMessageID);
+                }
+            }
+            
+            [actionChannelIDs addObject:actionChannelID];
         }
+        
+        for(NSString *actionChannelID in actionChannelIDs) {
+            [self.messageManager sendAllUnsentForChannelWithID:actionChannelID];
+            NSLog(@"didSendUnsentMessagesInChannelWithID; sending all unsent messages for action channel %@", actionChannelID);
+        }
+        [self.messageManager sendUnsentMessagesSentNotificationForChannelID:channelID sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
     } else {
         //it's an action channel
-        //delete the action messages in the database with the sent message ids,
-        //retrieve the new ones
+        //replace the old specs' action message ids with the replacement ones
         
-        ANKChannel *actionChannel = [self.actionChannels objectForKey:channelID];
-        NSString *targetChannelID = [actionChannel targetChannelID];
-        [self.messageManager fetchNewestMessagesInChannelWithID:channelID completionBlock:^(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error) {
-            if(!error) {
-                for(NSString *sentMessageID in messageIDs) {
-                    [self.database deleteActionMessageSpecForActionMessageWithID:sentMessageID];
-                }
-                for(AATTMessagePlus *messagePlus in messagePlusses) {
-                    AATTMessagePlus *targetMessagePlus = [self.messageManager persistedMessageWithID:messagePlus.message.targetMessageID];
-                    if(targetMessagePlus) {
-                        [self.database insertOrReplaceActionMessageSpec:messagePlus targetMessageID:messagePlus.message.targetMessageID targetChannelID:targetChannelID targetMessageDisplayDate:targetMessagePlus.displayDate];
-                    }
-                }
+        for(NSUInteger i = 0; i < sentMessageIDs.count; i++) {
+            NSString *actionMessageID = [sentMessageIDs objectAtIndex:i];
+            AATTActionMessageSpec *oldSpec = [self.database actionMessageSpecForActionMessageWithID:actionMessageID];
+            if(oldSpec) {
+                NSString *newActionMessageID = [replacementMessageIDs objectAtIndex:i];
+                [self.database insertOrReplaceActionMessageSpecForActionMessageWithID:newActionMessageID actionChannelID:oldSpec.actionChannelID targetMessageID:oldSpec.targetMessageID targetChannelID:oldSpec.targetChannelID targetMessageDisplayDate:oldSpec.targetMessageDate];
+                NSLog(@"replaced action message spec; action message id %@ ---> %@ (target message id %@)", oldSpec.actionMessageID, newActionMessageID, oldSpec.targetMessageID);
             } else {
-                NSLog(@"Could not fetch newest messages for action channel with ID %@; %@", channelID, error.localizedDescription);
+                NSLog(@"No action message spec to update for action message with id %@", actionMessageID);
             }
-        }];
+        }
+        
+        [self.messageManager sendUnsentMessagesSentNotificationForChannelID:channelID sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
     }
 }
 

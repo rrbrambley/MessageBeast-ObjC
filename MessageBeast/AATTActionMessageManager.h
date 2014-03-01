@@ -117,4 +117,12 @@ typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChann
  */
 - (void)removeActionForActionChannelWithID:(NSString *)actionChannelID fromTargetMessageWithID:(NSString *)targetMessageID;
 
+#pragma mark - Other
+
+/**
+ An easy hook for the AATTMessageManager to call into when unsent messages are sent.
+ This is not intended to be used by client applications.
+ */
+- (void)didSendUnsentMessagesInChannelWithID:(NSString *)channelID sentMessageIDs:(NSArray *)sentMessageIDs replacementMessageIDs:(NSArray *)replacementMessageIDs;
+
 @end
