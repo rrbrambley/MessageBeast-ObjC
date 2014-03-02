@@ -7,6 +7,7 @@
 //
 
 #import "AATTActionMessageSpec.h"
+#import "AATTOrderedMessageBatch.h"
 #import "ANKClient+PrivateChannel.h"
 #import "ANKChannel+AATTAnnotationHelper.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
@@ -175,6 +176,36 @@
 }
 
 #pragma mark - Other
+
+- (BOOL)sendUnsentActionMessagesForChannelWithID:(NSString *)actionChannelID {
+    if([self.actionChannels objectForKey:actionChannelID]) {
+        NSOrderedDictionary *unsentActionMessages = [self.database unsentMessagesInChannelWithID:actionChannelID];
+        NSMutableSet *targetMessageIDs = [NSMutableSet set];
+        
+        for(AATTMessagePlus *unsentActionMessage in [unsentActionMessages allObjects]) {
+            [targetMessageIDs addObject:[unsentActionMessage.message targetMessageID]];
+        }
+        
+        //
+        //check to see if all target messages associated with messages in this action channel have
+        //been sent. if so, we are good to call sendAllUnsentForChannelWithID:
+        //
+        BOOL allSent = YES;
+        AATTOrderedMessageBatch *targetMessageBatch = [self.database messagesWithIDs:targetMessageIDs];
+        NSOrderedDictionary *messagePlusses = targetMessageBatch.messagePlusses;
+        for(AATTMessagePlus *targetMessagePlus in [messagePlusses allObjects]) {
+            allSent &= !targetMessagePlus.isUnsent;
+        }
+        
+        if(allSent) {
+            [self.messageManager sendAllUnsentForChannelWithID:actionChannelID];
+            return YES;
+        }
+    } else {
+        NSLog(@"Calling sendUnsentActionMessagesForChannelWithID: for a channel that AATTActionMessageManager is unaware of. Did you forget to init the channel first?");
+    }
+    return NO;
+}
 
 - (void)didSendUnsentMessagesInChannelWithID:(NSString *)channelID sentMessageIDs:(NSArray *)sentMessageIDs replacementMessageIDs:(NSArray *)replacementMessageIDs {
 

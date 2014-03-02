@@ -119,7 +119,18 @@ typedef void (^AATTActionMessageManagerChannelInitBlock)(ANKChannel *actionChann
 
 #pragma mark - Other
 
-/**
+/*
+ Send all unsent Messages in an Action Channel. If the associated target Messages
+ are not yet sent, then this method will not attempt to send and return NO.
+ 
+ @param actionChannelID the id of the Action Channel
+ @return YES if no Messages in the Action Channel are associated with unsent target
+         Messages, NO otherwise. A returned value of NO implies that no send attempt
+         will be made.
+ */
+- (BOOL)sendUnsentActionMessagesForChannelWithID:(NSString *)actionChannelID;
+
+/*
  An easy hook for the AATTMessageManager to call into when unsent messages are sent.
  This is not intended to be used by client applications.
  */
