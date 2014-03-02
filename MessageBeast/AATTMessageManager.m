@@ -386,86 +386,6 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }];
 }
 
-- (BOOL)sendUnsentMessagesInChannelWithID:(NSString *)channelID {
-    NSMutableOrderedDictionary *unsentMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
-    if(unsentMessages.count > 0) {
-        NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
-        if(channelMessages.count == 0) {
-            [self loadPersistedMesssageForChannelWithID:channelID limit:(unsentMessages.count + 1)];
-        }
-        NSMutableArray *sentMessageIDs = [NSMutableArray arrayWithCapacity:unsentMessages.count];
-        NSMutableArray *replacementMessageIDs = [NSMutableArray arrayWithCapacity:unsentMessages.count];
-        [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
-        return YES;
-    }
-    return NO;
-}
-
-- (void)sendUnsentMessages:(NSMutableOrderedDictionary *)unsentMessages sentMessageIDs:(NSMutableArray *)sentMessageIDs replacementMessageIDs:(NSMutableArray *)replacementMessageIDs {
-    AATTMessagePlus *messagePlus = unsentMessages.objectEnumerator.nextObject;
-    if(messagePlus.pendingFileAttachments.count > 0) {
-        NSString *pendingFileID = messagePlus.pendingFileAttachments.allKeys.objectEnumerator.nextObject;
-        NSMutableSet *messagesNeedingPendingFile = [self existingOrNewMessageIDsNeedingPendingFileSetForFileWithID:pendingFileID];
-        [messagesNeedingPendingFile addObject:messagePlus.message.messageID];
-        [self uploadPendingFileAttachmentWithPendingFileID:pendingFileID forMessageInChannelWithID:messagePlus.message.channelID];
-        return;
-    } else {
-        ANKMessage *message = messagePlus.message.copy;
-        
-        //we had them set for display locally, but we should
-        //let the server generate the "real" entities.
-        message.entities = nil;
-        
-        NSDictionary *params = [self.queryParametersByChannel objectForKey:message.channelID];
-        [self.client createMessage:message inChannelWithID:message.channelID parameters:params completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-            if(!error) {
-                ANKMessage *newMessage = responseObject;
-                
-                [unsentMessages removeEntryWithKey:messagePlus.displayDate];
-                [sentMessageIDs addObject:message.messageID];
-                [replacementMessageIDs addObject:newMessage.messageID];
-                
-                //delete the old one.
-                [self.database deleteMessagePlus:messagePlus];
-                [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
-
-                //now create a new one and add it to the places, update all the things.
-                AATTMessagePlus *newMessagePlus = [[AATTMessagePlus alloc] initWithMessage:newMessage];
-                [self adjustDateForMessagePlus:newMessagePlus];
-                [self performLookupsOnMessagePlusses:@[newMessagePlus] persist:YES];
-                [self insertMessagePlus:newMessagePlus];
-                
-                NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:newMessagePlus.message.channelID];
-                [channelMessages setObject:newMessagePlus forKey:newMessagePlus.displayDate];
-                
-                AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:newMessagePlus.message.channelID];
-                [minMaxPair expandDateIfMinOrMaxForDate:newMessagePlus.displayDate];
-                [minMaxPair expandIDIfMinOrMaxForID:newMessagePlus.message.messageID];
-                
-                if(unsentMessages.count > 0) {
-                    [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
-                } else {
-                    if(self.actionMessageManager) {
-                        [self.actionMessageManager didSendUnsentMessagesInChannelWithID:newMessage.channelID sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
-                    } else {
-                        [self sendUnsentMessagesSentNotificationForChannelID:message.channelID sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
-                    }
-                }
-            } else {
-                NSLog(@"Failed to send unsent message; %@", error.localizedDescription);
-                [messagePlus incrementSendAttemptsCount];
-                [self.database insertOrReplaceMessage:messagePlus];
-                
-                NSDictionary *userInfo = @{@"channelID" : message.channelID,
-                                           @"messageID" : messagePlus.message.messageID,
-                                           @"sendAttemptsCount" : [NSNumber numberWithInteger:messagePlus.sendAttemptsCount]};
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidFailToSendUnsentMessagesNotification object:self userInfo:userInfo];
-            }
-        }];
-    }
-}
-
 - (void)sendUnsentMessagesSentNotificationForChannelID:(NSString *)channelID sentMessageIDs:(NSArray *)sentMessageIDs replacementMessageIDs:(NSArray *)replacementMessageIDs {
     NSDictionary *userInfo = @{@"channelID" : channelID,
                                @"messageIDs" : sentMessageIDs,
@@ -509,6 +429,87 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 }
 
 #pragma mark - Private Stuff
+
+
+- (BOOL)sendUnsentMessagesInChannelWithID:(NSString *)channelID {
+    NSMutableOrderedDictionary *unsentMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
+    if(unsentMessages.count > 0) {
+        NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
+        if(channelMessages.count == 0) {
+            [self loadPersistedMesssageForChannelWithID:channelID limit:(unsentMessages.count + 1)];
+        }
+        NSMutableArray *sentMessageIDs = [NSMutableArray arrayWithCapacity:unsentMessages.count];
+        NSMutableArray *replacementMessageIDs = [NSMutableArray arrayWithCapacity:unsentMessages.count];
+        [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
+        return YES;
+    }
+    return NO;
+}
+
+- (void)sendUnsentMessages:(NSMutableOrderedDictionary *)unsentMessages sentMessageIDs:(NSMutableArray *)sentMessageIDs replacementMessageIDs:(NSMutableArray *)replacementMessageIDs {
+    AATTMessagePlus *messagePlus = unsentMessages.objectEnumerator.nextObject;
+    if(messagePlus.pendingFileAttachments.count > 0) {
+        NSString *pendingFileID = messagePlus.pendingFileAttachments.allKeys.objectEnumerator.nextObject;
+        NSMutableSet *messagesNeedingPendingFile = [self existingOrNewMessageIDsNeedingPendingFileSetForFileWithID:pendingFileID];
+        [messagesNeedingPendingFile addObject:messagePlus.message.messageID];
+        [self uploadPendingFileAttachmentWithPendingFileID:pendingFileID forMessageInChannelWithID:messagePlus.message.channelID];
+        return;
+    } else {
+        ANKMessage *message = messagePlus.message.copy;
+        
+        //we had them set for display locally, but we should
+        //let the server generate the "real" entities.
+        message.entities = nil;
+        
+        NSDictionary *params = [self.queryParametersByChannel objectForKey:message.channelID];
+        [self.client createMessage:message inChannelWithID:message.channelID parameters:params completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+            if(!error) {
+                ANKMessage *newMessage = responseObject;
+                
+                [unsentMessages removeEntryWithKey:messagePlus.displayDate];
+                [sentMessageIDs addObject:message.messageID];
+                [replacementMessageIDs addObject:newMessage.messageID];
+                
+                //delete the old one.
+                [self.database deleteMessagePlus:messagePlus];
+                [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
+                
+                //now create a new one and add it to the places, update all the things.
+                AATTMessagePlus *newMessagePlus = [[AATTMessagePlus alloc] initWithMessage:newMessage];
+                [self adjustDateForMessagePlus:newMessagePlus];
+                [self performLookupsOnMessagePlusses:@[newMessagePlus] persist:YES];
+                [self insertMessagePlus:newMessagePlus];
+                
+                NSMutableOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:newMessagePlus.message.channelID];
+                [channelMessages setObject:newMessagePlus forKey:newMessagePlus.displayDate];
+                
+                AATTMinMaxPair *minMaxPair = [self minMaxPairForChannelID:newMessagePlus.message.channelID];
+                [minMaxPair expandDateIfMinOrMaxForDate:newMessagePlus.displayDate];
+                [minMaxPair expandIDIfMinOrMaxForID:newMessagePlus.message.messageID];
+                
+                if(unsentMessages.count > 0) {
+                    [self sendUnsentMessages:unsentMessages sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
+                } else {
+                    if(self.actionMessageManager) {
+                        [self.actionMessageManager didSendUnsentMessagesInChannelWithID:newMessage.channelID sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
+                    } else {
+                        [self sendUnsentMessagesSentNotificationForChannelID:message.channelID sentMessageIDs:sentMessageIDs replacementMessageIDs:replacementMessageIDs];
+                    }
+                }
+            } else {
+                NSLog(@"Failed to send unsent message; %@", error.localizedDescription);
+                [messagePlus incrementSendAttemptsCount];
+                [self.database insertOrReplaceMessage:messagePlus];
+                
+                NSDictionary *userInfo = @{@"channelID" : message.channelID,
+                                           @"messageID" : messagePlus.message.messageID,
+                                           @"sendAttemptsCount" : [NSNumber numberWithInteger:messagePlus.sendAttemptsCount]};
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:AATTMessageManagerDidFailToSendUnsentMessagesNotification object:self userInfo:userInfo];
+            }
+        }];
+    }
+}
 
 - (void)sendPendingDeletionAtIndex:(NSUInteger)index inPendingDeletionsArray:(NSArray *)pendingDeletions completionBlock:(AATTMessageManagerDeletionCompletionBlock)block lastMeta:(ANKAPIResponseMeta *)meta {
     if(index >= pendingDeletions.count) {
