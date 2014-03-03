@@ -18,6 +18,7 @@
 #import "AATTPendingFile.h"
 #import "AATTPendingFileAttachment.h"
 #import "AATTPendingMessageDeletion.h"
+#import "AATTSharedDateFormatter.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
@@ -80,6 +81,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
         self.databaseQueue = [FMDatabaseQueue databaseQueueWithPath:writableDBPath];
         [self.databaseQueue inDatabase:^(FMDatabase *db) {
             [db setLogsErrors:YES];
+            [db setDateFormat:[AATTSharedDateFormatter dateFormatter]];
             
             [db executeUpdate:kCreateMessagesTable];
             [db executeUpdate:kCreateDisplayLocationInstancesTable];

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E208F52E18C3FC3A00556A04 /* AATTSharedDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = E208F52D18C3FC3A00556A04 /* AATTSharedDateFormatter.m */; };
 		E218EF961890936B00ADC609 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF551890936B00ADC609 /* AATTActionMessageManager.m */; };
 		E218EF971890936B00ADC609 /* AATTActionMessageSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF571890936B00ADC609 /* AATTActionMessageSpec.m */; };
 		E218EF981890936B00ADC609 /* AATTADNDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF591890936B00ADC609 /* AATTADNDatabase.m */; };
@@ -132,6 +133,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E208F52C18C3FC3A00556A04 /* AATTSharedDateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTSharedDateFormatter.h; sourceTree = "<group>"; };
+		E208F52D18C3FC3A00556A04 /* AATTSharedDateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTSharedDateFormatter.m; sourceTree = "<group>"; };
 		E218EF541890936B00ADC609 /* AATTActionMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageManager.h; sourceTree = "<group>"; };
 		E218EF551890936B00ADC609 /* AATTActionMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTActionMessageManager.m; sourceTree = "<group>"; };
 		E218EF561890936B00ADC609 /* AATTActionMessageSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTActionMessageSpec.h; sourceTree = "<group>"; };
@@ -262,6 +265,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E208F52918C3FC1E00556A04 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				E208F52C18C3FC3A00556A04 /* AATTSharedDateFormatter.h */,
+				E208F52D18C3FC3A00556A04 /* AATTSharedDateFormatter.m */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
 		E218EF531890936B00ADC609 /* MessageBeast */ = {
 			isa = PBXGroup;
 			children = (
@@ -270,6 +282,7 @@
 				E2A2C0751890986300DE1CF0 /* Manager */,
 				E2A2C0701890985100DE1CF0 /* Model */,
 				E2A2C0741890985C00DE1CF0 /* Persistence */,
+				E208F52918C3FC1E00556A04 /* Utility */,
 				E218EF931890936B00ADC609 /* MessageBeast-Prefix.pch */,
 			);
 			path = MessageBeast;
@@ -619,6 +632,7 @@
 				E218EF971890936B00ADC609 /* AATTActionMessageSpec.m in Sources */,
 				E218EFA61890936B00ADC609 /* AATTHashtagInstances.m in Sources */,
 				E218EFA81890936B00ADC609 /* AATTMessageManagerConfiguration.m in Sources */,
+				E208F52E18C3FC3A00556A04 /* AATTSharedDateFormatter.m in Sources */,
 				E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */,
 				E218EFB51890936B00ADC609 /* NSObject+AATTPersistence.m in Sources */,
 				E218EFAF1890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.m in Sources */,

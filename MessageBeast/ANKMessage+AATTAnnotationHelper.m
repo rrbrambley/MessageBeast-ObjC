@@ -8,25 +8,15 @@
 
 #import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
+#import "AATTSharedDateFormatter.h"
 
 @implementation ANKMessage (AATTAnnotationHelper)
-
-- (NSDateFormatter *)dateFormatter {
-	static NSDateFormatter *sharedDateFormatter = nil;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		sharedDateFormatter = [[NSDateFormatter alloc] init];
-		sharedDateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        sharedDateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-	});
-	return sharedDateFormatter;
-}
 
 - (NSDate *)ohaiDisplayDate {
     ANKAnnotation *annotation = [self firstAnnotationOfType:@"net.app.ohai.displaydate"];
     if(annotation) {
         NSString *dateString = [[annotation value] objectForKey:@"date"];
-        return [[self dateFormatter] dateFromString:dateString];
+        return [[AATTSharedDateFormatter dateFormatter] dateFromString:dateString];
     }
     return nil;
 }
@@ -37,7 +27,7 @@
 }
 
 - (void)addDisplayDateAnnotationWithDate:(NSDate *)date {
-    NSDictionary *value = @{@"date" : [[self dateFormatter] stringFromDate:date]};
+    NSDictionary *value = @{@"date" : [[AATTSharedDateFormatter dateFormatter] stringFromDate:date]};
     ANKAnnotation *annotation = [ANKAnnotation annotationWithType:@"net.app.ohai.displaydate" value:value];
     NSMutableArray *annotations = [NSMutableArray arrayWithArray:self.annotations];
     [annotations addObject:annotation];
