@@ -413,14 +413,14 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     NSString *channelID = messagePlus.message.channelID;
     NSDate *date = messagePlus.displayDate;
     
-    NSMutableDictionary *channelMessages = [self.messagesByChannelID objectForKey:channelID];
+    NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:channelID];
     if(channelMessages) {
         if([channelMessages objectForKey:date]) {
             [channelMessages setObject:messagePlus forKey:date];
         }
     }
     
-    NSMutableDictionary *unsentChannelMessages = [self.unsentMessagesByChannelID objectForKey:channelID];
+    NSMutableOrderedDictionary *unsentChannelMessages = [self.unsentMessagesByChannelID objectForKey:channelID];
     if(unsentChannelMessages) {
         if([unsentChannelMessages objectForKey:date]) {
             [unsentChannelMessages setObject:messagePlus forKey:date];
