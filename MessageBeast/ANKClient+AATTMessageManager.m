@@ -39,11 +39,20 @@
 }
 
 - (ANKJSONRequestOperation *)createMessage:(ANKMessage *)message inChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters completion:(ANKClientCompletionBlock)completionHandler {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[message JSONDictionary]];
-    [params addEntriesFromDictionary:parameters];
-	return [self enqueuePOSTPath:[NSString stringWithFormat:@"channels/%@/messages", channelID]
-					  parameters:params
-						 success:[self successHandlerForResourceClass:[ANKMessage class] clientHandler:completionHandler]
-						 failure:[self failureHandlerForClientHandler:completionHandler]];
+    
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:[NSString stringWithFormat:@"channels/%@/messages", channelID] parameters:[message JSONDictionary]];
+    
+    NSString *encodedParameters = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
+    NSString *URLString = [request.URL absoluteString];
+    request.URL = [NSURL URLWithString:[URLString stringByAppendingFormat:[URLString rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", encodedParameters]];
+    
+    AFNetworkingSuccessBlock successBlock= [self successHandlerForResourceClass:[ANKMessage class] clientHandler:completionHandler];
+    ANKJSONRequestOperation *operation = (ANKJSONRequestOperation *)[self HTTPRequestOperationWithRequest:request success:successBlock failure:[self failureHandlerForClientHandler:completionHandler]];
+    [self enqueueHTTPRequestOperation:operation];
+    operation.successCallbackQueue = self.successCallbackQueue;
+    operation.failureCallbackQueue = self.failureCallbackQueue;
+
+    return operation;
 }
+
 @end
