@@ -10,11 +10,12 @@
 
 #import "AATTActionMessageManager.h"
 #import "AATTADNDatabase.h"
+#import "AATTADNFileManager.h"
 #import "AATTADNPersistence.h"
 #import "AATTAnnotationInstances.h"
+#import "AATTCustomPlace.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
-#import "AATTADNFileManager.h"
 #import "AATTFilteredMessageBatch.h"
 #import "AATTGeolocation.h"
 #import "AATTHashtagInstances.h"
@@ -954,6 +955,11 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
             messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromCheckinAnnotation:checkin];
             if(persist) {
                 [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
+                
+                ANKPlace *place = [[ANKPlace alloc] initWithJSONDictionary:checkin.value];
+                if(place && place.factualID) {
+                    [self.database insertOrReplacePlace:place];
+                }
             }
             continue;
         }
@@ -963,6 +969,14 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
             messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromOhaiLocationAnnotation:ohai];
             if(persist) {
                 [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
+                
+                NSDictionary *ohaiValue = ohai.value;
+                NSString *ID = [ohaiValue objectForKey:@"id"];
+                ANKPlace *place = [[ANKPlace alloc] initWithJSONDictionary:ohaiValue];
+                if(place) {
+                    AATTCustomPlace *customPlace = [[AATTCustomPlace alloc] initWithID:ID place:place];
+                    [self.database insertOrReplacePlace:customPlace];
+                }
             }
             continue;
         }
