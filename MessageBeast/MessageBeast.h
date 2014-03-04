@@ -21,6 +21,7 @@
 #import "AATTChannelSpec.h"
 #import "AATTChannelSpecSet.h"
 #import "AATTChannelSyncManager.h"
+#import "AATTCustomPlace.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTFilteredMessageBatch.h"
