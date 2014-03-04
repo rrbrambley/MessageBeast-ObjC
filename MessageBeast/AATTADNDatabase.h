@@ -307,12 +307,13 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (AATTGeolocation *)geolocationForLatitude:(double)latitude longitude:(double)longitude;
 
 /**
- Obtain the persisted ANKPlace with the provided factual ID.
+ Obtain the persisted Place with the provided ID.
  
- @param factualID the ID of the ANKPlace
- @return the ANKPlace with the provided factualID, or nil of none exists.
+ @param ID the ID of the Place. for App.net Places, this is the factual ID,
+        for AATTCustomPlaces, this is the UUID value of the ID property.
+ @return the ANKPlace or AATTCustomPlace with the ID, or nil of none exists.
  */
-- (ANKPlace *)placeForFactualID:(NSString *)factualID;
+- (ANKPlace *)placeForID:(NSString *)ID;
 
 /**
  Obtain an array of places whose geocoordinates match the provided coordinates to a certain precision.

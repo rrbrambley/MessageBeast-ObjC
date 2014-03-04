@@ -9,6 +9,7 @@
 #import "AATTActionMessageSpec.h"
 #import "AATTADNDatabase.h"
 #import "AATTAnnotationInstances.h"
+#import "AATTCustomPlace.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
 #import "AATTGeolocation.h"
@@ -67,7 +68,7 @@ static NSString *const kCreateActionMessageSpecsTable = @"CREATE TABLE IF NOT EX
 
 static NSString *const kCreatePendingFileDeletionsTable = @"CREATE TABLE IF NOT EXISTS pending_file_deletions (pending_file_deletion_file_id TEXT PRIMARY KEY)";
 
-static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places (place_factual_id TEXT PRIMARY KEY, place_name TEXT NOT NULL, place_rounded_latitude REAL NOT NULL, place_rounded_longitude REAL NOT NULL, place_json TEXT NOT NULL)";
+static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places (place_id TEXT PRIMARY KEY, place_name TEXT NOT NULL, place_rounded_latitude REAL NOT NULL, place_rounded_longitude REAL NOT NULL, place_is_custom INTEGER NOT NULL, place_json TEXT NOT NULL)";
 
 #pragma mark - Initializer
 
@@ -170,12 +171,15 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (void)insertOrReplacePlace:(ANKPlace *)place {
-    static NSString *insert = @"INSERT OR REPLACE INTO places (place_factual_id, place_name, place_rounded_latitude, place_rounded_longitude, place_json) VALUES(?, ?, ?, ?, ?)";
+    static NSString *insert = @"INSERT OR REPLACE INTO places (place_id, place_name, place_rounded_latitude, place_rounded_longitude, place_is_custom, place_json) VALUES(?, ?, ?, ?, ?, ?)";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        BOOL isCustom = [place isKindOfClass:[AATTCustomPlace class]];
+        NSString *ID = isCustom ? [(AATTCustomPlace *)place ID] : place.factualID;
         NSNumber *latitude = [NSNumber numberWithDouble:[self roundValue:place.latitude decimalPlaces:3]];
         NSNumber *longitude = [NSNumber numberWithDouble:[self roundValue:place.longitude decimalPlaces:3]];
+        NSNumber *placeIsCustom = [NSNumber numberWithBool:isCustom];
         NSString *placeJSONString = [self JSONStringWithANKResource:place];
-        if(![db executeUpdate:insert, place.factualID, place.name, latitude, longitude, placeJSONString]) {
+        if(![db executeUpdate:insert, ID, place.name, latitude, longitude, placeIsCustom, placeJSONString]) {
             *rollback = YES;
         }
     }];
@@ -569,15 +573,20 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     return geolocation;
 }
 
-- (ANKPlace *)placeForFactualID:(NSString *)factualID {
-    static NSString *select = @"SELECT place_json FROM places WHERE place_factual_id = ? LIMIT 1";
+- (ANKPlace *)placeForID:(NSString *)ID {
+    static NSString *select = @"SELECT place_is_custom, place_json FROM places WHERE place_id = ? LIMIT 1";
     __block ANKPlace *place = nil;
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *resultSet = [db executeQuery:select, factualID];
+        FMResultSet *resultSet = [db executeQuery:select, ID];
         if([resultSet next]) {
-            NSString *json = [resultSet stringForColumnIndex:0];
+            BOOL placeIsCustom = [resultSet boolForColumnIndex:0];
+            NSString *json = [resultSet stringForColumnIndex:1];
             NSDictionary *placeJSON = [self JSONDictionaryWithString:json];
             place = [[ANKPlace alloc] initWithJSONDictionary:placeJSON];
+            
+            if(placeIsCustom) {
+                place = [[AATTCustomPlace alloc] initWithID:ID place:place];
+            }
             [resultSet close];
         }
     }];
@@ -585,7 +594,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (NSArray *)placesForLatitude:(double)latitude longitude:(double)longitude locationPrecision:(AATTLocationPrecision)locationPrecision {
-    static NSString *select = @"SELECT place_json FROM places WHERE place_rounded_latitude LIKE ? AND place_rounded_longitude LIKE ?";
+    static NSString *select = @"SELECT place_id, place_is_custom, place_json FROM places WHERE place_rounded_latitude LIKE ? AND place_rounded_longitude LIKE ?";
     NSMutableArray *places = [NSMutableArray array];
     
     NSUInteger precisionDigits = [self precisionDigitsForLocationPrecision:locationPrecision];
@@ -596,9 +605,16 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, latArg, longArg];
         while([resultSet next]) {
-            NSString *json = [resultSet stringForColumnIndex:0];
+            NSString *placeID = [resultSet stringForColumnIndex:0];
+            BOOL isCustom = [resultSet boolForColumnIndex:1];
+            NSString *json = [resultSet stringForColumnIndex:2];
             NSDictionary *placeJSON = [self JSONDictionaryWithString:json];
-            [places addObject:[[ANKPlace alloc] initWithJSONDictionary:placeJSON]];
+            
+            ANKPlace *place = [[ANKPlace alloc] initWithJSONDictionary:placeJSON];
+            if(isCustom) {
+                place = [[AATTCustomPlace alloc] initWithID:placeID place:place];
+            }
+            [places addObject:place];
         }
     }];
     
@@ -850,10 +866,10 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     }];
 }
 
-- (void)deletePlaceWithFactualID:(NSString *)factualID {
-    static NSString *delete = @"DELETE FROM places WHERE place_factual_id = ?";
+- (void)deletePlaceWithID:(NSString *)ID {
+    static NSString *delete = @"DELETE FROM places WHERE place_id = ?";
     [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        if(![db executeUpdate:delete, factualID]) {
+        if(![db executeUpdate:delete, ID]) {
             *rollback = YES;
         }
     }];
