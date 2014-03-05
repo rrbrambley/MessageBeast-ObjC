@@ -296,7 +296,9 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         }
         [self deleteFromChannelMapAndUpdateMinMaxPairForMessagePlus:messagePlus];
         
-        block(nil, nil);
+        if(block) {
+            block(nil, nil);
+        }
     } else {
         void (^finishDelete)(void) = ^void(void) {
             [self.database deleteMessagePlus:messagePlus];
@@ -308,11 +310,15 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                 if(!error) {
                     finishDelete();
                     [self.database deletePendingMessageDeletionForMessageWithID:messagePlus.message.messageID];
-                    block(meta, error);
+                    if(block) {
+                        block(meta, error);
+                    }
                 } else {
                     finishDelete();
                     [self.database insertOrReplacePendingDeletionForMessagePlus:messagePlus];
-                    block(meta, error);
+                    if(block) {
+                        block(meta, error);
+                    }
                 }
             }];
         };
