@@ -82,4 +82,39 @@ typedef void (^AATTChannelSyncManagerChannelRefreshCompletionBlock)(AATTChannelR
 
 - (void)fetchNewestMessagesWithCompletionBlock:(AATTChannelSyncManagerChannelRefreshCompletionBlock)block;
 
+#pragma mark - Delete Messages
+
+/*
+ Delete an AATTMessagePlus and any Action Messages associated with it.
+ 
+ If the provided AATTMessagePlus has files associated with it, they will
+ not be deleted by this method.
+ 
+ @param messagePlus the target AATTMessagePlus to be deleted.
+ */
+- (void)deleteMessagePlusAndAssociatedActionMessages:(AATTMessagePlus *)messagePlus;
+
+/*
+ Delete an AATTMessagePlus and any Action Messages associated with it.
+ 
+ @param messagePlus the target AATTMessagePlus to be deleted.
+ @param deleteAssociatedFiles YES if the target AATTMessagePlus' associated files should
+ be deleted, false otherwise.
+ */
+- (void)deleteMessagePlusAndAssociatedActionMessages:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles;
+
+/*
+ Delete an AATTMessagePlus and any Action Messages associated with it.
+ 
+ The completion block is used to indicate the completion of the target AATTMessagePlus
+ deletion, i.e., the action messages are not guaranteed to be deleted before the
+ block is executed.
+ 
+ @param messagePlus the target AATTMessagePlus to be deleted.
+ @param deleteAssociatedFiles YES if the target AATTMessagePlus' associated files should
+        be deleted, false otherwise.
+ @param block the completion block. Can be nil.
+ */
+- (void)deleteMessagePlusAndAssociatedActionMessages:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles completionBlock:(AATTMessageManagerDeletionCompletionBlock)block;
+
 @end

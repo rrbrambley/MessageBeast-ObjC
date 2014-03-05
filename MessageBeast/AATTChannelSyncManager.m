@@ -7,12 +7,15 @@
 //
 
 #import "AATTActionMessageManager.h"
+#import "AATTActionMessageSpec.h"
 #import "AATTChannelSpec.h"
 #import "AATTChannelSpecSet.h"
 #import "AATTChannelSyncManager.h"
 #import "AATTChannelRefreshResult.h"
 #import "AATTChannelRefreshResultSet.h"
 #import "AATTMessageManager.h"
+#import "AATTMessagePlus.h"
+#import "AATTOrderedMessageBatch.h"
 #import "AATTTargetWithActionChannelsSpecSet.h"
 #import "ANKClient+PrivateChannel.h"
 
@@ -136,6 +139,35 @@
     } else {
         [self fetchNewestMessagesForChannelAtIndex:0 refreshCompletionBlock:block refreshResultSet:[[AATTChannelRefreshResultSet alloc] init]];
     }
+}
+
+#pragma mark - Delete Messages
+
+- (void)deleteMessagePlusAndAssociatedActionMessages:(AATTMessagePlus *)messagePlus {
+    [self deleteMessagePlusAndAssociatedActionMessages:messagePlus deleteAssociatedFiles:NO];
+}
+
+- (void)deleteMessagePlusAndAssociatedActionMessages:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles {
+    [self deleteMessagePlusAndAssociatedActionMessages:messagePlus deleteAssociatedFiles:NO completionBlock:nil];
+}
+
+- (void)deleteMessagePlusAndAssociatedActionMessages:(AATTMessagePlus *)messagePlus deleteAssociatedFiles:(BOOL)deleteAssociatedFiles completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {
+    AATTADNDatabase *db = [AATTADNDatabase sharedInstance];
+    NSArray *actionMessageSpecs = [db actionMessageSpecsForTargetMessagesWithIDs:@[messagePlus.message.messageID]];
+    
+    if(actionMessageSpecs.count) {
+        NSMutableSet *actionMessageIDs = [NSMutableSet setWithCapacity:actionMessageSpecs.count];
+        for(AATTActionMessageSpec *spec in actionMessageSpecs) {
+            [actionMessageIDs addObject:spec.actionMessageID];
+        }
+        
+        AATTOrderedMessageBatch *actionMessageBatch = [db messagesWithIDs:actionMessageIDs];
+        NSOrderedDictionary *actionMessages = actionMessageBatch.messagePlusses;
+        for(AATTMessagePlus *mp in [actionMessages allObjects]) {
+            [self.messageManager deleteMessage:mp completionBlock:nil];
+        }
+    }
+    [self.messageManager deleteMessage:messagePlus deleteAssociatedFiles:deleteAssociatedFiles completionBlock:block];
 }
 
 #pragma mark - Private
