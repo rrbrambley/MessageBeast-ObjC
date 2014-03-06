@@ -363,9 +363,12 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     NSString *newMessageIDString = [[NSUUID UUID] UUIDString];
     
     AATTMessagePlus *unsentMessagePlus = [AATTMessagePlus unsentMessagePlusForChannelWithID:channelID messageID:newMessageIDString message:message pendingFileAttachments:pendingFileAttachments];
-    [self.database insertOrReplaceMessage:unsentMessagePlus];
     
-    //TODO: handle display location
+    if(self.configuration.isLocationLookupEnabled) {
+        [self lookupLocationForMessagePlusses:@[unsentMessagePlus] persist:YES];
+    }
+    
+    [self.database insertOrReplaceMessage:unsentMessagePlus];
     
     NSMutableOrderedDictionary *unsentChannelMessages = [self existingOrNewUnsentMessagesDictionaryforChannelWithID:channelID];
     [unsentChannelMessages setObject:unsentMessagePlus forKey:unsentMessagePlus.displayDate];
