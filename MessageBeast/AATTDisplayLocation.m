@@ -6,20 +6,33 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#import "AATTADNDatabase.h"
 #import "AATTDisplayLocation.h"
 #import "AATTGeolocation.h"
 
 @implementation AATTDisplayLocation
 
 + (AATTDisplayLocation *)displayLocationFromCheckinAnnotation:(ANKAnnotation *)checkinAnnotation {
-    NSString *name = [[checkinAnnotation value] objectForKey:@"name"];
-    NSString *factualID = [[checkinAnnotation value] objectForKey:@"factual_id"];
-    NSNumber *latitude = [[checkinAnnotation value] objectForKey:@"latitude"];
-    NSNumber *longitude = [[checkinAnnotation value] objectForKey:@"longitude"];
-    AATTDisplayLocation *loc = [[AATTDisplayLocation alloc] initWithName:name latitude:[latitude doubleValue] longitude:[longitude doubleValue]];
-    loc.factualID = factualID;
-    loc.type = AATTDisplayLocationTypeCheckin;
-    return loc;
+    NSDictionary *replacementValue = [checkinAnnotation.value objectForKey:@"+net.app.core.place"];
+    if(replacementValue) {
+        NSString *factualID = [replacementValue objectForKey:@"factual_id"];
+        ANKPlace *place = [[AATTADNDatabase sharedInstance] placeForID:factualID];
+        if(place) {
+            AATTDisplayLocation *loc = [[AATTDisplayLocation alloc] initWithName:place.name latitude:place.latitude longitude:place.longitude];
+            loc.type = AATTDisplayLocationTypeCheckin;
+            return loc;
+        }
+        return nil;
+    } else {
+        NSString *name = [[checkinAnnotation value] objectForKey:@"name"];
+        NSString *factualID = [[checkinAnnotation value] objectForKey:@"factual_id"];
+        NSNumber *latitude = [[checkinAnnotation value] objectForKey:@"latitude"];
+        NSNumber *longitude = [[checkinAnnotation value] objectForKey:@"longitude"];
+        AATTDisplayLocation *loc = [[AATTDisplayLocation alloc] initWithName:name latitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+        loc.factualID = factualID;
+        loc.type = AATTDisplayLocationTypeCheckin;
+        return loc;
+    }
 }
 
 + (AATTDisplayLocation *)displayLocationFromOhaiLocationAnnotation:(ANKAnnotation *)ohaiLocationAnnotation {
