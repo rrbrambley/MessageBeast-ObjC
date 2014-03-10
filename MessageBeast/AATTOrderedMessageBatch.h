@@ -14,7 +14,7 @@
 @interface AATTOrderedMessageBatch : NSObject
 
 /**
- An Ordered Dictionary of @{NSDate : AATTMessagePlus} in
+ An Ordered Dictionary of @{Message ID : AATTMessagePlus} in
  reverse chronological order.
  */
 @property M13OrderedDictionary *messagePlusses;

@@ -414,7 +414,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
             messagePlus.displayDate = date;
             messagePlus.isUnsent = YES;
             messagePlus.sendAttemptsCount = sendAttemptsCount;
-            [messagePlusses setObject:messagePlus forKey:date];
+            [messagePlusses setObject:messagePlus forKey:message.messageID];
         }
     }];
     
@@ -964,7 +964,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
             messagePlus.isUnsent = isUnsent;
             messagePlus.sendAttemptsCount = sendAttemptsCount;
             messagePlus.displayDate = date;
-            [messagePlusses setObject:messagePlus forKey:date];
+            [messagePlusses setObject:messagePlus forKey:messageID];
             
             if(!maxID) {
                 maxDate = date;
