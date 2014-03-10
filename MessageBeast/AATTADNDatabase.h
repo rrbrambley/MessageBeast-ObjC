@@ -467,9 +467,9 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 /**
  Delete a place.
  
- @param the factual ID of the place to delete
+ @param the ID of the place to delete
  */
-- (void)deletePlaceWithFactualID:(NSString *)factualID;
+- (void)deletePlaceWithID:(NSString *)ID;
 
 /**
  Delete all persisted places.
