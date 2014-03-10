@@ -30,7 +30,7 @@
 #import "ANKClient+PrivateChannel.h"
 #import "ANKChannel+AATTAnnotationHelper.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
-#import "NSOrderedDictionary.h"
+#import "M13OrderedDictionary.h"
 
 @interface AATTMessageManager ()
 @property NSMutableDictionary *queryParametersByChannel;
@@ -93,7 +93,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 }
 
 - (NSArray *)loadedMessagesForChannelWithID:(NSString *)channelID {
-    NSOrderedDictionary *messages = [self.messagesByChannelID objectForKey:channelID];
+    M13OrderedDictionary *messages = [self.messagesByChannelID objectForKey:channelID];
     if(messages.count == 0) {
         return nil;
     }
@@ -112,7 +112,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 
 #pragma mark - Load Messages
 
-- (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit {
+- (M13OrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit {
     AATTOrderedMessageBatch *batch = [self loadPersistedMessageBatchForChannelWithID:channelID limit:limit performLookups:YES];
     return batch.messagePlusses;
 }
@@ -120,7 +120,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 - (AATTFilteredMessageBatch *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSInteger)limit messageFilter:(AATTMessageFilter)messageFilter {
     AATTOrderedMessageBatch *batch = [self loadPersistedMessageBatchForChannelWithID:channelID limit:limit performLookups:NO];
     AATTFilteredMessageBatch *filteredBatch = [AATTFilteredMessageBatch filteredMessageBatchWithOrderedMessageBatch:batch messageFilter:messageFilter];
-    NSOrderedDictionary *excludedMessages = filteredBatch.excludedMessages;
+    M13OrderedDictionary *excludedMessages = filteredBatch.excludedMessages;
     
     //remove the excluded messages from the main channel message dictionary.
     NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:channelID];
@@ -135,12 +135,12 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 
 #pragma mark - Get Persisted Messages
 
-- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
     AATTDisplayLocationInstances *instances = [self.database displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:locationPrecision];
     return [self persistedMessagesWithMessageIDs:instances.messageIDs.set];
 }
 
-- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
     AATTHashtagInstances *hashtagInstances = [self.database hashtagInstancesInChannelWithID:channelID hashtagName:hashtagName];
     return [self persistedMessagesWithMessageIDs:hashtagInstances.messageIDs.set];
 }
@@ -153,14 +153,14 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return messagePlus;
 }
 
-- (NSOrderedDictionary *)persistedMessagesWithMessageIDs:(NSSet *)messageIDs {
+- (M13OrderedDictionary *)persistedMessagesWithMessageIDs:(NSSet *)messageIDs {
     AATTOrderedMessageBatch *messageBatch = [self.database messagesWithIDs:messageIDs];
-    NSOrderedDictionary *messagePlusses = messageBatch.messagePlusses;
+    M13OrderedDictionary *messagePlusses = messageBatch.messagePlusses;
     [self performLookupsOnMessagePlusses:messagePlusses.allObjects persist:NO];
     return messagePlusses;
 }
 
-- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType {
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType {
     AATTAnnotationInstances *annotationInstances = [self.database annotationInstancesOfType:annotationType inChannelWithID:channelID];
     return [self persistedMessagesWithMessageIDs:annotationInstances.messageIDs.set];
 }
@@ -354,7 +354,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
 
 - (AATTMessagePlus *)createUnsentMessageAndAttemptSendInChannelWithID:(NSString *)channelID message:(ANKMessage *)message pendingFileAttachments:(NSArray *)pendingFileAttachments attemptToSendImmediately:(BOOL)attemptToSendImmediately {
 
-    NSOrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
+    M13OrderedDictionary *channelMessages = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
     if(channelMessages.count == 0) {
         //we do this so that the max id is known.
         [self loadPersistedMesssageForChannelWithID:channelID limit:1];
@@ -769,7 +769,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }
     
     [self.client fetchMessagesInChannelWithID:channelID parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
-        NSOrderedDictionary *excludedResults = nil;
+        M13OrderedDictionary *excludedResults = nil;
         
         NSArray *responseMessages = responseObject;
         NSMutableOrderedDictionary *channelMessagePlusses = [self existingOrNewMessagesDictionaryforChannelWithID:channelID];
@@ -786,7 +786,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         }
         
         //SORT!
-        [newChannelMessages sortEntrysByKeysUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        [newChannelMessages sortEntriesByKeysUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return [obj2 compare:obj1];
         }];
         
@@ -839,7 +839,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }
     
     AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesInChannelWithID:channelID beforeDate:beforeDate limit:limit];
-    NSOrderedDictionary *messagePlusses = orderedMessageBatch.messagePlusses;
+    M13OrderedDictionary *messagePlusses = orderedMessageBatch.messagePlusses;
     AATTMinMaxPair *dbMinMaxPair = orderedMessageBatch.minMaxPair;
     [minMaxPair updateByCombiningWithMinMaxPair:dbMinMaxPair];
     
@@ -856,7 +856,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return orderedMessageBatch;
 }
 
-- (void)removeExcludedMessages:(NSOrderedDictionary *)excludedMessages fromDictionary:(NSMutableOrderedDictionary *)dictionary {
+- (void)removeExcludedMessages:(M13OrderedDictionary *)excludedMessages fromDictionary:(NSMutableOrderedDictionary *)dictionary {
     for(id entryKey in [excludedMessages allKeys]) {
         [dictionary removeEntryWithKey:entryKey];
     }
@@ -907,7 +907,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         }
         NSSet *messageIDs = [self existingOrNewMessageIDsNeedingPendingFileSetForFileWithID:pendingFileID];
         AATTOrderedMessageBatch *orderedMessageBatch = [self.database messagesWithIDs:messageIDs];
-        NSOrderedDictionary *messagesNeedingFile = orderedMessageBatch.messagePlusses;
+        M13OrderedDictionary *messagesNeedingFile = orderedMessageBatch.messagePlusses;
         
         //always add the provided channel ID so that we can finish the
         //sending of the unsent message in that channel.

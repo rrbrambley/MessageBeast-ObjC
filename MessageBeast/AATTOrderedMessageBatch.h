@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "AATTMinMaxPair.h"
-#import "NSOrderedDictionary.h"
+#import "M13OrderedDictionary.h"
 
 @interface AATTOrderedMessageBatch : NSObject
 
@@ -17,13 +17,13 @@
  An Ordered Dictionary of @{NSDate : AATTMessagePlus} in
  reverse chronological order.
  */
-@property NSOrderedDictionary *messagePlusses;
+@property M13OrderedDictionary *messagePlusses;
 
 /**
  The min and max IDs and dates in this batch.
  */
 @property AATTMinMaxPair *minMaxPair;
 
-- (id)initWithOrderedMessagePlusses:(NSOrderedDictionary *)messagePlusses minMaxPair:(AATTMinMaxPair *)minMaxPair;
+- (id)initWithOrderedMessagePlusses:(M13OrderedDictionary *)messagePlusses minMaxPair:(AATTMinMaxPair *)minMaxPair;
 
 @end

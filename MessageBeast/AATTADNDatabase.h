@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class AATTActionMessageSpec, AATTAnnotationInstances, AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, AATTPendingFile, NSOrderedDictionary;
+@class AATTActionMessageSpec, AATTAnnotationInstances, AATTDisplayLocation, AATTDisplayLocationInstances, AATTGeolocation, AATTHashtagInstances, AATTMessagePlus, AATTOrderedMessageBatch, AATTPendingFile, M13OrderedDictionary;
 
 typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
     AATTLocationPrecisionOneHundredMeters = 0, //actually 111 m
@@ -184,9 +184,9 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  because this is the order in which they should be sent to the server.
 
  @param channelID the ID of the channel containing the messages.
- @return an NSOrderedDictionary with message ID keys mapped to AATTMessagePlus objects.
+ @return an M13OrderedDictionary with message ID keys mapped to AATTMessagePlus objects.
  */
-- (NSOrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID;
+- (M13OrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID;
 
 /**
  Obtain an AATTAnnotationInstances containing all message IDs with which the specified annotation type

@@ -4,6 +4,6 @@
 [submodule "fmdb"]
 	path = fmdb
 	url = git@github.com:ccgus/fmdb.git
-[submodule "NSOrderedDictionary"]
-	path = NSOrderedDictionary
-	url = git@github.com:Marxon13/NSOrderedDictionary.git
+[submodule "M13OrderedDictionary"]
+	path = M13OrderedDictionary
+	url = git@github.com:Marxon13/M13OrderedDictionary.git

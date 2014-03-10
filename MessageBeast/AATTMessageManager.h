@@ -8,7 +8,7 @@
 
 #import "AATTADNDatabase.h"
 
-@class AATTActionMessageManager, AATTDisplayLocation, AATTFilteredMessageBatch, AATTMessageManagerConfiguration, AATTMessagePlus, NSOrderedDictionary;
+@class AATTActionMessageManager, AATTDisplayLocation, AATTFilteredMessageBatch, AATTMessageManagerConfiguration, AATTMessagePlus, M13OrderedDictionary;
 
 typedef NS_ENUM(NSUInteger, AATTChannelFullSyncState) {
 	AATTChannelFullSyncStateNotStarted = 0,
@@ -49,12 +49,12 @@ extern NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification
 
 /**
  Given a dictionary of <message id : AATTMessagePlus> pairs, return
- a NSOrderedDictionary containing those that should be excluded.
+ a M13OrderedDictionary containing those that should be excluded.
  */
-typedef NSOrderedDictionary* (^AATTMessageFilter)(NSOrderedDictionary *messages);
+typedef M13OrderedDictionary* (^AATTMessageFilter)(M13OrderedDictionary *messages);
 
 typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error);
-typedef void (^AATTMessageManagerCompletionWithFilterBlock)(NSArray *messagePlusses, NSOrderedDictionary *excludedResults, ANKAPIResponseMeta *meta, NSError *error);
+typedef void (^AATTMessageManagerCompletionWithFilterBlock)(NSArray *messagePlusses, M13OrderedDictionary *excludedResults, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerMultiChannelSyncBlock)(BOOL success, NSError *error);
 typedef void (^AATTMessageManagerBatchSyncBlock)(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messagePlus, ANKAPIResponseMeta *meta, NSError *error);
@@ -126,7 +126,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
+- (M13OrderedDictionary *)loadPersistedMesssageForChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
 
 /**
  Load persisted messages that were previously stored in the sqlite database,
@@ -153,7 +153,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
 
 /**
  Get persisted messages that have the specified hashtag.
@@ -164,7 +164,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
 
 /**
  Get a persisted message.
@@ -183,7 +183,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
-- (NSOrderedDictionary *)persistedMessagesWithMessageIDs:(NSSet *)messageIDs;
+- (M13OrderedDictionary *)persistedMessagesWithMessageIDs:(NSSet *)messageIDs;
 
 /**
  Get persisted messages having the specified Annotation type.
@@ -191,7 +191,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @param channelID the id of the channel associated with the messages to be loaded.
  @param annotationType the annotation type
  */
-- (NSOrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType;
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType;
 
 #pragma mark - Fetch Messages
 

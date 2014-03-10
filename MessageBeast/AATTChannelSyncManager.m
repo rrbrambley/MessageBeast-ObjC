@@ -162,7 +162,7 @@
         }
         
         AATTOrderedMessageBatch *actionMessageBatch = [db messagesWithIDs:actionMessageIDs];
-        NSOrderedDictionary *actionMessages = actionMessageBatch.messagePlusses;
+        M13OrderedDictionary *actionMessages = actionMessageBatch.messagePlusses;
         for(AATTMessagePlus *mp in [actionMessages allObjects]) {
             [self.messageManager deleteMessage:mp completionBlock:nil];
         }

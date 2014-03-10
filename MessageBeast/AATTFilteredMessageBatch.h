@@ -22,7 +22,7 @@
 /**
  The dictionary of excluded messages that were filtered out of the messagePlusses dictionary.
  */
-@property NSOrderedDictionary *excludedMessages;
+@property M13OrderedDictionary *excludedMessages;
 
 /**
  Apply a message filter to an AATTOrderedMessageBatch and return an AATTFilteredMessageBatch.

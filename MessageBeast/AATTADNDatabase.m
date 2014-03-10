@@ -23,7 +23,7 @@
 #import "ANKMessage+AATTAnnotationHelper.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
-#import "NSOrderedDictionary.h"
+#import "M13OrderedDictionary.h"
 
 @interface AATTADNDatabase ()
 @property FMDatabaseQueue *databaseQueue;
@@ -373,7 +373,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     NSMutableSet *messageIDs = [NSMutableSet setWithCapacity:1];
     [messageIDs addObject:messageID];
     AATTOrderedMessageBatch *messageBatch = [self messagesWithIDs:messageIDs];
-    NSOrderedDictionary *orderedMessages = messageBatch.messagePlusses;
+    M13OrderedDictionary *orderedMessages = messageBatch.messagePlusses;
     if(orderedMessages.count == 1) {
         return [orderedMessages lastObject];
     }
@@ -393,7 +393,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     return messageIDs;
 }
 
-- (NSOrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID {
+- (M13OrderedDictionary *)unsentMessagesInChannelWithID:(NSString *)channelID {
     NSMutableOrderedDictionary *messagePlusses = [[NSMutableOrderedDictionary alloc] init];
     
     static NSString *select = @"SELECT message_date, message_json, message_text, message_send_attempts FROM messages WHERE message_channel_id = ? AND message_unsent = ? ORDER BY message_date ASC";

@@ -15,7 +15,7 @@
 #import "AATTADNDatabase.h"
 #import "AATTMessageManager.h"
 #import "AATTMessagePlus.h"
-#import "NSOrderedDictionary.h"
+#import "M13OrderedDictionary.h"
 
 @interface AATTActionMessageManager ()
 @property (nonatomic) AATTMessageManager *messageManager;
@@ -79,7 +79,7 @@
     for(AATTActionMessageSpec *spec in actionMessageSpecs) {
         [targetMessageIDs addObject:spec.targetMessageID];
     }
-    NSOrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:targetMessageIDs];
+    M13OrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:targetMessageIDs];
     return [NSArray arrayWithArray:targetMessages.allObjects];
 }
 
@@ -179,7 +179,7 @@
 
 - (BOOL)sendUnsentActionMessagesForChannelWithID:(NSString *)actionChannelID {
     if([self.actionChannels objectForKey:actionChannelID]) {
-        NSOrderedDictionary *unsentActionMessages = [self.database unsentMessagesInChannelWithID:actionChannelID];
+        M13OrderedDictionary *unsentActionMessages = [self.database unsentMessagesInChannelWithID:actionChannelID];
         NSMutableSet *targetMessageIDs = [NSMutableSet set];
         
         for(AATTMessagePlus *unsentActionMessage in [unsentActionMessages allObjects]) {
@@ -192,7 +192,7 @@
         //
         BOOL allSent = YES;
         AATTOrderedMessageBatch *targetMessageBatch = [self.database messagesWithIDs:targetMessageIDs];
-        NSOrderedDictionary *messagePlusses = targetMessageBatch.messagePlusses;
+        M13OrderedDictionary *messagePlusses = targetMessageBatch.messagePlusses;
         for(AATTMessagePlus *targetMessagePlus in [messagePlusses allObjects]) {
             allSent &= !targetMessagePlus.isUnsent;
         }
@@ -280,7 +280,7 @@
 
 - (NSArray *)targetMessagePlussesForActionMessages:(NSArray *)actionMessages actionChannelId:(NSString *)actionChannelId {
     NSSet *targetMessageIDs = [self targetMessageIDsForMessagePlusses:actionMessages];
-    NSOrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:targetMessageIDs];
+    M13OrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:targetMessageIDs];
     return [targetMessages allObjects];
 }
 
@@ -310,7 +310,7 @@
     }
     
     NSSet *keySet = [NSSet setWithArray:targetMessageIDToActionMessage.allKeys];
-    NSOrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:keySet];
+    M13OrderedDictionary *targetMessages = [self.messageManager persistedMessagesWithMessageIDs:keySet];
     for(AATTMessagePlus *targetMessage in targetMessages.allObjects) {
         NSString *targetMessageID = targetMessage.message.messageID;
         NSString *targetChannelID = targetMessage.message.channelID;

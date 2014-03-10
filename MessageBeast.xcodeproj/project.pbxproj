@@ -47,14 +47,12 @@
 		E24F2902185BC07400957D43 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2901185BC07400957D43 /* CoreServices.framework */; };
 		E24F2904185BC07E00957D43 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2903185BC07E00957D43 /* SystemConfiguration.framework */; };
 		E24F2906185BC08400957D43 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24F2905185BC08400957D43 /* Foundation.framework */; };
-		E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83201822FF090057245C /* NSOrderedDictionary.m */; };
 		E24F2908185BC13100957D43 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E01821B8AA0057245C /* FMDatabase.m */; };
 		E24F2909185BC13100957D43 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */; };
 		E24F290A185BC13100957D43 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E41821B8AA0057245C /* FMDatabasePool.m */; };
 		E24F290B185BC13100957D43 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */; };
 		E24F290C185BC13100957D43 /* fmdb.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E71821B8AA0057245C /* fmdb.m */; };
 		E24F290D185BC13100957D43 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E91821B8AA0057245C /* FMResultSet.m */; };
-		E24F2930185CD97800957D43 /* NSOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A831F1822FF090057245C /* NSOrderedDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F2931185CD97800957D43 /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82DF1821B8AA0057245C /* FMDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E11821B8AA0057245C /* FMDatabaseAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E31821B8AA0057245C /* FMDatabasePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -62,13 +60,13 @@
 		E24F2935185CD97800957D43 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E81821B8AA0057245C /* FMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E26F137F18A015B800A7C4B9 /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
 		E26F138018A0168500A7C4B9 /* MessageBeast.h in Headers */ = {isa = PBXBuildFile; fileRef = E218EF881890936B00ADC609 /* MessageBeast.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E290743918CD643D0085731C /* M13OrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E290741D18CD643C0085731C /* M13OrderedDictionary.m */; };
 		E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E01821B8AA0057245C /* FMDatabase.m */; };
 		E29A82EB1821B8AA0057245C /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E21821B8AA0057245C /* FMDatabaseAdditions.m */; };
 		E29A82EC1821B8AA0057245C /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E41821B8AA0057245C /* FMDatabasePool.m */; };
 		E29A82ED1821B8AA0057245C /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */; };
 		E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E91821B8AA0057245C /* FMResultSet.m */; };
 		E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E29A82F01821B8E10057245C /* libsqlite3.dylib */; };
-		E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A83201822FF090057245C /* NSOrderedDictionary.m */; };
 		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
 		E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A72A18180190009DECDB /* SystemConfiguration.framework */; };
 		E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A7231818004A009DECDB /* MobileCoreServices.framework */; };
@@ -214,6 +212,8 @@
 		E24F2901185BC07400957D43 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		E24F2903185BC07E00957D43 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		E24F2905185BC08400957D43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		E290741C18CD643C0085731C /* M13OrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13OrderedDictionary.h; sourceTree = "<group>"; };
+		E290741D18CD643C0085731C /* M13OrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13OrderedDictionary.m; sourceTree = "<group>"; };
 		E29A82DF1821B8AA0057245C /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = fmdb/src/FMDatabase.h; sourceTree = "<group>"; };
 		E29A82E01821B8AA0057245C /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = fmdb/src/FMDatabase.m; sourceTree = "<group>"; };
 		E29A82E11821B8AA0057245C /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseAdditions.h; path = fmdb/src/FMDatabaseAdditions.h; sourceTree = "<group>"; };
@@ -226,8 +226,6 @@
 		E29A82E81821B8AA0057245C /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/src/FMResultSet.h; sourceTree = "<group>"; };
 		E29A82E91821B8AA0057245C /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/src/FMResultSet.m; sourceTree = "<group>"; };
 		E29A82F01821B8E10057245C /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		E29A831F1822FF090057245C /* NSOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSOrderedDictionary.h; path = NSOrderedDictionary/NSOrderedDictionary.h; sourceTree = "<group>"; };
-		E29A83201822FF090057245C /* NSOrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSOrderedDictionary.m; path = NSOrderedDictionary/NSOrderedDictionary.m; sourceTree = "<group>"; };
 		E2E5A6D61817FBF9009DECDB /* libMessageBeast.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMessageBeast.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E5A6D91817FBF9009DECDB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E2E5A6E71817FBF9009DECDB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -303,6 +301,15 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
+		E290741B18CD643C0085731C /* M13OrderedDictionary */ = {
+			isa = PBXGroup;
+			children = (
+				E290741C18CD643C0085731C /* M13OrderedDictionary.h */,
+				E290741D18CD643C0085731C /* M13OrderedDictionary.m */,
+			);
+			path = M13OrderedDictionary;
+			sourceTree = "<group>";
+		};
 		E29A82DE1821B8960057245C /* FMDB */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,15 +326,6 @@
 				E29A82E91821B8AA0057245C /* FMResultSet.m */,
 			);
 			name = FMDB;
-			sourceTree = "<group>";
-		};
-		E29A831E1822FEE90057245C /* NSOrderedDictionary */ = {
-			isa = PBXGroup;
-			children = (
-				E29A831F1822FF090057245C /* NSOrderedDictionary.h */,
-				E29A83201822FF090057245C /* NSOrderedDictionary.m */,
-			);
-			name = NSOrderedDictionary;
 			sourceTree = "<group>";
 		};
 		E2A2C0701890985100DE1CF0 /* Model */ = {
@@ -437,7 +435,7 @@
 				E2E5A7111817FDC3009DECDB /* ADNKit.xcodeproj */,
 				E218EF881890936B00ADC609 /* MessageBeast.h */,
 				E218EF531890936B00ADC609 /* MessageBeast */,
-				E29A831E1822FEE90057245C /* NSOrderedDictionary */,
+				E290741B18CD643C0085731C /* M13OrderedDictionary */,
 				E29A82DE1821B8960057245C /* FMDB */,
 				E2E5A6D81817FBF9009DECDB /* Frameworks */,
 				E2E5A6D71817FBF9009DECDB /* Products */,
@@ -495,7 +493,6 @@
 			files = (
 				E26F138018A0168500A7C4B9 /* MessageBeast.h in Headers */,
 				E2F93F0118C56197009CAB55 /* AATTCustomPlace.h in Headers */,
-				E24F2930185CD97800957D43 /* NSOrderedDictionary.h in Headers */,
 				E24F2931185CD97800957D43 /* FMDatabase.h in Headers */,
 				E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */,
 				E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */,
@@ -612,7 +609,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E24F2907185BC13100957D43 /* NSOrderedDictionary.m in Sources */,
 				E24F2908185BC13100957D43 /* FMDatabase.m in Sources */,
 				E24F2909185BC13100957D43 /* FMDatabaseAdditions.m in Sources */,
 				E24F290A185BC13100957D43 /* FMDatabasePool.m in Sources */,
@@ -642,7 +638,6 @@
 				E218EFA61890936B00ADC609 /* AATTHashtagInstances.m in Sources */,
 				E218EFA81890936B00ADC609 /* AATTMessageManagerConfiguration.m in Sources */,
 				E208F52E18C3FC3A00556A04 /* AATTSharedDateFormatter.m in Sources */,
-				E29A83211822FF090057245C /* NSOrderedDictionary.m in Sources */,
 				E218EFB51890936B00ADC609 /* NSObject+AATTPersistence.m in Sources */,
 				E218EFAF1890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.m in Sources */,
 				E218EFB11890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.m in Sources */,
@@ -657,6 +652,7 @@
 				E218EFAB1890936B00ADC609 /* AATTOrderedMessageBatch.m in Sources */,
 				E218EF9F1890936B00ADC609 /* AATTChannelSpec.m in Sources */,
 				E218EFB31890936B00ADC609 /* ANKClient+PrivateChannel.m in Sources */,
+				E290743918CD643D0085731C /* M13OrderedDictionary.m in Sources */,
 				E218EF9B1890936B00ADC609 /* AATTAnnotationInstances.m in Sources */,
 				E218EFA41890936B00ADC609 /* AATTFilteredMessageBatch.m in Sources */,
 				E218EFAC1890936B00ADC609 /* AATTPendingFile.m in Sources */,
