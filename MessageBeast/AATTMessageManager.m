@@ -306,6 +306,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         };
         
         void (^deleteMessage)(void) = ^void(void) {
+            [self.database insertOrReplacePendingDeletionForMessagePlus:messagePlus];
             [self.client deleteMessage:messagePlus.message completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
                 if(!error) {
                     finishDelete();
@@ -315,7 +316,6 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
                     }
                 } else {
                     finishDelete();
-                    [self.database insertOrReplacePendingDeletionForMessagePlus:messagePlus];
                     if(block) {
                         block(meta, error);
                     }
