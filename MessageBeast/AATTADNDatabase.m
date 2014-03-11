@@ -315,7 +315,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
         [args addObject:[NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
     }
     
-    select = [NSString stringWithFormat:@"%@ ORDER BY message_date DESC LIMIT %d", select, limit];
+    select = [NSString stringWithFormat:@"%@ ORDER BY message_date DESC LIMIT %lu", select, (unsigned long)limit];
     return [self messagesWithSelectStatement:select arguments:args];
 }
 
@@ -683,7 +683,7 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
         arguments = @[actionChannelID];
     }
     
-    select = [NSString stringWithFormat:@"%@ ORDER BY action_message_target_message_display_date DESC LIMIT %d", select, limit];
+    select = [NSString stringWithFormat:@"%@ ORDER BY action_message_target_message_display_date DESC LIMIT %lu", select, (unsigned long)limit];
     
     return [self actionMessageSpecsWithSelectStatement:select arguments:arguments];
 }
@@ -1013,8 +1013,8 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     
     [self populatePendingFileAttachmentsForMessagePlusses:unsentMessagePlusses];
     
-    NSString *minIDString = minID != -1 ? [NSString stringWithFormat:@"%d", minID] : nil;
-    NSString *maxIDString = maxID != -1 ? [NSString stringWithFormat:@"%d", maxID] : nil;
+    NSString *minIDString = minID != -1 ? [NSString stringWithFormat:@"%ld", (long)minID] : nil;
+    NSString *maxIDString = maxID != -1 ? [NSString stringWithFormat:@"%ld", (long)maxID] : nil;
     
     AATTMinMaxPair *minMaxPair = [[AATTMinMaxPair alloc] initWithMinID:minIDString maxID:maxIDString minDate:minDate maxDate:maxDate];
     return [[AATTOrderedMessageBatch alloc] initWithOrderedMessagePlusses:messagePlusses minMaxPair:minMaxPair];
@@ -1062,14 +1062,14 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 - (void)insertSearchableMessageTextForMessageWithRowID:(NSUInteger)rowID messageID:(NSString *)messageID channelID:(NSString *)channelID text:(NSString *)text withDB:(FMDatabase *)db {
     if(text) {
         static NSString *insert = @"INSERT INTO messages_search (docid, message_message_id, message_channel_id, message_text) VALUES (?, ?, ?, ?)";
-        [db executeUpdate:insert, [NSNumber numberWithUnsignedInt:rowID], messageID, channelID, text];
+        [db executeUpdate:insert, [NSNumber numberWithUnsignedInteger:rowID], messageID, channelID, text];
     }
 }
 
 - (void)insertSearchableDisplayLocationInstanceWithRowID:(NSUInteger)rowID messageID:(NSString *)messageID channelID:(NSString *)channelID name:(NSString *)name withDB:(FMDatabase *)db {
     if(name) {
         static NSString *insert = @"INSERT INTO location_instances_search (docid, location_message_id, location_channel_id, location_name) VALUES (?, ?, ?, ?)";
-        [db executeUpdate:insert, [NSNumber numberWithUnsignedInt:rowID], messageID, channelID, name];
+        [db executeUpdate:insert, [NSNumber numberWithUnsignedInteger:rowID], messageID, channelID, name];
     }
 }
 
