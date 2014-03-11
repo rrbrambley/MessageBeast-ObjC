@@ -884,6 +884,23 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     }];
 }
 
+- (void)deleteAll {
+    [self.databaseQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        [db executeUpdate:@"DELETE FROM action_messages"];
+        [db executeUpdate:@"DELETE FROM annotation_instances"];
+        [db executeUpdate:@"DELETE FROM geolocations"];
+        [db executeUpdate:@"DELETE FROM hashtag_instances"];
+        [db executeUpdate:@"DELETE FROM location_instances"];
+        [db executeUpdate:@"DELETE FROM location_instances_search"];
+        [db executeUpdate:@"DELETE FROM messages"];
+        [db executeUpdate:@"DELETE FROM messages_search"];
+        [db executeUpdate:@"DELETE FROM pending_file_attachments"];
+        [db executeUpdate:@"DELETE FROM pending_files"];
+        [db executeUpdate:@"DELETE FROM pending_message_deletions"];
+        [db executeUpdate:@"DELETE FROM places"];
+    }];
+}
+
 #pragma mark - Other
 
 - (BOOL)hasActionMessageSpecForActionChannelWithID:(NSString *)actionChannelID targetMessageID:(NSString *)targetMessageID {

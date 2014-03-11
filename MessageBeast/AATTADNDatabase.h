@@ -476,6 +476,11 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  */
 - (void)deletePlaces;
 
+/**
+ Delete data from all tables.
+ */
+- (void)deleteAll;
+
 #pragma mark - Other
 
 /**
