@@ -69,6 +69,16 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return self;
 }
 
+#pragma mark - Clear
+
+- (void)clearAll {
+    [self.messagesByChannelID removeAllObjects];
+    [self.unsentMessagesByChannelID removeAllObjects];
+    [self.messageIDsNeedingPendingFiles removeAllObjects];
+    [self.queryParametersByChannel removeAllObjects];
+    [self.minMaxPairs removeAllObjects];
+}
+
 #pragma mark - Getters
 
 - (ANKClient *)client {

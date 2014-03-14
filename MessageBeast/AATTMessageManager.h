@@ -64,6 +64,15 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 
 - (id)initWithANKClient:(ANKClient *)client configuration:(AATTMessageManagerConfiguration *)configuration;
 
+
+#pragma mark - Clear
+/**
+ Purge all Message and Channel-related data from memory. This will leave the manager in
+ the initial state - as it was upon construction. Note that this does not delete any persisted
+ data from the sqlite database.
+ */
+- (void)clearAll;
+
 #pragma mark - Getters
 
 /**
