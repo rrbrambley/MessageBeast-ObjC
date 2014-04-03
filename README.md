@@ -342,6 +342,22 @@ NSOrderedDictionary *locations = [self.messageManager persistedMessagesForChanne
                                                       locationPrecision:AATTLocationPrecisionOneHundredMeters];
 ```
 
+<h3>Other Goodies</h3>
+Use the ANKClient+ANKConfigurationHelper category on every launch to update the ANKConfiguration as per the [App.net Configuration guidelines](http://developers.app.net/docs/resources/config/#how-to-use-the-configuration-object):
+
+```objective-c
+//use this category method somewhere when app launches. This will update at most once per day.
+[appDotNetClient updateConfigurationIfDueWithCompletion:^(BOOL didUpdate) {
+    
+}];
+
+...
+
+//elsewhere, when configuration is needed
+ANKConfiguration *configuration = [AATTADNPersistence configuration];
+
+```
+
 Future Improvements, Additions, Fixes
 ------
 See [Issues](https://github.com/rrbrambley/MessageBeast-ObjC/issues).
