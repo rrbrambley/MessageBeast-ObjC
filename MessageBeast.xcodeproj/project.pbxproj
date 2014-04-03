@@ -58,6 +58,9 @@
 		E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E31821B8AA0057245C /* FMDatabasePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F2934185CD97800957D43 /* FMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E51821B8AA0057245C /* FMDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E24F2935185CD97800957D43 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = E29A82E81821B8AA0057245C /* FMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E2685B0818ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E2685B0618ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.h */; };
+		E2685B0918ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E2685B0718ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.m */; };
+		E2685B0A18ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E2685B0718ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.m */; };
 		E26F137F18A015B800A7C4B9 /* libADNKit-AFNetworking-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A71B1817FDC3009DECDB /* libADNKit-AFNetworking-iOS.a */; };
 		E26F138018A0168500A7C4B9 /* MessageBeast.h in Headers */ = {isa = PBXBuildFile; fileRef = E218EF881890936B00ADC609 /* MessageBeast.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E290743918CD643D0085731C /* M13OrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E290741D18CD643C0085731C /* M13OrderedDictionary.m */; };
@@ -212,6 +215,8 @@
 		E24F2901185BC07400957D43 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		E24F2903185BC07E00957D43 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		E24F2905185BC08400957D43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		E2685B0618ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ANKClient+ANKConfigurationHelper.h"; sourceTree = "<group>"; };
+		E2685B0718ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ANKClient+ANKConfigurationHelper.m"; sourceTree = "<group>"; };
 		E290741C18CD643C0085731C /* M13OrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13OrderedDictionary.h; sourceTree = "<group>"; };
 		E290741D18CD643C0085731C /* M13OrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13OrderedDictionary.m; sourceTree = "<group>"; };
 		E29A82DF1821B8AA0057245C /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = fmdb/src/FMDatabase.h; sourceTree = "<group>"; };
@@ -425,6 +430,8 @@
 				E218EF921890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.m */,
 				E218EF941890936B00ADC609 /* NSObject+AATTPersistence.h */,
 				E218EF951890936B00ADC609 /* NSObject+AATTPersistence.m */,
+				E2685B0618ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.h */,
+				E2685B0718ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -497,6 +504,7 @@
 				E24F2932185CD97800957D43 /* FMDatabaseAdditions.h in Headers */,
 				E24F2933185CD97800957D43 /* FMDatabasePool.h in Headers */,
 				E24F2934185CD97800957D43 /* FMDatabaseQueue.h in Headers */,
+				E2685B0818ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.h in Headers */,
 				E24F2935185CD97800957D43 /* FMResultSet.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -616,6 +624,7 @@
 				E24F290C185BC13100957D43 /* fmdb.m in Sources */,
 				E2F93F0318C56197009CAB55 /* AATTCustomPlace.m in Sources */,
 				E24F290D185BC13100957D43 /* FMResultSet.m in Sources */,
+				E2685B0A18ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -651,6 +660,7 @@
 				E218EF9A1890936B00ADC609 /* AATTADNPersistence.m in Sources */,
 				E218EFAB1890936B00ADC609 /* AATTOrderedMessageBatch.m in Sources */,
 				E218EF9F1890936B00ADC609 /* AATTChannelSpec.m in Sources */,
+				E2685B0918ECD57F009FB9BF /* ANKClient+ANKConfigurationHelper.m in Sources */,
 				E218EFB31890936B00ADC609 /* ANKClient+PrivateChannel.m in Sources */,
 				E290743918CD643D0085731C /* M13OrderedDictionary.m in Sources */,
 				E218EF9B1890936B00ADC609 /* AATTAnnotationInstances.m in Sources */,

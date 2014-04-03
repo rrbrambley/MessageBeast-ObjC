@@ -22,4 +22,12 @@
 + (void)saveFullSyncState:(AATTChannelFullSyncState)fullSyncState channelID:(NSString *)channelID;
 + (AATTChannelFullSyncState)fullSyncStateForChannelWithID:(NSString *)channelID;
 
++ (void)setConfigurationSaveDate:(NSDate *)date;
++ (NSDate *)configurationSaveDate;
+
++ (void)saveConfiguration:(ANKConfiguration *)configuration;
++ (ANKConfiguration *)configuration;
+
++ (void)clearAll;
+
 @end

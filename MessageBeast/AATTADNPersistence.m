@@ -57,4 +57,31 @@
     return AATTChannelFullSyncStateComplete;
 }
 
++ (void)setConfigurationSaveDate:(NSDate *)date {
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    [standardUserDefaults setObject:date forKey:@"ADNConfigurationDate"];
+    [standardUserDefaults synchronize];
+}
+
++ (NSDate *)configurationSaveDate {
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    return [standardUserDefaults objectForKey:@"ADNConfigurationDate"];
+}
+
++ (void)saveConfiguration:(ANKConfiguration *)configuration {
+    [self setConfigurationSaveDate:[NSDate date]];
+    [self saveCodingObject:configuration forKey:@"ADNConfiguration"];
+}
+
++ (ANKConfiguration *)configuration {
+    return (ANKConfiguration *)[self codingObjectForKey:@"ADNConfiguration"];
+}
+
++ (void)clearAll {
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    [standardUserDefaults setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
+    [standardUserDefaults synchronize];
+    
+}
+
 @end

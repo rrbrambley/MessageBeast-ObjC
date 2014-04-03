@@ -38,6 +38,7 @@
 #import "ANKAnnotatableResource+AATTAnnotationHelper.h"
 #import "ANKChannel+AATTAnnotationHelper.h"
 #import "ANKClient+AATTMessageManager.h"
+#import "ANKClient+ANKConfigurationHelper.h"
 #import "ANKClient+PrivateChannel.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
 
