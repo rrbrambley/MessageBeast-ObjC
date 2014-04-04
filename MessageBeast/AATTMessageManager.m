@@ -901,9 +901,10 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return pair;
 }
 
-- (void)adjustDateForMessagePlus:(AATTMessagePlus *)messagePlus {
+- (NSDate *)adjustDateForMessagePlus:(AATTMessagePlus *)messagePlus {
     NSDate *adjustedDate = [self adjustedDateForMessage:messagePlus.message];
     messagePlus.displayDate = adjustedDate;
+    return adjustedDate;
 }
 
 - (void)insertMessagePlus:(AATTMessagePlus *)messagePlus {
