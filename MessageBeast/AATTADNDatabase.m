@@ -621,6 +621,67 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
     return places;
 }
 
+- (NSArray *)placesWithNameMatchingQuery:(NSString *)query {
+    return [self placesWithNameMatchingQuery:query excludeCustom:NO];
+}
+
+- (NSArray *)placesWithNameMatchingQuery:(NSString *)query excludeCustom:(BOOL)excludeCustom {
+    static NSString *select = @"SELECT location_name FROM location_instances_search WHERE location_name MATCH ?";
+    
+    NSMutableArray *places = [NSMutableArray array];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase *db) {
+        NSMutableSet *placeNames = [NSMutableSet set];
+        FMResultSet *resultSet = [db executeQuery:select, query];
+        
+        while([resultSet next]) {
+            [placeNames addObject:[resultSet stringForColumnIndex:0]];
+        }
+        
+        [resultSet close];
+        
+        if(placeNames.count > 0) {
+            NSString *placeSelect = @"SELECT place_id, place_is_custom, place_json FROM places WHERE place_name IN (";
+            NSMutableArray *args = [NSMutableArray arrayWithCapacity:placeNames.count + (excludeCustom ? 1 : 0)];
+            
+            for(NSString *placeName in placeNames) {
+                [args addObject:placeName];
+                
+                NSString *append;
+                if(args.count > 1) {
+                    append = @", ?";
+                } else {
+                    append = @" ?";
+                }
+                placeSelect = [NSString stringWithFormat:@"%@%@", placeSelect, append];
+            }
+            placeSelect = [NSString stringWithFormat:@"%@)", placeSelect];
+
+            if(excludeCustom) {
+                placeSelect = [NSString stringWithFormat:@"%@ AND place_is_custom = ?", placeSelect];
+                [args addObject:@"0"];
+            }
+            
+            resultSet = [db executeQuery:placeSelect withArgumentsInArray:args];
+            while([resultSet next]) {
+                NSString *placeID = [resultSet stringForColumnIndex:0];
+                BOOL isCustom = [resultSet intForColumnIndex:1] == 1;
+                
+                NSString *json = [resultSet stringForColumnIndex:2];
+                NSDictionary *placeJSON = [self JSONDictionaryWithString:json];
+                
+                ANKPlace *place = [[ANKPlace alloc] initWithJSONDictionary:placeJSON];
+                if(isCustom) {
+                    place = [[AATTCustomPlace alloc] initWithID:placeID place:place];
+                }
+                [places addObject:place];
+            }
+        }
+    }];
+    
+    return places;
+}
+
 - (AATTActionMessageSpec *)actionMessageSpecForActionMessageWithID:(NSString *)actionMessageID {
     NSString *select = @"SELECT * FROM action_messages WHERE action_message_id = ?";
     NSArray *specs = [self actionMessageSpecsWithSelectStatement:select arguments:@[actionMessageID]];

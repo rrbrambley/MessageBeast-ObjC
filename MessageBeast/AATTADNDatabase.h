@@ -329,6 +329,34 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (NSArray *)placesForLatitude:(double)latitude longitude:(double)longitude locationPrecision:(AATTLocationPrecision)locationPrecision;
 
 /**
+ Get an array of places whose names match the provided query.
+
+ This uses the full-text search virtual table corresponding to the location instances
+ to find matching names, so only places with display location instances in the db will
+ be returned (i.e. if you delete all messages that use a place, then this method will
+ not return that place, even if the places table contains it).
+
+ @param query The query to match against the name of the places.
+ @return an array of ANKPlace objects whose names match the provided query.
+ */
+- (NSArray *)placesWithNameMatchingQuery:(NSString *)query;
+
+/**
+ Get an array of places whose names match the provided query., optionally excluding
+ custom Places.
+
+ This uses the full-text search virtual table corresponding to the location instances
+ to find matching names, so only places with display location instances in the db will
+ be returned (i.e. if you delete all messages that use a place, then this method will
+ not return that place, even if the Places table contains it).
+
+ @param query The query to match against the name of the places.
+ @param excludeCustom YES if AATTCustomPlace should be excluded, NO otherwise.
+ @return an array of ANKPlace objects whose names match the provided query.
+ */
+- (NSArray *)placesWithNameMatchingQuery:(NSString *)query excludeCustom:(BOOL)excludeCustom;
+
+/**
  Obtain an AATTActionMessageSpec for an action message ID.
  
  @param actionMessageID the action message ID
