@@ -62,24 +62,74 @@ typedef void (^AATTChannelSyncManagerChannelRefreshCompletionBlock)(AATTChannelR
  */
 - (id)initWithClient:(ANKClient *)client messageManagerConfiguration:(AATTMessageManagerConfiguration *)messageManagerConfiguration targetWithActionChannelSpecSet:(AATTTargetWithActionChannelsSpecSet *)targetWithActionChannelSpecSet;
 
+/**
+ Create an AATTChannelSyncManager for a set of Channels.
+ 
+ Note that this constructor is not for use with Action Channels.
+
+ @param messageManager An instance of AATTMessageManager to be used for syncing the Channels.
+ @param channelSpecSet The AATTChannelSpecSet describing the Channels to be used with AATTChannelSyncManager
+ */
 - (id)initWithMessageManager:(AATTMessageManager *)messageManager channelSpecSet:(AATTChannelSpecSet *)channelSpecSet;
 
+/**
+ Create an AATTChannelSyncManager to be used with a Channel and a set of Action Channels.
+ 
+ @param actionMessageManager An instance of AATTActionMessageManager.
+ @param channelSpecSet The AATTTargetWithActionChannelsSpecSet describing the Channels to be used with AATTChannelSyncManager
+ */
 - (id)initWithActionMessageManager:(AATTActionMessageManager *)actionMessageManager targetWithActionChannelsSpecSet:(AATTTargetWithActionChannelsSpecSet *)targetWithActionChannelsSpecSet;
 
 #pragma mark - Initialize Channels
 
+/**
+ Initialize the Channels described by the spec(s) passed when initializing this class.
+ 
+ This method must be called before any operations can be performed with AATTChannelSyncManager
+ 
+ @param block the AATTChannelSyncManagerChannelsInitializedBlock
+ */
 - (void)initChannelsWithCompletionBlock:(AATTChannelSyncManagerChannelsInitializedBlock)block;
 
 #pragma mark - Full Sync
 
+/**
+ Check the full sync status for the Channels associated with this manager and begin syncing if
+ all Channels do not already have an AATTFullSyncState of AATTFullSyncStateComplete.
+ 
+ @param startBlock a block that is executed when a full sync is started
+ @param completionBlock a block that is executed when the full sync has completed
+ */
 - (void)checkFullSyncStatusWithStartBlock:(void (^)(void))startBlock completionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock;
 
+/**
+ Check the full sync status for the Channels associated with this manager.
+ 
+ If the parameter resumeSync is NO, then you should use the syncIncompleteBlock to handle a AATTChannelFullSyncStateStarted
+ (e.g. show a dialog "would you like to resume syncing these channels?").
+ 
+ @param resumeSync YES if sync should resume if previously started but not finished, NO otherwise
+ @param syncStartBlock a block that is executed when a full sync is started
+ @param completionBlock a block that is executed when the full sync has completed
+ @param syncIncompleteBlock a block that will be executed if resumeSync is NO and
+        a sync was previously started but not finished.
+ */
 - (void)checkFullSyncStatusAndResumeSyncIfPreviouslyStarted:(BOOL)resumeSync syncStartBlock:(void (^)(void))syncStartBlock completionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock syncIncompleteBlock:(void (^)(void))syncIncompleteBlock;
 
+/**
+ Start a full sync on the Channels associated with this manager.
+ 
+ @param completionBlock a AATTChannelSyncManagerSyncCompletionBlock
+ */
 - (void)startFullSyncWithCompletionBlock:(AATTChannelSyncManagerSyncCompletionBlock)completionBlock;
 
 #pragma mark - Fetch Messages
 
+/**
+ Fetch the newest Messages in all Channels associated with this manager.
+ 
+ @param block a AATTChannelSyncManagerChannelRefreshCompletionBlock
+ */
 - (void)fetchNewestMessagesWithCompletionBlock:(AATTChannelSyncManagerChannelRefreshCompletionBlock)block;
 
 #pragma mark - Delete Messages
