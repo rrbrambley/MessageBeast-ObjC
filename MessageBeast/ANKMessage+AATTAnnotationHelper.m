@@ -87,4 +87,12 @@
     self.annotations = annotations;
 }
 
+- (void)addGeolocationAnnotationWithLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude {
+    NSDictionary *value = @{@"latitude" : [NSNumber numberWithDouble:latitude], @"longitude" : [NSNumber numberWithDouble:longitude]};
+    ANKAnnotation *annotation = [ANKAnnotation annotationWithType:kANKCoreAnnotationGeolocation value:value];
+    NSMutableArray *annotations = [NSMutableArray arrayWithArray:self.annotations];
+    [annotations addObject:annotation];
+    self.annotations = annotations;
+}
+
 @end

@@ -60,8 +60,16 @@ static NSString *const kMessageAnnotationTargetMessage = @"com.alwaysallthetime.
  Add a net.app.core.checkin annotation to this Message's annotations,
  using the provided factual ID.
  
- @param the factual ID associated with an ANKPlace
+ @param factualID the factual ID associated with an ANKPlace
  */
 - (void)addCheckinAnnotationWithFactualID:(NSString *)factualID;
+
+/**
+ Add a net.app.core.geolocation annotation to this Message's annotations
+ 
+ @param latitude the latitude
+ @param longitude the longitude
+ */
+- (void)addGeolocationAnnotationWithLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude;
 
 @end
