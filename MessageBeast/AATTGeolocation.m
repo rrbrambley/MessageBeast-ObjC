@@ -21,4 +21,21 @@
     return self;
 }
 
+- (id)initWithPlacemarks:(NSArray *)placemarks latitude:(double)latitude longitude:(double)longitude {
+    NSString *subLocality = nil;
+    NSString *locality = nil;
+    for(CLPlacemark *placemark in placemarks) {
+        if(!subLocality) {
+            subLocality = placemark.subLocality;
+        }
+        if(subLocality || !locality) {
+            locality = placemark.locality;
+        }
+        if(subLocality && locality) {
+            break;
+        }
+    }
+    return [[AATTGeolocation alloc] initWithLocality:locality subLocality:subLocality latitude:latitude longitude:longitude];
+}
+
 @end

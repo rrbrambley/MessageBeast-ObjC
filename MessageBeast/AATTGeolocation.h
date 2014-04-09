@@ -17,4 +17,5 @@
 
 - (id)initWithLocality:(NSString *)locality subLocality:(NSString *)subLocality latitude:(double)latitude longitude:(double)longitude;
 
+- (id)initWithPlacemarks:(NSArray *)placemarks latitude:(double)latitude longitude:(double)longitude;
 @end

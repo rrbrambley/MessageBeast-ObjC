@@ -1067,12 +1067,10 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         if(!error) {
-            AATTGeolocation *geolocation = [self geolocationForPlacemarks:placemarks latitude:latitude longitude:longitude];
-            if(geolocation) {
-                messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromGeolocation:geolocation];
-                [self.database insertOrReplaceGeolocation:geolocation];
-                [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
-            }
+            AATTGeolocation *geolocation = [[AATTGeolocation alloc] initWithPlacemarks:placemarks latitude:latitude longitude:longitude];
+            messagePlus.displayLocation = [AATTDisplayLocation displayLocationFromGeolocation:geolocation];
+            [self.database insertOrReplaceGeolocation:geolocation];
+            [self.database insertOrReplaceDisplayLocationInstance:messagePlus];
             //
             //TODO
             // call back for UI?
@@ -1081,25 +1079,4 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
         }
     }];
 }
-
-- (AATTGeolocation *)geolocationForPlacemarks:(NSArray *)placemarks latitude:(double)latitude longitude:(double)longitude {
-    NSString *subLocality = nil;
-    NSString *locality = nil;
-    for(CLPlacemark *placemark in placemarks) {
-        if(!subLocality) {
-            subLocality = placemark.subLocality;
-        }
-        if(subLocality || !locality) {
-            locality = placemark.locality;
-        }
-        if(subLocality && locality) {
-            break;
-        }
-    }
-    if(subLocality || locality) {
-        return [[AATTGeolocation alloc] initWithLocality:locality subLocality:subLocality latitude:latitude longitude:longitude];
-    }
-    return nil;
-}
-
 @end
