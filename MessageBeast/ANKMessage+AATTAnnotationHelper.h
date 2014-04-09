@@ -56,4 +56,12 @@ static NSString *const kMessageAnnotationTargetMessage = @"com.alwaysallthetime.
  */
 - (void)appendToAttachments:(ANKFile *)file;
 
+/**
+ Add a net.app.core.checkin annotation to this Message's annotations,
+ using the provided factual ID.
+ 
+ @param the factual ID associated with an ANKPlace
+ */
+- (void)addCheckinAnnotationWithFactualID:(NSString *)factualID;
+
 @end

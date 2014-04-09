@@ -78,4 +78,13 @@
     }
 }
 
+- (void)addCheckinAnnotationWithFactualID:(NSString *)factualID {
+    NSDictionary *value = @{@"factual_id" : factualID};
+    NSDictionary *replacement = @{@"+net.app.core.place" : value};
+    ANKAnnotation *annotation = [ANKAnnotation annotationWithType:kANKCoreAnnotationCheckin value:replacement];
+    NSMutableArray *annotations = [NSMutableArray arrayWithArray:self.annotations];
+    [annotations addObject:annotation];
+    self.annotations = annotations;
+}
+
 @end
