@@ -67,9 +67,16 @@
         ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
         
         [assetslibrary assetForURL:pendingFile.URL resultBlock:^(ALAsset *asset) {
+            UIImageOrientation orientation = UIImageOrientationUp;
+            NSNumber *orientationValue = [asset valueForProperty:ALAssetPropertyOrientation];
+            if(orientationValue != nil) {
+                orientation = [orientationValue intValue];
+            }
+            
             ALAssetRepresentation *representation = [asset defaultRepresentation];
+            
             CGImageRef ref = [representation fullResolutionImage];
-            NSData *data = UIImageJPEGRepresentation([UIImage imageWithCGImage:ref], 1);
+            NSData *data = UIImageJPEGRepresentation([UIImage imageWithCGImage:ref scale:1 orientation:orientation], 1);
             
             [self.client createFile:file withData:data completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
                 [self.filesInProgress removeObject:pendingFileID];
