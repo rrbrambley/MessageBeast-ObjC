@@ -69,7 +69,7 @@
         [assetslibrary assetForURL:pendingFile.URL resultBlock:^(ALAsset *asset) {
             UIImageOrientation orientation = UIImageOrientationUp;
             NSNumber *orientationValue = [asset valueForProperty:ALAssetPropertyOrientation];
-            if(orientationValue != nil) {
+            if(orientationValue) {
                 orientation = [orientationValue intValue];
             }
             
