@@ -774,13 +774,13 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (NSArray *)pendingFileAttachmentsForMessageWithID:(NSString *)messageID {
-    static NSString *select = @"SELECT * FROM pending_file_attachments WHERE pending_file_attachment_message_id = ?";
+    static NSString *select = @"SELECT pending_file_attachment_file_id, pending_file_attachment_is_oembed FROM pending_file_attachments WHERE pending_file_attachment_message_id = ?";
     NSMutableArray *pendingAttachments = [NSMutableArray array];
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
         FMResultSet *resultSet = [db executeQuery:select, messageID];
         while([resultSet next]) {
             NSString *pendingFileID = [resultSet stringForColumnIndex:0];
-            BOOL isOEmbed = [resultSet boolForColumnIndex:1];
+            BOOL isOEmbed = [resultSet intForColumnIndex:1] == 1;
             [pendingAttachments addObject:[[AATTPendingFileAttachment alloc] initWithPendingFileID:pendingFileID isOEmbed:isOEmbed]];
         }
     }];
