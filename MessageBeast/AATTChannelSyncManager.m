@@ -252,7 +252,6 @@
     if(index >= self.targetWithActionChannelsSpecSet.actionChannelCount) {
         self.actionChannels = actionChannels;
         block(nil);
-        //TODO send notification?
     } else {
         NSString *actionType = [self.targetWithActionChannelsSpecSet actionChannelActionTypeAtIndex:index];
         [self initActionChannelWithActionType:actionType forTargetChannel:self.targetChannel actionChannels:actionChannels completionBlock:^(NSError *error) {
