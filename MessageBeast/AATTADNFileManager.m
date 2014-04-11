@@ -59,6 +59,8 @@
         [self.filesInProgress addObject:pendingFileID];
         
         AATTPendingFile *pendingFile = [self pendingFileWithID:pendingFileID];
+        
+        //TODO replace this with if block? it can happen, i think...
         NSAssert(pendingFile, @"pending file with id %@ doesn't exist in database", pendingFileID);
         
         ANKFile *file = pendingFile.file;
