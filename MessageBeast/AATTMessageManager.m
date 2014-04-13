@@ -175,6 +175,11 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return [self persistedMessagesWithMessageIDs:annotationInstances.messageIDs.set];
 }
 
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID withAnnotationOfType:(NSString *)annotationType beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
+    AATTAnnotationInstances *annotationInstances = [self.database annotationInstancesOfType:annotationType inChannelWithID:channelID beforeDate:beforeDate limit:limit];
+    return [self persistedMessagesWithMessageIDs:annotationInstances.messageIDs.set];
+}
+
 #pragma mark - Search
 
 - (AATTOrderedMessageBatch *)searchMessagesWithQuery:(NSString *)query inChannelWithID:(NSString *)channelID {

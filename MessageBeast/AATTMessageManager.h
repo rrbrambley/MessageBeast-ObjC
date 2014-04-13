@@ -57,7 +57,7 @@ typedef void (^AATTMessageManagerCompletionBlock)(NSArray *messagePlusses, ANKAP
 typedef void (^AATTMessageManagerCompletionWithFilterBlock)(NSArray *messagePlusses, M13OrderedDictionary *excludedResults, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerMultiChannelSyncBlock)(BOOL success, NSError *error);
 typedef void (^AATTMessageManagerBatchSyncBlock)(NSArray *messagePlusses, ANKAPIResponseMeta *meta, NSError *error);
-typedef void (^AATTMessageManagerRefreshCompletionBlock)(AATTMessagePlus *messagePlus, ANKAPIResponseMeta *meta, NSError *error);
+typedef void (^AATTMessageManagerRefreshCompletionBlock)(id responseObject, ANKAPIResponseMeta *meta, NSError *error);
 typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *meta, NSError *error);
 
 #pragma mark - Initializer
@@ -201,6 +201,16 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @param annotationType the annotation type
  */
 - (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID withAnnotationOfType:(NSString *)annotationType;
+
+/**
+ Get persisted messages having the specified Annotation type, before a given date.
+ 
+ @param channelID the id of the channel associated with the messages to be loaded.
+ @param annotationType the annotation type
+ @param beforeDate a date before the display date of all associated messages. Nil is the same as the current date.
+ @param limit the maximum number of Messages to load from the database.
+ */
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID withAnnotationOfType:(NSString *)annotationType beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
 
 #pragma mark - Fetch Messages
 
