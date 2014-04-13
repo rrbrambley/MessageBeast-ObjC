@@ -283,6 +283,8 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
             [self performLookupsOnMessagePlusses:@[messagePlus] persist:YES];
 
             block(messagePlus, meta, error);
+        } else {
+            block(nil, meta, error);
         }
     }];
 }
