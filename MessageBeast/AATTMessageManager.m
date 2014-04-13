@@ -170,7 +170,7 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return messagePlusses;
 }
 
-- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType {
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID withAnnotationOfType:(NSString *)annotationType {
     AATTAnnotationInstances *annotationInstances = [self.database annotationInstancesOfType:annotationType inChannelWithID:channelID];
     return [self persistedMessagesWithMessageIDs:annotationInstances.messageIDs.set];
 }

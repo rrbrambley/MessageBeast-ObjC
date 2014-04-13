@@ -200,7 +200,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  @param channelID the id of the channel associated with the messages to be loaded.
  @param annotationType the annotation type
  */
-- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID annotationType:(NSString *)annotationType;
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID withAnnotationOfType:(NSString *)annotationType;
 
 #pragma mark - Fetch Messages
 
