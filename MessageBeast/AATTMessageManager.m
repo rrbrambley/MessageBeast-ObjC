@@ -294,6 +294,37 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     }];
 }
 
+- (void)refreshMessagesWithMessageIDs:(NSSet *)messageIDs channelID:(NSString *)channelID completionBlock:(AATTMessageManagerRefreshCompletionBlock)block {
+    NSArray *messageIDsArray = [messageIDs allObjects];
+    NSMutableDictionary *parameters = [self.queryParametersByChannel objectForKey:channelID];
+    [self.client fetchMessagesWithIDs:messageIDsArray parameters:parameters completion:^(id responseObject, ANKAPIResponseMeta *meta, NSError *error) {
+        if(!error) {
+            NSArray *responseMessages = responseObject;
+            NSMutableOrderedDictionary *messagePlusses = [NSMutableOrderedDictionary orderedDictionaryWithCapacity:responseMessages.count];
+            
+            for(ANKMessage *message in responseMessages) {
+                AATTMessagePlus *messagePlus = [[AATTMessagePlus alloc] initWithMessage:message];
+                [self adjustDateForMessagePlus:messagePlus];
+                
+                NSMutableOrderedDictionary *channelMessages = [self.messagesByChannelID objectForKey:messagePlus.message.channelID];
+                //could be nil if the channel messages weren't loaded first, etc.
+                if(channelMessages && [channelMessages objectForKey:message.messageID]) {
+                    [channelMessages setObject:messagePlus forKey:messagePlus.message.messageID];
+                }
+                
+                [self insertMessagePlus:messagePlus];
+                [messagePlusses setObject:messagePlus forKey:message.messageID];
+            }
+            
+            [self sortDictionaryObjectsByDisplayDate:messagePlusses];
+            [self performLookupsOnMessagePlusses:[messagePlusses allObjects] persist:YES];
+            block([messagePlusses allObjects], meta, error);
+        } else {
+            block(nil, meta, error);
+        }
+    }];
+}
+
 #pragma mark - Delete Messages
 
 - (void)deleteMessage:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerDeletionCompletionBlock)block {

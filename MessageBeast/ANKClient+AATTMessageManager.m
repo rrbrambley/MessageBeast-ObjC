@@ -25,6 +25,17 @@
 						failure:[self failureHandlerForClientHandler:completionHandler]];
 }
 
+- (ANKJSONRequestOperation *)fetchMessagesWithIDs:(NSArray *)messageIDs parameters:(NSDictionary *)parameters completion:(ANKClientCompletionBlock)completionHandler {
+    
+    NSMutableDictionary *newParams = [NSMutableDictionary dictionaryWithDictionary:parameters];
+    [newParams setObject:[messageIDs componentsJoinedByString:@","] forKey:@"ids"];
+    
+	return [self enqueueGETPath:@"channels/messages"
+					 parameters:newParams
+						success:[self successHandlerForCollectionOfResourceClass:[ANKMessage class] clientHandler:completionHandler]
+						failure:[self failureHandlerForClientHandler:completionHandler]];
+}
+
 - (ANKJSONRequestOperation *)fetchCurrentUserSubscribedChannelsWithTypes:(NSArray *)types parameters:(NSDictionary *)additionalParameters completion:(ANKClientCompletionBlock)completionHandler {
 	if (!types) {
 		types = @[];

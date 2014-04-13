@@ -19,6 +19,11 @@
 - (ANKJSONRequestOperation *)fetchMessagesInChannelWithID:(NSString *)channelID parameters:(NSDictionary *)parameters completion:(ANKClientCompletionBlock)completionHandler;
 
 /**
+ Fetch Messages by ID with the provided parameters.
+ */
+- (ANKJSONRequestOperation *)fetchMessagesWithIDs:(NSArray *)messageIDs parameters:(NSDictionary *)parameters completion:(ANKClientCompletionBlock)completionHandler;
+
+/**
  Fetch the current user's subscribed Channels, filtering to those which have one of the specified Channel types.
  */
 - (ANKJSONRequestOperation *)fetchCurrentUserSubscribedChannelsWithTypes:(NSArray *)types parameters:(NSDictionary *)additionalParameters completion:(ANKClientCompletionBlock)completionHandler;

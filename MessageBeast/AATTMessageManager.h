@@ -358,6 +358,20 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  */
 - (void)refreshMessagePlus:(AATTMessagePlus *)messagePlus completionBlock:(AATTMessageManagerRefreshCompletionBlock)block;
 
+/**
+ Fetch a new instance of an AATTMessagePlus for the Messages corresponding to the provided
+ Message IDs.
+ 
+ After the message is fetched, processing will occur in accordance
+ with this manager's configuration (e.g. location lookup).
+ 
+ @param messageIDs a set of Message IDs corresponding to the Messages to refresh
+ @param channelID the Channel ID associated with the messages. This is used to look up
+        the preferred query parameters.
+ @param compltionBlock the AATTMessageManagerRefreshCompletionBlock to which the result will be delivered.
+ */
+- (void)refreshMessagesWithMessageIDs:(NSSet *)messageIDs channelID:(NSString *)channelID completionBlock:(AATTMessageManagerRefreshCompletionBlock)block;
+
 #pragma mark - Search Messages
 
 /**
