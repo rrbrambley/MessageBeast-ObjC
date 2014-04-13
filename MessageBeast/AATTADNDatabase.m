@@ -438,6 +438,9 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
         select = [NSString stringWithFormat:@"%@ AND annotation_date < ?", select];
         [args addObject:[NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
     }
+    
+    select = [NSString stringWithFormat:@"%@ ORDER BY annotation_date DESC", select];
+    
     if(limit > 0) {
         select = [NSString stringWithFormat:@"%@ LIMIT %lu", select, (unsigned long)limit];
     }
