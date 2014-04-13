@@ -424,12 +424,26 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (AATTAnnotationInstances *)annotationInstancesOfType:(NSString *)annotationType inChannelWithID:(NSString *)channelID {
+    return [self annotationInstancesOfType:annotationType inChannelWithID:channelID beforeDate:nil limit:0];
+}
+
+- (AATTAnnotationInstances *)annotationInstancesOfType:(NSString *)annotationType inChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
     AATTAnnotationInstances *instances = [[AATTAnnotationInstances alloc] initWithAnnotationType:annotationType];
+    NSMutableArray *args = [NSMutableArray arrayWithCapacity:4];
+    [args addObject:channelID];
+    [args addObject:annotationType];
     
-    static NSString *select = @"SELECT annotation_message_id FROM annotation_instances WHERE annotation_channel_id = ? AND annotation_type = ?";
+    NSString *select = @"SELECT annotation_message_id FROM annotation_instances WHERE annotation_channel_id = ? AND annotation_type = ?";
+    if(beforeDate) {
+        select = [NSString stringWithFormat:@"%@ AND annotation_date < ?", select];
+        [args addObject:[NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
+    }
+    if(limit > 0) {
+        select = [NSString stringWithFormat:@"%@ LIMIT %lu", select, (unsigned long)limit];
+    }
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *resultSet = [db executeQuery:select, channelID, annotationType];
+        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
         while([resultSet next]) {
             [instances addMessageID:[resultSet stringForColumnIndex:0]];
         }

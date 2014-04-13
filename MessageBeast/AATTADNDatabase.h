@@ -200,6 +200,20 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (AATTAnnotationInstances *)annotationInstancesOfType:(NSString *)annotationType inChannelWithID:(NSString *)channelID;
 
 /**
+ Obtain an AATTAnnotationInstances containing all message IDs with which the specified annotation type
+ is associated.
+ 
+ @param annotationType the type of annotation
+ @param channelID the ID of the channel containing the messages
+ @param beforeDate a date that all display dates associated with the annotation instances must
+        come after. This is useful for paging. A nil value is the same as passing the current date.
+ @param limit the maximum number of instances to obtain. A value of 0 will result in all instances being returned.
+ @return an AATTAnnotationInstances object containing all message IDs with which the specified annotation type
+ is associated.
+ */
+- (AATTAnnotationInstances *)annotationInstancesOfType:(NSString *)annotationType inChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+
+/**
  Obtain an NSArray of AATTDisplayLocationInstances for a channel with the specified ID.
  Each AATTDisplayLocationInstances contains all message IDs with which its display location
  is associated. This method uses a precision of AATTLocationPrecisionTenThousandMeters (actually ~1.11 km)
