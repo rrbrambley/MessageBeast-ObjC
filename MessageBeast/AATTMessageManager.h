@@ -165,6 +165,21 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 - (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
 
 /**
+ Get persisted messages that have the specified display location.
+ These messages are not kept in memory by the message manager.
+ 
+ @param channelID the id of the channel for which messages should be loaded.
+ @param displayLocation the AATTDisplayLocation of interest
+ @param locationPrecision the precision to be used when determining whether two locations
+        with the same name are considered the same display location.
+ @param beforeDate a date before the display date of all associated messages. Nil is the same as the current date.
+ @param limit the maximum number of Messages to load from the database.
+ @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
+        chronological order.
+ */
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+
+/**
  Get persisted messages that have the specified hashtag.
  These messages are not kept in memory by the message manager.
 

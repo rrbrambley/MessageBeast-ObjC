@@ -258,6 +258,20 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (AATTDisplayLocationInstances *)displayLocationInstancesInChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision;
 
 /**
+ Obtain an AATTDisplayLocationInstances for a specific display location,
+ using the provided AATTLocationPrecision. The location precision will be used to determine
+ how close two locations with the same name must be to each other in order to consider them
+ the same location.
+ 
+ @param beforeDate a date that all display dates associated with the display location instances must
+        come after. This is useful for paging. A nil value is the same as passing the current date.
+ @param limit the maximum number of instances to obtain. A value of 0 will result in all instances being returned.
+ @return an AATTDisplayLocationInstances containing message IDs associated with
+        the specified display location.
+*/
+- (AATTDisplayLocationInstances *)displayLocationInstancesInChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+
+/**
  Obtain a dictionary of hashtag instances in reverse chronological order.
  The dictionary maps hashtag names to AATTHashtagInstances objects.
 

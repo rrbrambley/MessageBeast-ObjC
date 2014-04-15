@@ -490,16 +490,39 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (AATTDisplayLocationInstances *)displayLocationInstancesInChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision {
-    static NSString *select = @"SELECT location_message_id FROM location_instances WHERE location_channel_id = ? AND location_name = ? AND location_latitude LIKE ? AND location_longitude LIKE ? ORDER BY location_date DESC";
+    return [self displayLocationInstancesInChannelWithID:channelID displayLocation:displayLocation locationPrecision:locationPrecision beforeDate:nil limit:0];
+}
+
+- (AATTDisplayLocationInstances *)displayLocationInstancesInChannelWithID:(NSString *)channelID displayLocation:(AATTDisplayLocation *)displayLocation locationPrecision:(AATTLocationPrecision)locationPrecision beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
     
-    AATTDisplayLocationInstances *instances = [[AATTDisplayLocationInstances alloc] initWithDisplayLocation:displayLocation];
+    NSMutableArray *args = [NSMutableArray arrayWithCapacity:6];
     NSUInteger precisionDigits = [self precisionDigitsForLocationPrecision:locationPrecision];
     
     NSString *latArg = [NSString stringWithFormat:@"%@%%", [self roundedValueAsString:displayLocation.latitude decimalPlaces:precisionDigits]];
     NSString *longArg = [NSString stringWithFormat:@"%@%%", [self roundedValueAsString:displayLocation.longitude decimalPlaces:precisionDigits]];
     
+    NSString *select = @"SELECT location_message_id FROM location_instances WHERE location_channel_id = ? AND location_name = ? AND location_latitude LIKE ? AND location_longitude LIKE ?";
+    
+    [args addObject:channelID];
+    [args addObject:displayLocation.name];
+    [args addObject:latArg];
+    [args addObject:longArg];
+    
+    if(beforeDate) {
+        select = [NSString stringWithFormat:@"%@ AND location_date < ?", select];
+        [args addObject:[NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
+    }
+    
+    select = [NSString stringWithFormat:@"%@ ORDER BY location_date DESC", select];
+    
+    if(limit > 0) {
+        select = [NSString stringWithFormat:@"%@ LIMIT %lu", select, (unsigned long)limit];
+    }
+    
+    AATTDisplayLocationInstances *instances = [[AATTDisplayLocationInstances alloc] initWithDisplayLocation:displayLocation];
+
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *resultSet = [db executeQuery:select, channelID, displayLocation.name, latArg, longArg];
+        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
         while([resultSet next]) {
             NSString *messageID = [resultSet stringForColumnIndex:0];
             [instances addMessageID:messageID];
