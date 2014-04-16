@@ -191,6 +191,19 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
 - (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
 
 /**
+ Get persisted messages that have the specified hashtag.
+ These messages are not kept in memory by the message manager.
+ 
+ @param channelID the id of the channel for which messages should be loaded.
+ @param hashtagName the hashtag name (without the #)
+ @param beforeDate a date before the display date of all associated messages. Nil is the same as the current date.
+ @param limit the maximum number of Messages to load from the database.
+ @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
+ chronological order.
+ */
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+
+/**
  Get a persisted message.
  This message is not kept in memory by the message manager.
  

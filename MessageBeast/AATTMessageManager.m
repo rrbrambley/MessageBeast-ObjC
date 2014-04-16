@@ -160,6 +160,11 @@ NSString *const AATTMessageManagerDidFailToSendUnsentMessagesNotification = @"AA
     return [self persistedMessagesWithMessageIDs:hashtagInstances.messageIDs.set];
 }
 
+- (M13OrderedDictionary *)persistedMessagesForChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
+    AATTHashtagInstances *hashtagInstances = [self.database hashtagInstancesInChannelWithID:channelID hashtagName:hashtagName beforeDate:beforeDate limit:limit];
+    return [self persistedMessagesWithMessageIDs:hashtagInstances.messageIDs.set];
+}
+
 - (AATTMessagePlus *)persistedMessageWithID:(NSString *)messageID {
     AATTMessagePlus *messagePlus = [self.database messagePlusForMessageID:messageID];
     if(messagePlus) {

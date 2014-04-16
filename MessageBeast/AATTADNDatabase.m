@@ -581,12 +581,31 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
 }
 
 - (AATTHashtagInstances *)hashtagInstancesInChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName {
+    return [self hashtagInstancesInChannelWithID:channelID hashtagName:hashtagName beforeDate:nil limit:0];
+}
+
+- (AATTHashtagInstances *)hashtagInstancesInChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit {
+    NSMutableArray *args = [[NSMutableArray alloc] initWithCapacity:3];
+    [args addObject:channelID];
+    [args addObject:hashtagName];
+    
     AATTHashtagInstances *instances = [[AATTHashtagInstances alloc] initWithName:hashtagName];
     
-    static NSString *select = @"SELECT hashtag_message_id FROM hashtag_instances WHERE hashtag_channel_id = ? AND hashtag_name = ?";
+    NSString *select = @"SELECT hashtag_message_id FROM hashtag_instances WHERE hashtag_channel_id = ? AND hashtag_name = ?";
+    
+    if(beforeDate) {
+        select = [NSString stringWithFormat:@"%@ AND hashtag_date < ?", select];
+        [args addObject:[NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
+    }
+    
+    select = [NSString stringWithFormat:@"%@ ORDER BY hashtag_date DESC", select];
+    
+    if(limit > 0) {
+        select = [NSString stringWithFormat:@"%@ LIMIT %lu", select, (unsigned long)limit];
+    }
     
     [self.databaseQueue inDatabase:^(FMDatabase *db) {
-        FMResultSet *resultSet = [db executeQuery:select, channelID, hashtagName];
+        FMResultSet *resultSet = [db executeQuery:select withArgumentsInArray:args];
         while([resultSet next]) {
             [instances addMessageID:[resultSet stringForColumnIndex:0]];
         }

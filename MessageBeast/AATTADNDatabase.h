@@ -325,6 +325,21 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 - (AATTHashtagInstances *)hashtagInstancesInChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName;
 
 /**
+ Obtain an AATTHashtagInstances containing all message IDs with which the specified hashtag
+ is associated.
+ 
+ @param channelID the ID of the channel containing the messages with which the returned
+        AATTHashtagInstances object is associated.
+ @param hashtagName the hashtag (without the #)
+ @param beforeDate a date that all display dates associated with the hashtag instances must
+        come after. This is useful for paging. A nil value is the same as passing the current date.
+ @param limit the maximum number of instances to obtain. A value of 0 will result in all instances being returned.
+ @return an AATTHashtagInstances object containing all message IDs with which the specified hashtag
+ is associated.
+ */
+- (AATTHashtagInstances *)hashtagInstancesInChannelWithID:(NSString *)channelID hashtagName:(NSString *)hashtagName beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;
+
+/**
  Obtain an AATTGeolocation for the specified latitude and longitude, or nil of none exists.
  A location precision of approximately 111 meters (lat/long rounded to 3 decimal places) is
  used to do the lookup.
