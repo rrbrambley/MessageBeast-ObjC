@@ -118,7 +118,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  Obtain a batch of persisted AATTMessagePlus objects in reverse chronological order.
 
  @param channelID the ID of the channel containing the messages.
- @param limit the maximum size of the batch.
+ @param limit the maximum size of the batch. A value of 0 will result in all Messages being returned.
  @return An ordered batch of messages.
  */
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID limit:(NSUInteger)limit;
@@ -128,7 +128,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
  This method will obtain messages whose display date is before a specified date.
 
  @param channelID the ID of the channel containing the messages.
- @param limit the maximum size of the batch.
+ @param limit the maximum size of the batch. A value of 0 will result in all Messages being returned.
  @return An ordered batch of messages.
  */
 - (AATTOrderedMessageBatch *)messagesInChannelWithID:(NSString *)channelID beforeDate:(NSDate *)beforeDate limit:(NSUInteger)limit;

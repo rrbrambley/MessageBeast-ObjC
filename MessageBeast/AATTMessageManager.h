@@ -131,7 +131,7 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  Load persisted messages that were previously stored in the sqlite database.
 
  @param channelID the id of the channel for which messages should be loaded.
- @param limit the maximum number of messages to load from the database.
+ @param limit the maximum number of messages to load from the database. A value of 0 will result in all Messages being loaded.
  @return a dictionary with message dates mapped to AATTMessagePlus objects, in reverse
          chronological order.
  */
@@ -141,9 +141,9 @@ typedef void (^AATTMessageManagerDeletionCompletionBlock)(ANKAPIResponseMeta *me
  Load persisted messages that were previously stored in the sqlite database,
  using a message filter to exclude a subset of the results.
  
- @param channelID the id of the channel for which messages should be loaded
- @param limit the maximum number of messages to load from the database
- @param messageFilter the AATTMessageFilter to use
+ @param channelID the id of the channel for which messages should be loaded.
+ @param limit the maximum number of messages to load from the database. A value of 0 will result in all Messages being loaded.
+ @param messageFilter the AATTMessageFilter to use.
  @return a AATTFilteredMessageBatch containing the messages after a filter was applied, and
          additionally, a dictionary of messages containing the excluded messages.
  */

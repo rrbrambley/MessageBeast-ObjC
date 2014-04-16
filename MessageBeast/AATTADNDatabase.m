@@ -315,7 +315,11 @@ static NSString *const kCreatePlacesTable = @"CREATE TABLE IF NOT EXISTS places 
         [args addObject:[NSNumber numberWithDouble:[beforeDate timeIntervalSince1970]]];
     }
     
-    select = [NSString stringWithFormat:@"%@ ORDER BY message_date DESC LIMIT %lu", select, (unsigned long)limit];
+    select = [NSString stringWithFormat:@"%@ ORDER BY message_date DESC", select];
+    
+    if(limit > 0) {
+        select = [NSString stringWithFormat:@"%@ LIMIT %lu", select, (unsigned long)limit];
+    }
     return [self messagesWithSelectStatement:select arguments:args];
 }
 
