@@ -318,6 +318,7 @@ typedef NS_ENUM(NSUInteger, AATTLocationPrecision) {
 
  @param channelID the ID of the channel containing the messages with which the returned
         AATTHashtagInstances object is associated.
+ @param hashtagName the hashtag (without the #)
  @return an AATTHashtagInstances object containing all message IDs with which the specified hashtag
  is associated.
  */
