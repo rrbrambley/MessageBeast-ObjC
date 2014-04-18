@@ -70,6 +70,7 @@
 		E29A82ED1821B8AA0057245C /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E61821B8AA0057245C /* FMDatabaseQueue.m */; };
 		E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E91821B8AA0057245C /* FMResultSet.m */; };
 		E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E29A82F01821B8E10057245C /* libsqlite3.dylib */; };
+		E2E09DE11900A15400917370 /* AATTEntityGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E09DE01900A15400917370 /* AATTEntityGenerator.m */; };
 		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
 		E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A72A18180190009DECDB /* SystemConfiguration.framework */; };
 		E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A7231818004A009DECDB /* MobileCoreServices.framework */; };
@@ -231,6 +232,8 @@
 		E29A82E81821B8AA0057245C /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/src/FMResultSet.h; sourceTree = "<group>"; };
 		E29A82E91821B8AA0057245C /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/src/FMResultSet.m; sourceTree = "<group>"; };
 		E29A82F01821B8E10057245C /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		E2E09DDF1900A15400917370 /* AATTEntityGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATTEntityGenerator.h; sourceTree = "<group>"; };
+		E2E09DE01900A15400917370 /* AATTEntityGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATTEntityGenerator.m; sourceTree = "<group>"; };
 		E2E5A6D61817FBF9009DECDB /* libMessageBeast.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMessageBeast.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E5A6D91817FBF9009DECDB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E2E5A6E71817FBF9009DECDB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -278,6 +281,8 @@
 			children = (
 				E208F52C18C3FC3A00556A04 /* AATTSharedDateFormatter.h */,
 				E208F52D18C3FC3A00556A04 /* AATTSharedDateFormatter.m */,
+				E2E09DDF1900A15400917370 /* AATTEntityGenerator.h */,
+				E2E09DE01900A15400917370 /* AATTEntityGenerator.m */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -652,6 +657,7 @@
 				E218EFB11890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.m in Sources */,
 				E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */,
 				E218EFAD1890936B00ADC609 /* AATTPendingFileAttachment.m in Sources */,
+				E2E09DE11900A15400917370 /* AATTEntityGenerator.m in Sources */,
 				E29A82EA1821B8AA0057245C /* FMDatabase.m in Sources */,
 				E2F93F0218C56197009CAB55 /* AATTCustomPlace.m in Sources */,
 				E218EFA91890936B00ADC609 /* AATTMessagePlus.m in Sources */,

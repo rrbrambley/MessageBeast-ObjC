@@ -24,6 +24,7 @@
 #import "AATTCustomPlace.h"
 #import "AATTDisplayLocation.h"
 #import "AATTDisplayLocationInstances.h"
+#import "AATTEntityGenerator.h"
 #import "AATTFilteredMessageBatch.h"
 #import "AATTGeolocation.h"
 #import "AATTHashtagInstances.h"
