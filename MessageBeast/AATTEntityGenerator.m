@@ -12,9 +12,11 @@
 
 + (ANKEntities *)entitiesForMessageText:(NSString *)messageText {
     ANKEntities *entities = [[ANKEntities alloc] init];
-    entities.hashtags = [self hashtagEntitiesForMessageText:messageText];
-    entities.mentions = [self mentionEntitiesForMessageText:messageText];
-    entities.links = [self linkEntitiesForMessageText:messageText];
+    if(messageText.length > 0) {
+        entities.hashtags = [self hashtagEntitiesForMessageText:messageText];
+        entities.mentions = [self mentionEntitiesForMessageText:messageText];
+        entities.links = [self linkEntitiesForMessageText:messageText];
+    }
     return entities;
 }
 
