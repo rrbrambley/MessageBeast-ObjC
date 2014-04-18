@@ -71,6 +71,40 @@
 		E29A82EF1821B8AA0057245C /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E29A82E91821B8AA0057245C /* FMResultSet.m */; };
 		E29A82F11821B8E10057245C /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E29A82F01821B8E10057245C /* libsqlite3.dylib */; };
 		E2E09DE11900A15400917370 /* AATTEntityGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = E2E09DE01900A15400917370 /* AATTEntityGenerator.m */; };
+		E2E09DE41901772100917370 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF8A1890936B00ADC609 /* ANKAnnotatableResource+AATTAnnotationHelper.m */; };
+		E2E09DE51901772100917370 /* ANKChannel+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF8C1890936B00ADC609 /* ANKChannel+AATTAnnotationHelper.m */; };
+		E2E09DE61901772100917370 /* ANKClient+AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF8E1890936B00ADC609 /* ANKClient+AATTMessageManager.m */; };
+		E2E09DE71901772100917370 /* ANKClient+PrivateChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF901890936B00ADC609 /* ANKClient+PrivateChannel.m */; };
+		E2E09DE81901772100917370 /* ANKMessage+AATTAnnotationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF921890936B00ADC609 /* ANKMessage+AATTAnnotationHelper.m */; };
+		E2E09DE91901772100917370 /* NSObject+AATTPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF951890936B00ADC609 /* NSObject+AATTPersistence.m */; };
+		E2E09DEA1901772100917370 /* AATTADNDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF591890936B00ADC609 /* AATTADNDatabase.m */; };
+		E2E09DEB1901772100917370 /* AATTOrderedMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF7F1890936B00ADC609 /* AATTOrderedMessageBatch.m */; };
+		E2E09DEC1901772100917370 /* AATTActionMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF551890936B00ADC609 /* AATTActionMessageManager.m */; };
+		E2E09DED1901772100917370 /* AATTADNFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF5B1890936B00ADC609 /* AATTADNFileManager.m */; };
+		E2E09DEE1901772100917370 /* AATTChannelSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF6B1890936B00ADC609 /* AATTChannelSyncManager.m */; };
+		E2E09DEF1901772100917370 /* AATTMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF771890936B00ADC609 /* AATTMessageManager.m */; };
+		E2E09DF01901772100917370 /* AATTMessageManagerConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF791890936B00ADC609 /* AATTMessageManagerConfiguration.m */; };
+		E2E09DF11901772100917370 /* AATTMinMaxPair.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF7D1890936B00ADC609 /* AATTMinMaxPair.m */; };
+		E2E09DF21901772100917370 /* AATTActionMessageSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF571890936B00ADC609 /* AATTActionMessageSpec.m */; };
+		E2E09DF31901772100917370 /* AATTAnnotationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF5F1890936B00ADC609 /* AATTAnnotationInstances.m */; };
+		E2E09DF41901772100917370 /* AATTBaseMessageInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF611890936B00ADC609 /* AATTBaseMessageInstances.m */; };
+		E2E09DF51901772100917370 /* AATTChannelRefreshResult.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF631890936B00ADC609 /* AATTChannelRefreshResult.m */; };
+		E2E09DF61901772100917370 /* AATTChannelRefreshResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF651890936B00ADC609 /* AATTChannelRefreshResultSet.m */; };
+		E2E09DF71901772100917370 /* AATTChannelSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF671890936B00ADC609 /* AATTChannelSpec.m */; };
+		E2E09DF81901772100917370 /* AATTChannelSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF691890936B00ADC609 /* AATTChannelSpecSet.m */; };
+		E2E09DF91901772100917370 /* AATTDisplayLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF6D1890936B00ADC609 /* AATTDisplayLocation.m */; };
+		E2E09DFA1901772100917370 /* AATTDisplayLocationInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF6F1890936B00ADC609 /* AATTDisplayLocationInstances.m */; };
+		E2E09DFB1901772100917370 /* AATTFilteredMessageBatch.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF711890936B00ADC609 /* AATTFilteredMessageBatch.m */; };
+		E2E09DFC1901772100917370 /* AATTGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF731890936B00ADC609 /* AATTGeolocation.m */; };
+		E2E09DFD1901772100917370 /* AATTHashtagInstances.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF751890936B00ADC609 /* AATTHashtagInstances.m */; };
+		E2E09DFE1901772100917370 /* AATTMessagePlus.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF7B1890936B00ADC609 /* AATTMessagePlus.m */; };
+		E2E09DFF1901772100917370 /* AATTPendingFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF811890936B00ADC609 /* AATTPendingFile.m */; };
+		E2E09E001901772100917370 /* AATTPendingFileAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF831890936B00ADC609 /* AATTPendingFileAttachment.m */; };
+		E2E09E011901772100917370 /* AATTPendingMessageDeletion.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF851890936B00ADC609 /* AATTPendingMessageDeletion.m */; };
+		E2E09E021901772100917370 /* AATTTargetWithActionChannelsSpecSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF871890936B00ADC609 /* AATTTargetWithActionChannelsSpecSet.m */; };
+		E2E09E031901772100917370 /* AATTADNPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = E218EF5D1890936B00ADC609 /* AATTADNPersistence.m */; };
+		E2E09E041901772100917370 /* AATTSharedDateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = E208F52D18C3FC3A00556A04 /* AATTSharedDateFormatter.m */; };
+		E2E09E051901772100917370 /* M13OrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E290741D18CD643C0085731C /* M13OrderedDictionary.m */; };
 		E2E5A6DA1817FBF9009DECDB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A6D91817FBF9009DECDB /* Foundation.framework */; };
 		E2E5A735181805CB009DECDB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A72A18180190009DECDB /* SystemConfiguration.framework */; };
 		E2E5A736181805D0009DECDB /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E5A7231818004A009DECDB /* MobileCoreServices.framework */; };
@@ -622,6 +656,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2E09DE41901772100917370 /* ANKAnnotatableResource+AATTAnnotationHelper.m in Sources */,
+				E2E09DE51901772100917370 /* ANKChannel+AATTAnnotationHelper.m in Sources */,
+				E2E09DE61901772100917370 /* ANKClient+AATTMessageManager.m in Sources */,
+				E2E09DE71901772100917370 /* ANKClient+PrivateChannel.m in Sources */,
+				E2E09DE81901772100917370 /* ANKMessage+AATTAnnotationHelper.m in Sources */,
+				E2E09DE91901772100917370 /* NSObject+AATTPersistence.m in Sources */,
+				E2E09DEA1901772100917370 /* AATTADNDatabase.m in Sources */,
+				E2E09DEB1901772100917370 /* AATTOrderedMessageBatch.m in Sources */,
+				E2E09DEC1901772100917370 /* AATTActionMessageManager.m in Sources */,
+				E2E09DED1901772100917370 /* AATTADNFileManager.m in Sources */,
+				E2E09DEE1901772100917370 /* AATTChannelSyncManager.m in Sources */,
+				E2E09DEF1901772100917370 /* AATTMessageManager.m in Sources */,
+				E2E09DF01901772100917370 /* AATTMessageManagerConfiguration.m in Sources */,
+				E2E09DF11901772100917370 /* AATTMinMaxPair.m in Sources */,
+				E2E09DF21901772100917370 /* AATTActionMessageSpec.m in Sources */,
+				E2E09DF31901772100917370 /* AATTAnnotationInstances.m in Sources */,
+				E2E09DF41901772100917370 /* AATTBaseMessageInstances.m in Sources */,
+				E2E09DF51901772100917370 /* AATTChannelRefreshResult.m in Sources */,
+				E2E09DF61901772100917370 /* AATTChannelRefreshResultSet.m in Sources */,
+				E2E09DF71901772100917370 /* AATTChannelSpec.m in Sources */,
+				E2E09DF81901772100917370 /* AATTChannelSpecSet.m in Sources */,
+				E2E09DF91901772100917370 /* AATTDisplayLocation.m in Sources */,
+				E2E09DFA1901772100917370 /* AATTDisplayLocationInstances.m in Sources */,
+				E2E09DFB1901772100917370 /* AATTFilteredMessageBatch.m in Sources */,
+				E2E09DFC1901772100917370 /* AATTGeolocation.m in Sources */,
+				E2E09DFD1901772100917370 /* AATTHashtagInstances.m in Sources */,
+				E2E09DFE1901772100917370 /* AATTMessagePlus.m in Sources */,
+				E2E09DFF1901772100917370 /* AATTPendingFile.m in Sources */,
+				E2E09E001901772100917370 /* AATTPendingFileAttachment.m in Sources */,
+				E2E09E011901772100917370 /* AATTPendingMessageDeletion.m in Sources */,
+				E2E09E021901772100917370 /* AATTTargetWithActionChannelsSpecSet.m in Sources */,
+				E2E09E031901772100917370 /* AATTADNPersistence.m in Sources */,
+				E2E09E041901772100917370 /* AATTSharedDateFormatter.m in Sources */,
+				E2E09E051901772100917370 /* M13OrderedDictionary.m in Sources */,
 				E24F2908185BC13100957D43 /* FMDatabase.m in Sources */,
 				E24F2909185BC13100957D43 /* FMDatabaseAdditions.m in Sources */,
 				E24F290A185BC13100957D43 /* FMDatabasePool.m in Sources */,
