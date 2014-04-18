@@ -26,12 +26,14 @@
     NSArray *matches = [expression matchesInString:messageText options:0 range:NSMakeRange(0, messageText.length)];
     NSMutableArray *hashtagEntities = [[NSMutableArray alloc] initWithCapacity:matches.count];
     
-    for(NSTextCheckingResult *match in matches) {
-        ANKHashtagEntity *entity = [[ANKHashtagEntity alloc] init];
-        entity.position = match.range.location;
-        entity.length = match.range.length;
-        entity.hashtag = [[messageText substringFromIndex:match.range.location+1] substringToIndex:match.range.length-1];
-        [hashtagEntities addObject:entity];
+    if(!error) {
+        for(NSTextCheckingResult *match in matches) {
+            ANKHashtagEntity *entity = [[ANKHashtagEntity alloc] init];
+            entity.position = match.range.location;
+            entity.length = match.range.length;
+            entity.hashtag = [[messageText substringFromIndex:match.range.location+1] substringToIndex:match.range.length-1];
+            [hashtagEntities addObject:entity];
+        }
     }
     
     return hashtagEntities;
