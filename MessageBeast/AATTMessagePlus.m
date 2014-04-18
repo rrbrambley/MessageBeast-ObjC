@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Always All The Time. All rights reserved.
 //
 
+#import "AATTEntityGenerator.h"
 #import "AATTMessagePlus.h"
 #import "AATTPendingFileAttachment.h"
 #import "ANKMessage+AATTAnnotationHelper.h"
@@ -16,7 +17,8 @@
     
     message.messageID = messageID;
     message.channelID = channelID;
-
+    message.entities = [AATTEntityGenerator entitiesForMessageText:message.text];
+    
     NSDate *date = [message ohaiDisplayDate];
     if(!date) {
         date = [NSDate date];
